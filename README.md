@@ -1,5 +1,8 @@
 # Astro Starter Kit: Minimal
 
+> [!NOTE]
+> SE TRABAJA EN LA RAMA DEV
+
 ```sh
 npm create astro@latest -- --template minimal
 ```
