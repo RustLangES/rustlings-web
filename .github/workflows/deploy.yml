@@ -1,0 +1,42 @@
+name: Deploy to production
+
+env:
+  PROJECT_NAME: rustlings
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/deploy.yml"
+      - "package.json"
+      - "tsconfig.json"
+      - "astro.config.ts"
+      - "src/**"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - name: Install Deps
+        run: bun install
+
+      - name: Build
+        run: bun run build
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        # env:
+          # YOUR_SECRET: ${{ secrets.YOUR_SECRET }}
+          # YOUR_OTHER_SECRET: ${{ secrets.YOUR_OTHER_SECRET }}
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ./dist --project-name "${{ env.PROJECT_NAME }}"
+          # secrets: |
+          #   YOUR_SECRET
+          #   YOUR_OTHER_SECRET
