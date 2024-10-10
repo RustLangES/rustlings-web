@@ -8,19 +8,16 @@
     "build": "astro check && astro build",
     "preview": "astro build && wrangler pages dev",
     "astro": "astro",
-    "deploy": "astro build && wrangler pages deploy",
-    "cf-typegen": "wrangler types"
+    "deploy": "astro build && wrangler pages deploy"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.4",
-    "@astrojs/cloudflare": "^11.1.0",
     "@astrojs/tailwind": "^5.1.1",
     "astro": "^4.15.12",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241004.0",
     "wrangler": "^3.80.1"
   }
 }
