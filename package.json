@@ -13,9 +13,12 @@
   "dependencies": {
     "@astrojs/check": "^0.9.4",
     "@astrojs/tailwind": "^5.1.1",
+    "@astrojs/vue": "^4.5.2",
     "astro": "^4.15.12",
+    "monaco-editor": "0.52.0",
     "tailwindcss": "^3.4.13",
-    "typescript": "^5.6.2"
+    "typescript": "^5.6.2",
+    "vue": "^3.5.12"
   },
   "devDependencies": {
     "wrangler": "^3.80.1"
