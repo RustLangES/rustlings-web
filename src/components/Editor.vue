@@ -79,7 +79,7 @@ onMounted(() => {
     <div class="flex gap-4">
       <button
         @click="showCode = true"
-        :class="showCode ? 'text-white bg-black h-full px-2' : 'text-black'"
+        :class="showCode ? 'text-white bg-black h-full px-2 ' : 'text-black'"
       >
         main.rs
       </button>
