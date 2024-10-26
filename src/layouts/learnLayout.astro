@@ -1,6 +1,7 @@
 ---
-import Editor from '../components/Editor.vue'
+import Editor from "../components/Editor.vue";
 
+const { lang, title } = Astro.props;
 /*
   Saber donde estoy
   Chequear si hay un archivo anterior y posterior
@@ -9,23 +10,54 @@ import Editor from '../components/Editor.vue'
 */
 ---
 
-<main class="grid grid-cols-1 lg:grid-cols-2">
-    <section class="p-2">
-    <div class="flex justify-between">
-        <button>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <main class="grid grid-cols-1 lg:grid-cols-2">
+      <section class="p-2">
+        <div class="flex justify-between">
+          <button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5 8.25 12l7.5-7.5"></path>
             </svg>
-        </button>
-        <button>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+          </button>
+          <button>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
             </svg>
-        </button>
-    </div>
-        <slot></slot>
-    </section>
-    <section>
-        <Editor client:only="vue"/>
-    </section>
-</main>
+          </button>
+        </div>
+        <slot />
+      </section>
+      <section>
+        <Editor client:only="vue" />
+      </section>
+    </main>
+  </body>
+</html>
