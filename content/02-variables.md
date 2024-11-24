@@ -1,5 +1,5 @@
 ---
-nextPath: "03-constants"
+nextPath: ""
 previousPath: "01-hola_mundo"
 ---
 
