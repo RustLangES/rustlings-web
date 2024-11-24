@@ -22,6 +22,9 @@ const config: Config = {
         "dark-fg": '#151515',
         "fg": '#FCFCFC'
       },
+      screens: {
+        xs: '300px',
+      },
     },
   },
   plugins: [],
