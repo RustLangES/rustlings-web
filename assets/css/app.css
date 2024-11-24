@@ -1,0 +1,85 @@
+:root {
+  --bg: #191918;
+  --fg: #FCFCFC;
+  --light-bg: #272726;
+  --editor-bg: #1A1B1A;
+  --stroke-color: #4F4E48;
+  --dark-yellow: #995614;
+  --yellow: #FFD776;
+  --dark-fg: #151515;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+/* ESTILOS PARA MD GENERALES */
+
+/* Para las `` de md */
+code {
+  background: var(--stroke-color);
+  color: var(--fg);
+  border-radius: 2px;
+}
+
+/* Estilos generales para listas */
+ul, ol {
+  margin: 0 0 1em 1.5em;              /* Espaciado entre listas */
+  padding: 0;
+  list-style-position: outside;       /* Ajusta las viñetas/números */
+  color: var(--fg);                   /* Color del texto */
+}
+
+li {
+  margin-bottom: 0.5em;               /* Espaciado entre elementos */
+  line-height: 1.5;                   /* Mejora la legibilidad */
+}
+
+/* Personalización de listas desordenadas */
+ul > li::marker {
+  content: "• ";                      /* Cambia el estilo del marcador de las listas desordenadas */
+  color: var(--yellow);               /* Color de los marcadores */
+}
+
+/* Personalización de listas ordenadas */
+ol > li::marker {
+  content: none;                      /* Usa el comportamiento predeterminado del navegador */
+  color: var(--dark-yellow);          /* Color de los números */
+  font-weight: bold;                  /* Hace los números más prominentes */
+}
+
+/* Estilos para listas anidadas */
+ul ul, ol ol, ul ol, ol ul {
+  margin-left: 1.5em;                 /* Aumenta el margen para la jerarquía */
+}
+
+ul ul > li::marker {
+  content: "◦ ";                      /* Cambia el marcador de listas desordenadas anidadas */
+  color: var(--stroke-color);
+}
+
+ol ol > li::marker {
+  content: none;                      /* Usa los números predeterminados */
+  color: var(--stroke-color);
+}
+
+/* Personalización para contenido en Markdown */
+li code {
+  background: var(--stroke-color);
+  color: var(--fg);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+}
+
+li del {
+  text-decoration: line-through;
+  color: var(--stroke-color);
+}
+
+li strong {
+  font-weight: bold;
+  color: var(--yellow);
+}
+
+/* FIN DE LOS ESTILOS DE MD */
