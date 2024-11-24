@@ -1,23 +1,24 @@
-# RustLings WEB 
+# Nuxt desde 0
 
 > [!NOTE]
-> SE TRABAJA EN LA RAMA DEV
+> Link para los iconos [Lucide](https://lucide.dev/icons/)
 
-## 🧞 Comandos
+## Estrucutra de carpetas recomendada por Nuxt
 
-> [!WARNING]
-> Usamos `bun`.
+```txt
+ MyAwesomeProject
+├──  .nuxt               <- Desarrollo
+├──  .output             <- Producción
+├──  assets              <- (CSS, SASS, Fonts, Imagenes)
+├──  components          <- SFC
+├──  layouts             <- Piezas de UI repetidas
+├──  middleware          <- Interceptores
+├──  pages               <- Enrutamiento (archivos o carpetas)
+├──  plugins             <- Son complementos (Analitycs)
+├──  public              <- robots.txt, favicon.ico
+├──  composables         <- Composable functions
+├──  nuxt.config.ts      <- Configuraciones
+└── 󰡄 app.vue             <- Entrada
+```
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun run dev`             | Starts local dev server at `localhost:4321`      |
-| `bun run build`           | Build your production site to `./dist/`          |
-| `bun run preview`         | Preview your build locally, before deploying     |
-| `bun run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Quieres contribuir?
-
-Checa el [CONTRIBUTING.md](./CONTRIBUTING.md).
-
+Esta estructura es recomendada por **Nuxt** ya que es la que facilita mas las cosas como los `autoimports` de los componentes.
