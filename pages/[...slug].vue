@@ -2,6 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { CircleChevronRight, CircleChevronLeft, File, Terminal, Play, GripVertical } from "lucide-vue-next";
 import { mdWidth, sectionMinWidth, sectionMaxWidth } from '~/consts/consts.ts';
+import { getCodeResponse } from '~/helpers/getCodeResponse';
 
 const isCoding = ref(true);
 const isCompiling = ref(false);
@@ -59,19 +60,27 @@ onMounted(() => {
     <section v-bind="isMobile ? { class: 'mb-[10px] h-[calc(100vh-20px)]' } : { style: { width: `${sectionWidth}%` } }"
       class="bg-light-bg border border-stroke-color rounded-[10px] flex flex-col">
       <ContentDoc v-slot="{ doc }" class="flex-grow">
-        <div class="scroll-container flex-grow m-[10px] overflow-auto">
+        <div class="scroll-container flex-grow m-2.5 overflow-auto">
           <ContentRenderer :value="doc" />
         </div>
-        <div buttons class="flex justify-between m-[10px] mt-auto">
-          <a :href="doc && doc.previousPath ? `/${doc.previousPath}` : null" :class="{
-            'pointer-events-none text-gray-400': !doc || !doc.previousPath,
-          }" class="flex items-center">
+        <div buttons class="flex justify-between m-2.5 mt-auto">
+          <a
+            :href="doc && doc.previousPath ? `/${doc.previousPath}` : undefined"
+            :class="{
+              'pointer-events-none text-gray-400': !doc || !doc.previousPath,
+            }"
+            class="flex items-center"
+          >
             <CircleChevronLeft :size="30" />
           </a>
 
-          <a :href="doc && doc.nextPath ? `/${doc.nextPath}` : null" :class="{
-            'pointer-events-none text-gray-400': !doc || !doc.nextPath,
-          }" class="flex items-center">
+          <a
+            :href="doc && doc.nextPath ? `/${doc.nextPath}` : undefined"
+            :class="{
+              'pointer-events-none text-gray-400': !doc || !doc.nextPath,
+            }"
+            class="flex items-center"
+          >
             <CircleChevronRight :size="30" />
           </a>
         </div>
@@ -133,11 +142,5 @@ onMounted(() => {
 .scroll-container::-webkit-scrollbar-thumb:hover {
   background-color: var(--editor-bg);
   border-radius: 10px;
-}
-
-.rust-error {
-  padding: 5px;
-  margin-bottom: 10px;
-  border-radius: 4px;
 }
 </style>
