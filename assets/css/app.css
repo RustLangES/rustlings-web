@@ -9,6 +9,8 @@
   --dark-yellow: #995614;
   --yellow: #ffd776;
   --dark-fg: #151515;
+  --note-bg: #4795cc;
+  --note-dark-bg: #205275;
 }
 
 body {
@@ -18,6 +20,42 @@ body {
 }
 
 /* ESTILOS PARA MD GENERALES */
+
+section>div>div>h1 {
+  font-size: 1.5rem;
+  margin: 0.2rem auto;
+}
+section>div>div>h2 {
+  font-size: 1.3rem;
+  margin: 0.2rem auto;
+}
+section>div>div>h3 {
+  font-size: 1.2rem;
+  margin: 0.2rem auto;
+}
+section>div>div>h4 {
+  font-size: 1.1rem;
+  margin: 0.2rem auto;
+}
+section>div>div>h5 {
+  font-size: 1rem;
+  margin: 0.2rem auto;
+}
+section>div>div>h6 {
+  font-size: 0.5rem;
+  margin: 0.2rem auto;
+}
+
+.NOTE{
+  border-left: 3px solid var(--note-bg);
+  margin: 0.5rem auto;
+  .title{
+    font-weight: 500;
+  }
+  p{
+    margin-left: 1rem;
+  }
+}
 
 /* Para las `` de md */
 code {
