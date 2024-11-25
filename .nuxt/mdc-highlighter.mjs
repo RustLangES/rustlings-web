@@ -180,6 +180,16 @@ export function createShikiHighlighter({
 const bundledLangs = {
 "rust": () => import('shiki/langs/rust.mjs'),
 "rs": () => import('shiki/langs/rust.mjs'),
+"shellscript": () => import('shiki/langs/shellscript.mjs'),
+"bash": () => import('shiki/langs/shellscript.mjs'),
+"sh": () => import('shiki/langs/shellscript.mjs'),
+"shell": () => import('shiki/langs/shellscript.mjs'),
+"zsh": () => import('shiki/langs/shellscript.mjs'),
+"viml": () => import('shiki/langs/viml.mjs'),
+"vim": () => import('shiki/langs/viml.mjs'),
+"vimscript": () => import('shiki/langs/viml.mjs'),
+"shellsession": () => import('shiki/langs/shellsession.mjs'),
+"console": () => import('shiki/langs/shellsession.mjs'),
 }
 const bundledThemes = {
 "dracula": () => import('shiki/themes/dracula.mjs').then(r => r.default),

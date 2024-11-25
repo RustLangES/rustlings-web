@@ -433,7 +433,10 @@ const _inlineRuntimeConfig = {
           "default": "dracula"
         },
         "langs": [
-          "rust"
+          "rust",
+          "shell",
+          "viml",
+          "shellsession"
         ],
         "highlighter": "shiki",
         "shikiEngine": "oniguruma"
@@ -454,7 +457,7 @@ const _inlineRuntimeConfig = {
   },
   "content": {
     "cacheVersion": 2,
-    "cacheIntegrity": "gusyCFVDh0",
+    "cacheIntegrity": "KbipDnNVTs",
     "transformers": [],
     "base": "",
     "api": {
@@ -482,7 +485,10 @@ const _inlineRuntimeConfig = {
         "default": "dracula"
       },
       "langs": [
-        "rust"
+        "rust",
+        "shell",
+        "viml",
+        "shellsession"
       ],
       "highlighter": "shiki",
       "shikiEngine": "oniguruma"
@@ -4040,6 +4046,16 @@ function createShikiHighlighter({
 const bundledLangs = {
 "rust": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/rust.mjs'),
 "rs": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/rust.mjs'),
+"shellscript": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellscript.mjs'),
+"bash": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellscript.mjs'),
+"sh": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellscript.mjs'),
+"shell": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellscript.mjs'),
+"zsh": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellscript.mjs'),
+"viml": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/viml.mjs'),
+"vim": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/viml.mjs'),
+"vimscript": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/viml.mjs'),
+"shellsession": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellsession.mjs'),
+"console": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/shellsession.mjs'),
 };
 const bundledThemes = {
 "dracula": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/themes/dracula.mjs').then(r => r.default),
