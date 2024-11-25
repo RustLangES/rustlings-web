@@ -114,7 +114,11 @@
         "./imports"
       ],
       "#app-manifest": [
+<<<<<<< HEAD
+        "./manifest/meta/4be3008d-e4ce-491c-86ae-bed0433686d0.json"
+=======
         "./manifest/meta/dev.json"
+>>>>>>> develop
       ],
       "#components": [
         "./components"
