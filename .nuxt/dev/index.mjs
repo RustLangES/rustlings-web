@@ -1,56 +1,56 @@
-import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { mkdirSync } from 'node:fs';
+import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { getRequestHeader, splitCookiesString, setResponseStatus, setResponseHeader, send, getRequestHeaders, defineEventHandler, handleCacheHeaders, createEvent, fetchWithEvent, isEvent, eventHandler, getResponseStatus, setResponseHeaders, setHeaders, sendRedirect, proxyRequest, createError, getQuery as getQuery$1, getCookie, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, readBody, getResponseStatusText } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
+import { mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { parentPort, threadId } from 'node:worker_threads';
-import { getRequestHeader, splitCookiesString, setResponseStatus, setResponseHeader, send, getRequestHeaders, defineEventHandler, handleCacheHeaders, createEvent, fetchWithEvent, isEvent, eventHandler, getResponseStatus, setResponseHeaders, setHeaders, sendRedirect, proxyRequest, createError, getQuery as getQuery$1, getCookie, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, readBody, getResponseStatusText } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/h3/dist/index.mjs';
-import _RemarkEmoji from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/remark-emoji/index.js';
-import { visit } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unist-util-visit/index.js';
-import { toString } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/hast-util-to-string/index.js';
-import { createStorage, prefixStorage } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unstorage/dist/index.mjs';
-import { withQuery, joinURL, withTrailingSlash, parseURL, withoutBase, getQuery, joinRelativeURL, withLeadingSlash, withoutTrailingSlash, isRelative } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/ufo/dist/index.mjs';
-import { hash } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/ohash/dist/index.mjs';
-import defu, { defuFn, defu as defu$1 } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/defu/dist/defu.mjs';
-import { extname } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/pathe/dist/index.mjs';
-import { snakeCase, kebabCase, pascalCase, camelCase } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/scule/dist/index.mjs';
-import { unified } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unified/index.js';
-import { toString as toString$1 } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/mdast-util-to-string/index.js';
-import { postprocess, preprocess } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/micromark/dev/index.js';
-import { stringifyPosition } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unist-util-stringify-position/index.js';
-import { markdownLineEnding, markdownSpace } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/micromark-util-character/dev/index.js';
-import { push, splice } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/micromark-util-chunked/dev/index.js';
-import { resolveAll } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/micromark-util-resolve-all/index.js';
-import { normalizeUri } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/micromark-util-sanitize-uri/dev/index.js';
-import remarkParse from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/remark-parse/index.js';
-import remark2rehype from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/remark-rehype/index.js';
-import remarkMDC, { parseFrontMatter } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/remark-mdc/dist/index.mjs';
-import remarkGFM from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/remark-gfm/index.js';
-import rehypeExternalLinks from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/rehype-external-links/index.js';
-import rehypeSortAttributeValues from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/rehype-sort-attribute-values/index.js';
-import rehypeSortAttributes from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/rehype-sort-attributes/index.js';
-import rehypeRaw from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/rehype-raw/index.js';
-import { detab } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/detab/index.js';
-import Slugger from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/github-slugger/index.js';
-import destr, { destr as destr$1 } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/destr/dist/index.mjs';
-import { createWasmOnigEngine } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/shiki/dist/engine-oniguruma.mjs';
-import slugify from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/slugify/slugify.js';
-import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/vue-bundle-renderer/dist/runtime.mjs';
-import { stringify, uneval } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/devalue/index.js';
-import { renderToString } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/vue/server-renderer/index.mjs';
-import { propsToString, renderSSRHead } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/@unhead/ssr/dist/index.mjs';
-import { createServerHead as createServerHead$1, CapoPlugin } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unhead/dist/index.mjs';
-import { klona } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/klona/dist/index.mjs';
-import { createHooks } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/hookable/dist/index.mjs';
-import { createFetch as createFetch$1, Headers as Headers$1 } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/ofetch/dist/node.mjs';
-import { createCall, createFetch } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unenv/runtime/fetch/index.mjs';
+import _RemarkEmoji from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/remark-emoji/index.js';
+import { visit } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unist-util-visit/index.js';
+import { toString } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/hast-util-to-string/index.js';
+import { createStorage, prefixStorage } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unstorage/dist/index.mjs';
+import { withQuery, joinURL, withTrailingSlash, parseURL, withoutBase, getQuery, joinRelativeURL, withLeadingSlash, withoutTrailingSlash, isRelative } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/ufo/dist/index.mjs';
+import { hash } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/ohash/dist/index.mjs';
+import defu, { defuFn, defu as defu$1 } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/defu/dist/defu.mjs';
+import { extname } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/pathe/dist/index.mjs';
+import { snakeCase, kebabCase, pascalCase, camelCase } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/scule/dist/index.mjs';
+import { unified } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unified/index.js';
+import { toString as toString$1 } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/mdast-util-to-string/index.js';
+import { postprocess, preprocess } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/micromark/dev/index.js';
+import { stringifyPosition } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unist-util-stringify-position/index.js';
+import { markdownLineEnding, markdownSpace } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/micromark-util-character/dev/index.js';
+import { push, splice } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/micromark-util-chunked/dev/index.js';
+import { resolveAll } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/micromark-util-resolve-all/index.js';
+import { normalizeUri } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/micromark-util-sanitize-uri/dev/index.js';
+import remarkParse from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/remark-parse/index.js';
+import remark2rehype from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/remark-rehype/index.js';
+import remarkMDC, { parseFrontMatter } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/remark-mdc/dist/index.mjs';
+import remarkGFM from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/remark-gfm/index.js';
+import rehypeExternalLinks from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/rehype-external-links/index.js';
+import rehypeSortAttributeValues from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/rehype-sort-attribute-values/index.js';
+import rehypeSortAttributes from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/rehype-sort-attributes/index.js';
+import rehypeRaw from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/rehype-raw/index.js';
+import { detab } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/detab/index.js';
+import Slugger from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/github-slugger/index.js';
+import destr, { destr as destr$1 } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/destr/dist/index.mjs';
+import { createWasmOnigEngine } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/engine-oniguruma.mjs';
+import slugify from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/slugify/slugify.js';
+import { getRequestDependencies, getPreloadLinks, getPrefetchLinks, createRenderer } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import { stringify, uneval } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/devalue/index.js';
+import { renderToString } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/vue/server-renderer/index.mjs';
+import { propsToString, renderSSRHead } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/@unhead/ssr/dist/index.mjs';
+import { createHooks } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/hookable/dist/index.mjs';
+import { createFetch as createFetch$1, Headers as Headers$1 } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/ofetch/dist/node.mjs';
+import { createCall, createFetch } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unenv/runtime/fetch/index.mjs';
+import { klona } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/klona/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unstorage/drivers/fs.mjs';
+import { toRouteMatcher, createRouter } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/radix3/dist/index.mjs';
+import { getContext } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unctx/dist/index.mjs';
 import { AsyncLocalStorage } from 'node:async_hooks';
-import { consola } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/consola/dist/index.mjs';
-import { getContext } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unctx/dist/index.mjs';
-import { captureRawStackTrace, parseRawStackTrace } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/errx/dist/index.js';
-import { isVNode, version, unref } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/vue/index.mjs';
-import unstorage_47drivers_47fs from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/unstorage/drivers/fs.mjs';
-import { toRouteMatcher, createRouter } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/radix3/dist/index.mjs';
-import { defineHeadPlugin } from 'file://C:/Users/jonat/Programacion/rustlings-web/node_modules/@unhead/shared/dist/index.mjs';
+import { consola } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/consola/dist/index.mjs';
+import { captureRawStackTrace, parseRawStackTrace } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/errx/dist/index.js';
+import { isVNode, version, unref } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/vue/index.mjs';
+import { createServerHead as createServerHead$1, CapoPlugin } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/unhead/dist/index.mjs';
+import { defineHeadPlugin } from 'file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/@unhead/shared/dist/index.mjs';
 
 function hasReqHeader(event, name, includes) {
   const value = getRequestHeader(event, name);
@@ -185,7 +185,7 @@ const errorHandler = (async function errorhandler(error, event) {
   return send(event, html);
 });
 
-const rootDir = "C:/Users/jonat/Programacion/rustlings-web";
+const rootDir = "/home/wilovy/Dev/RustLangESP/rustlings-web";
 
 const appHead = {"meta":[{"name":"viewport","content":"width=device-width, initial-scale=1"},{"charset":"utf-8"}],"link":[],"style":[],"script":[],"noscript":[]};
 
@@ -204,7 +204,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _XMdFc5lIaB = (nitroApp) => {
+const _y5EF7SDOlf = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -591,7 +591,7 @@ function defineNitroPlugin(def) {
   return def;
 }
 
-const serverAssets = [{"baseName":"server","dir":"C:/Users/jonat/Programacion/rustlings-web/server/assets"}];
+const serverAssets = [{"baseName":"server","dir":"/home/wilovy/Dev/RustLangESP/rustlings-web/server/assets"}];
 
 const assets = createStorage();
 
@@ -603,13 +603,13 @@ const storage$1 = createStorage({});
 
 storage$1.mount('/assets', assets);
 
-storage$1.mount('content:source:content', unstorage_47drivers_47fs({"name":"content:source:content","driver":"fs","base":"C:\\Users\\jonat\\Programacion\\rustlings-web\\content","ignore":["**/node_modules/**","**/.git/**"]}));
-storage$1.mount('cache:content', unstorage_47drivers_47fs({"driver":"fs","base":"C:\\Users\\jonat\\Programacion\\rustlings-web\\.nuxt\\content-cache","ignore":["**/node_modules/**","**/.git/**"]}));
-storage$1.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:\\Users\\jonat\\Programacion\\rustlings-web","ignore":["**/node_modules/**","**/.git/**"]}));
-storage$1.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"C:\\Users\\jonat\\Programacion\\rustlings-web\\server","ignore":["**/node_modules/**","**/.git/**"]}));
-storage$1.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:\\Users\\jonat\\Programacion\\rustlings-web\\.nuxt","ignore":["**/node_modules/**","**/.git/**"]}));
-storage$1.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"C:\\Users\\jonat\\Programacion\\rustlings-web\\.nuxt\\cache","ignore":["**/node_modules/**","**/.git/**"]}));
-storage$1.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"C:\\Users\\jonat\\Programacion\\rustlings-web\\.data\\kv","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('content:source:content', unstorage_47drivers_47fs({"name":"content:source:content","driver":"fs","base":"/home/wilovy/Dev/RustLangESP/rustlings-web/content","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('cache:content', unstorage_47drivers_47fs({"driver":"fs","base":"/home/wilovy/Dev/RustLangESP/rustlings-web/.nuxt/content-cache","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('root', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/home/wilovy/Dev/RustLangESP/rustlings-web","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('src', unstorage_47drivers_47fs({"driver":"fs","readOnly":true,"base":"/home/wilovy/Dev/RustLangESP/rustlings-web/server","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('build', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/home/wilovy/Dev/RustLangESP/rustlings-web/.nuxt","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('cache', unstorage_47drivers_47fs({"driver":"fs","readOnly":false,"base":"/home/wilovy/Dev/RustLangESP/rustlings-web/.nuxt/cache","ignore":["**/node_modules/**","**/.git/**"]}));
+storage$1.mount('data', unstorage_47drivers_47fs({"driver":"fs","base":"/home/wilovy/Dev/RustLangESP/rustlings-web/.data/kv","ignore":["**/node_modules/**","**/.git/**"]}));
 
 function useStorage(base = "") {
   return base ? prefixStorage(storage$1, base) : storage$1;
@@ -1045,6 +1045,11 @@ function getRouteRules(event) {
 function getRouteRulesForPath(path) {
   return defu({}, ..._routeRulesMatcher.matchAll(path).reverse());
 }
+
+getContext("nitro-app", {
+  asyncContext: false,
+  AsyncLocalStorage: void 0
+});
 
 const r=Object.create(null),i=e=>globalThis.process?.env||globalThis._importMeta_.env||globalThis.Deno?.env.toObject()||globalThis.__env__||(e?r:globalThis),s=new Proxy(r,{get(e,o){return i()[o]??r[o]},has(e,o){const E=i();return o in E||o in r},set(e,o,E){const b=i(!0);return b[o]=E,!0},deleteProperty(e,o){if(!o)return !1;const E=i(!0);return delete E[o],!0},ownKeys(){const e=i(!0);return Object.keys(e)}}),t=typeof process<"u"&&process.env&&"development"||"",B=[["APPVEYOR"],["AWS_AMPLIFY","AWS_APP_ID",{ci:!0}],["AZURE_PIPELINES","SYSTEM_TEAMFOUNDATIONCOLLECTIONURI"],["AZURE_STATIC","INPUT_AZURE_STATIC_WEB_APPS_API_TOKEN"],["APPCIRCLE","AC_APPCIRCLE"],["BAMBOO","bamboo_planKey"],["BITBUCKET","BITBUCKET_COMMIT"],["BITRISE","BITRISE_IO"],["BUDDY","BUDDY_WORKSPACE_ID"],["BUILDKITE"],["CIRCLE","CIRCLECI"],["CIRRUS","CIRRUS_CI"],["CLOUDFLARE_PAGES","CF_PAGES",{ci:!0}],["CODEBUILD","CODEBUILD_BUILD_ARN"],["CODEFRESH","CF_BUILD_ID"],["DRONE"],["DRONE","DRONE_BUILD_EVENT"],["DSARI"],["GITHUB_ACTIONS"],["GITLAB","GITLAB_CI"],["GITLAB","CI_MERGE_REQUEST_ID"],["GOCD","GO_PIPELINE_LABEL"],["LAYERCI"],["HUDSON","HUDSON_URL"],["JENKINS","JENKINS_URL"],["MAGNUM"],["NETLIFY"],["NETLIFY","NETLIFY_LOCAL",{ci:!1}],["NEVERCODE"],["RENDER"],["SAIL","SAILCI"],["SEMAPHORE"],["SCREWDRIVER"],["SHIPPABLE"],["SOLANO","TDDIUM"],["STRIDER"],["TEAMCITY","TEAMCITY_VERSION"],["TRAVIS"],["VERCEL","NOW_BUILDER"],["VERCEL","VERCEL",{ci:!1}],["VERCEL","VERCEL_ENV",{ci:!1}],["APPCENTER","APPCENTER_BUILD_ID"],["CODESANDBOX","CODESANDBOX_SSE",{ci:!1}],["STACKBLITZ"],["STORMKIT"],["CLEAVR"],["ZEABUR"],["CODESPHERE","CODESPHERE_APP_ID",{ci:!0}],["RAILWAY","RAILWAY_PROJECT_ID"],["RAILWAY","RAILWAY_SERVICE_ID"],["DENO-DEPLOY","DENO_DEPLOYMENT_ID"],["FIREBASE_APP_HOSTING","FIREBASE_APP_HOSTING",{ci:!0}]];function p(){if(globalThis.process?.env)for(const e of B){const o=e[1]||e[0];if(globalThis.process?.env[o])return {name:e[0].toLowerCase(),...e[2]}}return globalThis.process?.env?.SHELL==="/bin/jsh"&&globalThis.process?.versions?.webcontainer?{name:"stackblitz",ci:!1}:{name:"",ci:!1}}const l=p(),d=l.name;function n(e){return e?e!=="false":!1}const I=globalThis.process?.platform||"",T=n(s.CI)||l.ci!==!1,R=n(globalThis.process?.stdout&&globalThis.process?.stdout.isTTY);n(s.DEBUG);const A=t==="test"||n(s.TEST);n(s.MINIMAL)||T||A||!R;const _=/^win/i.test(I);!n(s.NO_COLOR)&&(n(s.FORCE_COLOR)||(R||_)&&s.TERM!=="dumb"||T);const C=(globalThis.process?.versions?.node||"").replace(/^v/,"")||null;Number(C?.split(".")[0])||null;const y=globalThis.process||Object.create(null),c={versions:{}};new Proxy(y,{get(e,o){if(o==="env")return s;if(o in e)return e[o];if(o in c)return c[o]}});const L=globalThis.process?.release?.name==="node",a=!!globalThis.Bun||!!globalThis.process?.versions?.bun,D=!!globalThis.Deno,O=!!globalThis.fastly,S=!!globalThis.Netlify,N=!!globalThis.EdgeRuntime,P=globalThis.navigator?.userAgent==="Cloudflare-Workers",F=[[S,"netlify"],[N,"edge-light"],[P,"workerd"],[O,"fastly"],[D,"deno"],[a,"bun"],[L,"node"]];function G(){const e=F.find(o=>o[0]);if(e)return {name:e[1]}}const u=G();u?.name||"";
 
@@ -1840,7 +1845,7 @@ function contentHeading(body) {
   };
 }
 
-const _AwTdMEq0rq = defineNitroPlugin(async (nitro) => {
+const _4KURQMJPzS = defineNitroPlugin(async (nitro) => {
   const { cleanCachedContents } = await Promise.resolve().then(function () { return storage; });
   const storage$1 = useStorage();
   const unwatch = await storage$1.watch(async (event, key) => {
@@ -1857,19 +1862,19 @@ const _AwTdMEq0rq = defineNitroPlugin(async (nitro) => {
 
 const script = "\"use strict\";(()=>{const t=window,e=document.documentElement,c=[\"dark\",\"light\"],n=getStorageValue(\"localStorage\",\"nuxt-color-mode\")||\"system\";let i=n===\"system\"?u():n;const r=e.getAttribute(\"data-color-mode-forced\");r&&(i=r),l(i),t[\"__NUXT_COLOR_MODE__\"]={preference:n,value:i,getColorScheme:u,addColorScheme:l,removeColorScheme:d};function l(o){const s=\"\"+o+\"-mode\",a=\"\";e.classList?e.classList.add(s):e.className+=\" \"+s,a&&e.setAttribute(\"data-\"+a,o)}function d(o){const s=\"\"+o+\"-mode\",a=\"\";e.classList?e.classList.remove(s):e.className=e.className.replace(new RegExp(s,\"g\"),\"\"),a&&e.removeAttribute(\"data-\"+a)}function f(o){return t.matchMedia(\"(prefers-color-scheme\"+o+\")\")}function u(){if(t.matchMedia&&f(\"\").media!==\"not all\"){for(const o of c)if(f(\":\"+o).matches)return o}return\"light\"}})();function getStorageValue(t,e){switch(t){case\"localStorage\":return window.localStorage.getItem(e);case\"sessionStorage\":return window.sessionStorage.getItem(e);case\"cookie\":return getCookie(e);default:return null}}function getCookie(t){const c=(\"; \"+window.document.cookie).split(\"; \"+t+\"=\");if(c.length===2)return c.pop()?.split(\";\").shift()}";
 
-const _P34IiFVaB1 = (function(nitro) {
+const _s8pYeDr7oy = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
 });
 
 const plugins = [
-  _XMdFc5lIaB,
-_AwTdMEq0rq,
-_P34IiFVaB1
+  _y5EF7SDOlf,
+_4KURQMJPzS,
+_s8pYeDr7oy
 ];
 
-const _7GrjAW = eventHandler(async (event) => {
+const _PTVuSv = eventHandler(async (event) => {
   const { code, lang, theme: themeString, options: optionsStr } = getQuery$1(event);
   const theme = JSON.parse(themeString);
   const options = optionsStr ? JSON.parse(optionsStr) : {};
@@ -1877,7 +1882,7 @@ const _7GrjAW = eventHandler(async (event) => {
   return await highlighter(code, lang, theme, options);
 });
 
-const _TzPnef = defineEventHandler(async (event) => {
+const _Vg224x = defineEventHandler(async (event) => {
   const { getContentQuery } = await Promise.resolve().then(function () { return query; });
   const { serverQueryContent } = await Promise.resolve().then(function () { return storage; });
   const query$1 = getContentQuery(event);
@@ -1908,7 +1913,7 @@ const _TzPnef = defineEventHandler(async (event) => {
   return serverQueryContent(event, query$1).find();
 });
 
-const _DCsymb = defineEventHandler(async (event) => {
+const _WpVjtt = defineEventHandler(async (event) => {
   const { getContentIndex } = await Promise.resolve().then(function () { return contentIndex; });
   const { cacheStorage, serverQueryContent } = await Promise.resolve().then(function () { return storage; });
   const { content } = useRuntimeConfig();
@@ -1934,7 +1939,7 @@ const getPreview = (event) => {
   return { key };
 };
 
-const _APH9rc = defineEventHandler(async (event) => {
+const _d2k3xH = defineEventHandler(async (event) => {
   const { getContentQuery } = await Promise.resolve().then(function () { return query; });
   const { cacheStorage, serverQueryContent } = await Promise.resolve().then(function () { return storage; });
   const { createNav } = await Promise.resolve().then(function () { return navigation; });
@@ -1975,19 +1980,19 @@ const _APH9rc = defineEventHandler(async (event) => {
   return createNav(contents?.result || contents, configs);
 });
 
-const _lazy_vwbIcf = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_AHblGx = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
-  { route: '/__nuxt_error', handler: _lazy_vwbIcf, lazy: true, middleware: false, method: undefined },
-  { route: '/api/_mdc/highlight', handler: _7GrjAW, lazy: false, middleware: false, method: undefined },
-  { route: '/api/_content/query/:qid/**:params', handler: _TzPnef, lazy: false, middleware: false, method: "get" },
-  { route: '/api/_content/query/:qid', handler: _TzPnef, lazy: false, middleware: false, method: "get" },
-  { route: '/api/_content/query', handler: _TzPnef, lazy: false, middleware: false, method: "get" },
-  { route: '/api/_content/cache.json', handler: _DCsymb, lazy: false, middleware: false, method: "get" },
-  { route: '/api/_content/navigation/:qid/**:params', handler: _APH9rc, lazy: false, middleware: false, method: "get" },
-  { route: '/api/_content/navigation/:qid', handler: _APH9rc, lazy: false, middleware: false, method: "get" },
-  { route: '/api/_content/navigation', handler: _APH9rc, lazy: false, middleware: false, method: "get" },
-  { route: '/**', handler: _lazy_vwbIcf, lazy: true, middleware: false, method: undefined }
+  { route: '/__nuxt_error', handler: _lazy_AHblGx, lazy: true, middleware: false, method: undefined },
+  { route: '/api/_mdc/highlight', handler: _PTVuSv, lazy: false, middleware: false, method: undefined },
+  { route: '/api/_content/query/:qid/**:params', handler: _Vg224x, lazy: false, middleware: false, method: "get" },
+  { route: '/api/_content/query/:qid', handler: _Vg224x, lazy: false, middleware: false, method: "get" },
+  { route: '/api/_content/query', handler: _Vg224x, lazy: false, middleware: false, method: "get" },
+  { route: '/api/_content/cache.json', handler: _WpVjtt, lazy: false, middleware: false, method: "get" },
+  { route: '/api/_content/navigation/:qid/**:params', handler: _d2k3xH, lazy: false, middleware: false, method: "get" },
+  { route: '/api/_content/navigation/:qid', handler: _d2k3xH, lazy: false, middleware: false, method: "get" },
+  { route: '/api/_content/navigation', handler: _d2k3xH, lazy: false, middleware: false, method: "get" },
+  { route: '/**', handler: _lazy_AHblGx, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -3287,7 +3292,7 @@ const json = defineTransformer({
     let parsed;
     if (typeof content === "string") {
       if (_id.endsWith("json5")) {
-        parsed = (await import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/json5/lib/index.js').then((m) => m.default || m)).parse(content);
+        parsed = (await import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/json5/lib/index.js').then((m) => m.default || m)).parse(content);
       } else if (_id.endsWith("json")) {
         parsed = destr$1(content);
       }
@@ -3867,8 +3872,8 @@ function createShikiHighlighter({
   let shiki;
   let configs;
   async function _getShiki() {
-    const { createHighlighterCore, addClassToHast, isSpecialLang, isSpecialTheme } = await import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/shiki/dist/core.mjs');
-    const { transformerNotationDiff, transformerNotationErrorLevel, transformerNotationFocus, transformerNotationHighlight } = await import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/@shikijs/transformers/dist/index.mjs');
+    const { createHighlighterCore, addClassToHast, isSpecialLang, isSpecialTheme } = await import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/core.mjs');
+    const { transformerNotationDiff, transformerNotationErrorLevel, transformerNotationFocus, transformerNotationHighlight } = await import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/@shikijs/transformers/dist/index.mjs');
     const shiki2 = await createHighlighterCore({
       langs,
       themes,
@@ -4033,14 +4038,14 @@ function createShikiHighlighter({
 }
 
 const bundledLangs = {
-"rust": () => import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/shiki/dist/langs/rust.mjs'),
-"rs": () => import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/shiki/dist/langs/rust.mjs'),
+"rust": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/rust.mjs'),
+"rs": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/langs/rust.mjs'),
 };
 const bundledThemes = {
-"dracula": () => import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/shiki/dist/themes/dracula.mjs').then(r => r.default),
+"dracula": () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/themes/dracula.mjs').then(r => r.default),
 };
 const options = {"theme":{"default":"dracula"}};
-const engine = createWasmOnigEngine(() => import('file://C:/Users/jonat/Programacion/rustlings-web/node_modules/shiki/dist/wasm.mjs'));
+const engine = createWasmOnigEngine(() => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/node_modules/shiki/dist/wasm.mjs'));
 const highlighter = createShikiHighlighter({ bundledLangs, bundledThemes, options, getMdcConfigs, engine });
 
 const mdcHighlighter = /*#__PURE__*/Object.freeze({
@@ -4301,8 +4306,8 @@ const renderSSRHeadOptions = {"omitLineBreaks":false};
 
 globalThis.__buildAssetsURL = buildAssetsURL;
 globalThis.__publicAssetsURL = publicAssetsURL;
-const getClientManifest = () => import('file://C:/Users/jonat/Programacion/rustlings-web/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
-const getServerEntry = () => import('file://C:/Users/jonat/Programacion/rustlings-web/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
+const getClientManifest = () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/.nuxt/dist/server/client.manifest.mjs').then((r) => r.default || r).then((r) => typeof r === "function" ? r() : r);
+const getServerEntry = () => import('file:///home/wilovy/Dev/RustLangESP/rustlings-web/.nuxt/dist/server/server.mjs').then((r) => r.default || r);
 const getSSRStyles = lazyCachedFunction(() => Promise.resolve().then(function () { return styles$1; }).then((r) => r.default || r));
 const getSSRRenderer = lazyCachedFunction(async () => {
   const manifest = await getClientManifest();
