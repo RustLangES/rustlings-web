@@ -13,7 +13,7 @@ export default defineNuxtConfig({
       theme: {
         default: "dracula",
       },
-      langs: ['rust'] // instala el lang faltante
+      langs: ['rust', 'shell', 'viml', 'shellsession'] // instala el lang faltante
     },
   },
 });
