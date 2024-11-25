@@ -1,7 +1,9 @@
 # build output
 dist/
 # generated types
-.astro/
+.nuxt/
+.output/
+.vscode/
 
 # dependencies
 node_modules/

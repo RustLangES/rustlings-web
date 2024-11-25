@@ -56,7 +56,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <main :class="layoutStyle.main + ' h-[calc(100vh-20px)] m-[10px]'">
+  <main :class="layoutStyle.main + ' h-[calc(100vh-75px)] mt-0 m-[10px]'">
     <section v-bind="isMobile ? { class: 'mb-[10px] h-[calc(100vh-20px)]' } : { style: { width: `${sectionWidth}%` } }"
       class="bg-light-bg border border-stroke-color rounded-[10px] flex flex-col">
       <ContentDoc v-slot="{ doc }" class="flex-grow">
