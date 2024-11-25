@@ -1,15 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
 :root {
   --bg: #191918;
-  --fg: #FCFCFC;
+  --fg: #fcfcfc;
   --light-bg: #272726;
-  --editor-bg: #1A1B1A;
-  --stroke-color: #4F4E48;
+  --editor-bg: #1a1b1a;
+  --stroke-color: #4f4e48;
   --dark-yellow: #995614;
-  --yellow: #FFD776;
+  --yellow: #ffd776;
   --dark-fg: #151515;
 }
 
 body {
+  font-family: "Poppins", sans-serif;
   background-color: var(--bg);
   color: var(--fg);
 }
@@ -24,43 +27,47 @@ code {
 }
 
 /* Estilos generales para listas */
-ul, ol {
-  margin: 0 0 1em 1.5em;              /* Espaciado entre listas */
+ul,
+ol {
+  margin: 0 0 1em 1.5em; /* Espaciado entre listas */
   padding: 0;
-  list-style-position: outside;       /* Ajusta las viñetas/números */
-  color: var(--fg);                   /* Color del texto */
+  list-style-position: outside; /* Ajusta las viñetas/números */
+  color: var(--fg); /* Color del texto */
 }
 
 li {
-  margin-bottom: 0.5em;               /* Espaciado entre elementos */
-  line-height: 1.5;                   /* Mejora la legibilidad */
+  margin-bottom: 0.5em; /* Espaciado entre elementos */
+  line-height: 1.5; /* Mejora la legibilidad */
 }
 
 /* Personalización de listas desordenadas */
 ul > li::marker {
-  content: "• ";                      /* Cambia el estilo del marcador de las listas desordenadas */
-  color: var(--yellow);               /* Color de los marcadores */
+  content: "• "; /* Cambia el estilo del marcador de las listas desordenadas */
+  color: var(--yellow); /* Color de los marcadores */
 }
 
 /* Personalización de listas ordenadas */
 ol > li::marker {
-  content: none;                      /* Usa el comportamiento predeterminado del navegador */
-  color: var(--dark-yellow);          /* Color de los números */
-  font-weight: bold;                  /* Hace los números más prominentes */
+  content: none; /* Usa el comportamiento predeterminado del navegador */
+  color: var(--dark-yellow); /* Color de los números */
+  font-weight: bold; /* Hace los números más prominentes */
 }
 
 /* Estilos para listas anidadas */
-ul ul, ol ol, ul ol, ol ul {
-  margin-left: 1.5em;                 /* Aumenta el margen para la jerarquía */
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+  margin-left: 1.5em; /* Aumenta el margen para la jerarquía */
 }
 
 ul ul > li::marker {
-  content: "◦ ";                      /* Cambia el marcador de listas desordenadas anidadas */
+  content: "◦ "; /* Cambia el marcador de listas desordenadas anidadas */
   color: var(--stroke-color);
 }
 
 ol ol > li::marker {
-  content: none;                      /* Usa los números predeterminados */
+  content: none; /* Usa los números predeterminados */
   color: var(--stroke-color);
 }
 
