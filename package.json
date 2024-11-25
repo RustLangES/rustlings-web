@@ -2,6 +2,7 @@
   "name": "nuxt-app",
   "private": true,
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -23,6 +24,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
+    "wrangler": "^3.80.1"
     "@codemirror/buildhelper": "^1.0.2"
   }
 }
