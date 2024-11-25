@@ -15,7 +15,7 @@ definePageMeta({
       </div>
       <!-- TODO: Cambiar el direccionamiento cuando haya página para ver las lecciones -->
       <a
-        href="/01-hola_mundo"
+        href="/01-introduccion"
         class="px-8 py-2 border rounded-lg hover:border-white hover:-translate-y-1 hover:scale-110 cursor-pointer duration-300 border-stroke-color"
         >Aprender</a
       >
