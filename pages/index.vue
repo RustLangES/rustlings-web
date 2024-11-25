@@ -54,7 +54,8 @@
           </p>
           <a
             class="mt-8 px-4 py-1 border rounded-lg hover:border-white hover:-translate-y-1 hover:scale-110 cursor-pointer duration-300 border-stroke-color font-bold flex items-center gap-1 w-max text-lg bg-light-bg"
-            href=""
+            href="https://discord.com/channels/778674594856960012/1292726289479893044"
+            target="_blank"
             ><img
               class="aspect-square h-6"
               src="/discord-mark-white.svg"
