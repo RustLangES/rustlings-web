@@ -65,7 +65,7 @@ jobs:
       - name: Install Deps
         run: bun install
       - name: Build
-        run: bun run build
+        run: bun run build --preset=cloudflare_pages
 
       # Deploy steps
       - name: Deploy
