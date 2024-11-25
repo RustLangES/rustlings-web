@@ -12,8 +12,14 @@ on:
       - ".github/workflows/deploy.yml"
       - "package.json"
       - "tsconfig.json"
-      - "astro.config.ts"
-      - "src/**"
+      - "nuxt.config.ts"
+      - "tailwind.config.js"
+      - "app.vue"
+      - "components/**"
+      - "content/**"
+      - "public/**"
+      - "layouts/**"
+      - "server/**"
 
 jobs:
   deploy:
@@ -26,7 +32,7 @@ jobs:
         run: bun install
 
       - name: Build
-        run: bun run build
+        run: bunx nuxi build --preset=cloudflare_pages
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
