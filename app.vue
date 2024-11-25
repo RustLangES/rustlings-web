@@ -1,7 +1,6 @@
-<script setup lang="ts">
-import "~/assets/css/app.css";
-</script>
+<script setup lang="ts"></script>
 
 <template>
+  <NuxtLayout />
   <NuxtPage />
 </template>
