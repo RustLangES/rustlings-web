@@ -24,7 +24,7 @@
     "vue-router": "latest"
   },
   "devDependencies": {
-    "wrangler": "^3.80.1"
+    "wrangler": "^3.80.1",
     "@codemirror/buildhelper": "^1.0.2"
   }
 }
