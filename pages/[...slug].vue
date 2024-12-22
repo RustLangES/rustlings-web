@@ -65,7 +65,7 @@ onMounted(() => {
         </div>
         <div buttons class="flex justify-between m-2.5 mt-auto">
           <a
-            :href="doc && doc.previousPath ? `/${doc.previousPath}` : undefined"
+            :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'"
             :class="{
               'pointer-events-none text-gray-400': !doc || !doc.previousPath,
             }"
@@ -75,7 +75,7 @@ onMounted(() => {
           </a>
 
           <a
-            :href="doc && doc.nextPath ? `/${doc.nextPath}` : undefined"
+            :href="doc && doc.nextPath ? `/${doc.nextPath}` : '/'"
             :class="{
               'pointer-events-none text-gray-400': !doc || !doc.nextPath,
             }"

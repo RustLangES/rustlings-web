@@ -9,7 +9,7 @@ defineProps({
   },
   filename: {
     type: String,
-    default: null,
+    default: "main.rs",
   },
   class: {
     type: String,
