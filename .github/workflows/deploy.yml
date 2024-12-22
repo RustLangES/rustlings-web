@@ -27,12 +27,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v1
       - name: Install Deps
-        run: bun install
+        run: npm install
 
       - name: Build
-        run: bunx nuxi build --preset=cloudflare_pages
+        run: npm run build --preset=cloudflare_pages
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.PROJECT_NAME}}-dist
+          path: ./dist/
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
@@ -42,7 +46,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name "${{ env.PROJECT_NAME }}"
+          command: pages deploy ./.output --project-name "${{ env.PROJECT_NAME }}"
           # secrets: |
           #   YOUR_SECRET
           #   YOUR_OTHER_SECRET
