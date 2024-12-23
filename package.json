@@ -10,6 +10,8 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.18.4",
+    "@codemirror/lang-rust": "^6.0.1",
     "@codemirror/language": "^6.10.4",
     "@lezer/rust": "^1.0.2",
     "@nuxt/content": "^2.13.4",
