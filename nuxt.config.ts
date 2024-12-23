@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "@nuxt/content",
     "@nuxtjs/tailwindcss",
     "nitro-cloudflare-dev",
+    'nuxt-clarity-analytics',
   ],
   content: {
     highlight: {

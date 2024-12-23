@@ -19,12 +19,13 @@
     "codemirror": "^6.0.1",
     "lucide-vue-next": "^0.460.0",
     "nuxt": "^3.14.1592",
+    "nuxt-clarity-analytics": "^0.0.9",
     "vue": "latest",
     "vue-router": "latest"
   },
   "devDependencies": {
-    "wrangler": "^3.80.1",
+    "@codemirror/buildhelper": "^1.0.2",
     "nitro-cloudflare-dev": "^0.2.1",
-    "@codemirror/buildhelper": "^1.0.2"
+    "wrangler": "^3.80.1"
   }
 }
