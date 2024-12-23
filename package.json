@@ -7,8 +7,7 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "@codemirror/language": "^6.10.4",
@@ -25,6 +24,7 @@
   },
   "devDependencies": {
     "wrangler": "^3.80.1",
+    "nitro-cloudflare-dev": "^0.2.1",
     "@codemirror/buildhelper": "^1.0.2"
   }
 }

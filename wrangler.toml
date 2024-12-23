@@ -1,11 +1,4 @@
 name = "rustlings"
 main = "./.output/server/index.mjs"
-compatibility_date = "2024-03-14"
+compatibility_date = "2024-12-18"
 compatibility_flags = ["nodejs_compat"]
-
-rules = [
-  { type = "ESModule", globs = ["**/*.js", "**/*.mjs"]},
-]
-
-[site]
-bucket = ".output/public"

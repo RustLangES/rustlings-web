@@ -40,7 +40,7 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build --preset=cloudflare_pages
+        run: npm run build
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
@@ -50,7 +50,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./.output --project-name "${{ env.PROJECT_NAME }}"
+          command: pages deploy ./dist --project-name "${{ env.PROJECT_NAME }}"
           # secrets: |
           #   YOUR_SECRET
           #   YOUR_OTHER_SECRET

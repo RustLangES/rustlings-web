@@ -2,12 +2,13 @@
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
+  nitro: { preset: "cloudflare-pages" },
   modules: [
     "@nuxtjs/color-mode",
     "@nuxt/content",
     "@nuxtjs/tailwindcss",
+    "nitro-cloudflare-dev",
   ],
-
   content: {
     highlight: {
       theme: {
