@@ -24,6 +24,7 @@ export const gruvboxDarkTheme = EditorView.theme(
   {
     "&": {
       color: ivory,
+      fontSize: "16px",
     },
 
     ".cm-content": {
@@ -89,7 +90,7 @@ export const gruvboxDarkTheme = EditorView.theme(
       },
     },
   },
-  { dark: true }
+{ dark: true }
 );
 
 export const gruvboxDarkHighlightStyle = HighlightStyle.define([
