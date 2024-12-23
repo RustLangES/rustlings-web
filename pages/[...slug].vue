@@ -64,23 +64,15 @@ onMounted(() => {
           <ContentRenderer :value="doc" />
         </div>
         <div buttons class="flex justify-between m-2.5 mt-auto">
-          <a
-            :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'"
-            :class="{
-              'pointer-events-none text-gray-400': !doc || !doc.previousPath,
-            }"
-            class="flex items-center"
-          >
+          <a :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'" :class="{
+            'pointer-events-none text-gray-400': !doc || !doc.previousPath,
+          }" class="flex items-center">
             <CircleChevronLeft :size="30" />
           </a>
 
-          <a
-            :href="doc && doc.nextPath ? `/${doc.nextPath}` : '/'"
-            :class="{
-              'pointer-events-none text-gray-400': !doc || !doc.nextPath,
-            }"
-            class="flex items-center"
-          >
+          <a :href="doc && doc.nextPath ? `/${doc.nextPath}` : '/'" :class="{
+            'pointer-events-none text-gray-400': !doc || !doc.nextPath,
+          }" class="flex items-center">
             <CircleChevronRight :size="30" />
           </a>
         </div>
@@ -109,6 +101,7 @@ onMounted(() => {
         </button>
       </div>
       <CodeMirror v-if="isCoding" v-model:code="codeContent" />
+      <!-- TODO: Make a loader -->
       <div v-else class="terminal-output">
         <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>
         <pre class="text-pretty">{{ terminalResponse }}</pre>
