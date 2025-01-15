@@ -60,12 +60,21 @@ jobs:
             | :--- | :----- | :------ |
             | ${{env.BRANCH_NAME}}     |  🔨 Building ([Logs](${{env.ACTION_RUN}}))  | waiting... |
 
-      # Build Rust Page
-      - uses: oven-sh/setup-bun@v1
+      # Build Page
+      - name: NodeJS Cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.OS }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.OS }}-npm-cache-
+
       - name: Install Deps
-        run: bun install
+        run: npm install
       - name: Build
-        run: bun run build --preset=cloudflare_pages
+        env:
+          NUXT_CLARITY_ID: ${{ secrets.CLARITY_ID }}
+        run: npm run build --preset=cloudflare_pages
 
       # Deploy steps
       - name: Deploy
