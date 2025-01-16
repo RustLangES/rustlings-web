@@ -6,8 +6,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "cf-typegen": "wrangler types"
+    "generate": "nuxt generate"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.4",
@@ -26,8 +25,6 @@
     "vue-router": "latest"
   },
   "devDependencies": {
-    "@codemirror/buildhelper": "^1.0.2",
-    "nitro-cloudflare-dev": "^0.2.1",
-    "wrangler": "^3.80.1"
+    "@codemirror/buildhelper": "^1.0.2"
   }
 }
