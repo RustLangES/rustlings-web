@@ -19,6 +19,7 @@
     "@vueuse/core": "^11.3.0",
     "codemirror": "^6.0.1",
     "lucide-vue-next": "^0.460.0",
+    "nitro-cloudflare-dev": "^0.2.2",
     "nuxt": "^3.14.1592",
     "nuxt-clarity-analytics": "^0.0.9",
     "vue": "latest",

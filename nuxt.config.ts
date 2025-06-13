@@ -2,13 +2,19 @@
 export default defineNuxtConfig({
   ssr: false,
   devtools: { enabled: false },
-  nitro: { preset: "cloudflare-pages" },
+  nitro: {
+    preset: "cloudflare_module",
+    cloudflare: {
+      deployConfig: true,
+      nodeCompat: true
+    },
+  },
 
   modules: [
     "@nuxtjs/color-mode",
     "@nuxt/content",
     "@nuxtjs/tailwindcss",
-    //"nitro-cloudflare-dev",
+    "nitro-cloudflare-dev",
     "nuxt-clarity-analytics",
   ],
 
@@ -21,5 +27,5 @@ export default defineNuxtConfig({
     },
   },
 
-  compatibilityDate: "2025-01-16",
+  compatibilityDate: "2025-06-10",
 });

@@ -50,9 +50,10 @@ jobs:
           # YOUR_SECRET: ${{ secrets.YOUR_SECRET }}
           # YOUR_OTHER_SECRET: ${{ secrets.YOUR_OTHER_SECRET }}
         with:
+          wranglerVersion: "4.19.1"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name "${{ env.PROJECT_NAME }}"
+          command: deploy
           # secrets: |
           #   YOUR_SECRET
           #   YOUR_OTHER_SECRET
