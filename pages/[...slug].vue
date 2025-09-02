@@ -2,18 +2,33 @@
 import { ref, onMounted, computed } from 'vue';
 import { CircleChevronRight, CircleChevronLeft, File, Terminal, Play, GripVertical } from "lucide-vue-next";
 import { mdWidth, sectionMinWidth, sectionMaxWidth } from '~/consts/consts.ts';
-import { getCodeResponse } from '~/helpers/getCodeResponse';
+import { getCodeResponse, type RustPlaygroundResponse } from '~/helpers/getCodeResponse';
+
+const route = useRoute()
+const { navigation, page, surround, globals } = useContent()
+
+console.log(route.path)
+const contentQuery = await queryContent(route.path).findOne();
+
 
 const isCoding = ref(true);
 const isCompiling = ref(false);
 const sectionWidth = ref(50);
 const isDragging = ref(false);
 const isMobile = ref(false);
-const codeContent = ref("fn main(){\n\t\n}");
-const terminalResponse = ref('');
+const codeContent = ref(contentQuery.initialCode ?? "fn main(){\n\t\n}");
+const terminalResponse = ref<RustPlaygroundResponse | null>(null);
 
 const checkIfMobile = () => {
   isMobile.value = window.innerWidth <= mdWidth;
+};
+
+const couldClickInNextButton = (doc: any): boolean => {
+  if(doc && doc.expectedResponse) {
+    return terminalResponse.value?.status === 200 && doc.expectedResponse === terminalResponse.value?.body?.result;
+  }
+
+  return doc && doc.nextPath
 };
 
 const handleMouseMove = (event: MouseEvent) => {
@@ -35,14 +50,10 @@ const layoutStyle = computed(() => {
 
 async function getResponse() {
   const payload = {
-    language: "rust",
-    version: "1.68.2",
-    files: [
-      {
-        name: "main.rs",
-        content: codeContent.value,
-      },
-    ],
+    edition: "2024",
+    optimize: "0",
+    version: "stable",
+    code: codeContent.value,
   };
   terminalResponse.value = await getCodeResponse(payload);
 }
@@ -56,58 +67,59 @@ onMounted(() => {
 </script>
 
 <template>
-  <main :class="layoutStyle.main + ' h-[calc(100vh-75px)] mt-0 m-[10px]'">
-    <section v-bind="isMobile ? { class: 'mb-[10px] h-[calc(100vh-20px)]' } : { style: { width: `${sectionWidth}%` } }"
-      class="bg-light-bg border border-stroke-color rounded-[10px] flex flex-col">
-      <ContentDoc v-slot="{ doc }" class="flex-grow">
-        <div class="scroll-container flex-grow m-2.5 overflow-auto">
-          <ContentRenderer :value="doc" />
-        </div>
-        <div buttons class="flex justify-between m-2.5 mt-auto">
-          <a :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'" :class="{
-            'pointer-events-none text-gray-400': !doc || !doc.previousPath,
-          }" class="flex items-center">
-            <CircleChevronLeft :size="30" />
-          </a>
+  <ContentDoc v-slot="{ doc }" class="flex-grow">
+    <main :class="layoutStyle.main + ' h-[calc(100vh-75px)] mt-0 m-[10px]'">
+      <section v-bind="isMobile ? { class: 'mb-[10px] h-[calc(100vh-20px)]' } : { style: { width: `${sectionWidth}%` } }"
+        class="bg-light-bg border border-stroke-color rounded-[10px] flex flex-col">
+          <div class="scroll-container flex-grow m-2.5 overflow-auto">
+            <ContentRenderer :value="doc" />
+          </div>
+          <div buttons class="flex justify-between m-2.5 mt-auto">
+            <a :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'" :class="{
+              'pointer-events-none text-gray-400': !doc || !doc.previousPath,
+            }" class="flex items-center">
+              <CircleChevronLeft :size="30" />
+            </a>
+            
+            <a :href="couldClickInNextButton(doc) ? `/${doc.nextPath}` : '/'" :class="{
+              'pointer-events-none text-gray-400': !couldClickInNextButton(doc),
+            }" class="flex items-center"
+            >
+              <CircleChevronRight :size="30" />
+            </a>
+          </div>
+      </section>
 
-          <a :href="doc && doc.nextPath ? `/${doc.nextPath}` : '/'" :class="{
-            'pointer-events-none text-gray-400': !doc || !doc.nextPath,
-          }" class="flex items-center">
-            <CircleChevronRight :size="30" />
-          </a>
-        </div>
-      </ContentDoc>
-    </section>
-
-    <div v-if="!isMobile" class="cursor-col-resize w-[10px] flex flex-col justify-center items-center"
-      @mousedown="isDragging = true">
-      <GripVertical :size="12" />
-    </div>
-
-    <section
-      v-bind="isMobile ? { class: 'mt-[10px] h-[calc(100vh-20px)]' } : { style: { width: `calc(100% - ${sectionWidth}%)` } }"
-      class="bg-light-bg p-[10px] border border-stroke-color rounded-[10px]">
-      <div class="flex justify-between border border-stroke-color rounded-t-[10px] p-2 mb-1">
-        <div class="flex gap-4">
-          <button @click="isCoding = true">
-            <File />
-          </button>
-          <button @click="isCoding = false">
-            <Terminal />
-          </button>
-        </div>
-        <button @click="isCoding = false, isCompiling = true, getResponse()">
-          <Play />
-        </button>
+      <div v-if="!isMobile" class="cursor-col-resize w-[10px] flex flex-col justify-center items-center"
+        @mousedown="isDragging = true">
+        <GripVertical :size="12" />
       </div>
-      <CodeMirror v-if="isCoding" v-model:code="codeContent" />
-      <!-- TODO: Make a loader -->
-      <div v-else class="terminal-output">
-        <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>
-        <pre class="text-pretty">{{ terminalResponse }}</pre>
-      </div>
-    </section>
-  </main>
+
+      <section
+        v-bind="isMobile ? { class: 'mt-[10px] h-[calc(100vh-20px)]' } : { style: { width: `calc(100% - ${sectionWidth}%)` } }"
+        class="bg-light-bg p-[10px] border border-stroke-color rounded-[10px]">
+        <div class="flex justify-between border border-stroke-color rounded-t-[10px] p-2 mb-1">
+          <div class="flex gap-4">
+            <button @click="isCoding = true">
+              <File />
+            </button>
+            <button @click="isCoding = false">
+              <Terminal />
+            </button>
+          </div>
+          <button @click="isCoding = false, isCompiling = true, getResponse()">
+            <Play />
+          </button>
+        </div>
+        <CodeMirror v-if="isCoding" v-model:code="codeContent" />
+        <!-- TODO: Make a loader -->
+        <div v-else class="terminal-output">
+          <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>
+          <pre class="text-pretty">{{ terminalResponse?.body?.result }}</pre>
+        </div>
+      </section>
+    </main>
+  </ContentDoc>
 </template>
 
 <style scoped>

@@ -18,5 +18,8 @@ export async function hitApi(
     },
     body: method !== "GET" ? JSON.stringify(payload) : null,
   });
-  return response.json();
+  return {
+    body: await response.json(),
+    status: response.status,
+  };
 }
