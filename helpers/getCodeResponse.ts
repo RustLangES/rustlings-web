@@ -1,13 +1,18 @@
 import { hitApi } from "~/services/api";
 
-export async function getCodeResponse(payload: Object): Promise<Object> {
+export type RustPlaygroundResponse = {
+  body: {
+    result: string,
+    error?: string
+  },
+  status: number
+}
+
+export async function getCodeResponse(payload: Object): Promise<RustPlaygroundResponse> {
   const response = await hitApi(
     "POST",
-    "https://emkc.org/api/v2/piston/execute",
+    "https://play.rust-lang.org/evaluate.json",
     payload,
   );
-  if (response.run.code !== 0) {
-    return response.run.stderr;
-  }
-  return response.run.stdout;
+  return response;
 }

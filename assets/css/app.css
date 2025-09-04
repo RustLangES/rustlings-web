@@ -23,15 +23,15 @@ body {
 
 section>div>div>h1 {
   font-size: 1.5rem;
-  margin: 0.2rem auto;
+  margin: 0.5rem auto;
 }
 section>div>div>h2 {
   font-size: 1.3rem;
-  margin: 0.2rem auto;
+  margin: 0.5rem auto;
 }
 section>div>div>h3 {
   font-size: 1.2rem;
-  margin: 0.2rem auto;
+  margin: 0.5rem auto;
 }
 section>div>div>h4 {
   font-size: 1.1rem;
@@ -46,9 +46,17 @@ section>div>div>h6 {
   margin: 0.2rem auto;
 }
 
+section>div>div{
+  gap: 0.5rem;
+}
+section>div>div>p>code{
+  padding: 0.2rem;
+}
+
 .NOTE{
   border-left: 3px solid var(--note-bg);
   margin: 0.5rem auto;
+  width: 100%;
   .title{
     font-weight: 500;
   }
@@ -125,6 +133,11 @@ li del {
 li strong {
   font-weight: bold;
   color: var(--yellow);
+}
+
+hr {
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 /* FIN DE LOS ESTILOS DE MD */

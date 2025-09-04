@@ -17,8 +17,9 @@ export default defineNuxtConfig({
     "nitro-cloudflare-dev",
     "nuxt-clarity-analytics",
   ],
-
+  
   content: {
+    documentDriven: true,
     highlight: {
       theme: {
         default: "dracula",
