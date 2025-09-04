@@ -5,11 +5,7 @@ import { mdWidth, sectionMinWidth, sectionMaxWidth } from '~/consts/consts.ts';
 import { getCodeResponse, type RustPlaygroundResponse } from '~/helpers/getCodeResponse';
 
 const route = useRoute()
-const { navigation, page, surround, globals } = useContent()
-
-console.log(route.path)
 const contentQuery = await queryContent(route.path).findOne();
-
 
 const isCoding = ref(true);
 const isCompiling = ref(false);
@@ -75,18 +71,18 @@ onMounted(() => {
             <ContentRenderer :value="doc" class="flex flex-wrap flex-col" />
           </div>
           <div buttons class="flex justify-between m-2.5 mt-auto">
-            <a :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'" :class="{
+            <NuxtLink :to="doc && doc.previousPath ? `/${doc.previousPath}` : '/'" :class="{
               'pointer-events-none text-gray-400': !doc || !doc.previousPath,
             }" class="flex items-center">
               <CircleChevronLeft :size="30" />
-            </a>
+            </NuxtLink>
             
-            <a :href="couldClickInNextButton(doc) ? `/${doc.nextPath}` : '/'" :class="{
+            <NuxtLink :to="couldClickInNextButton(doc) ? `/${doc.nextPath}` : '/'" :class="{
               'pointer-events-none text-gray-400': !couldClickInNextButton(doc),
             }" class="flex items-center"
             >
               <CircleChevronRight :size="30" />
-            </a>
+            </NuxtLink>
           </div>
       </section>
 

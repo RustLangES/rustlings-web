@@ -81,9 +81,10 @@ jobs:
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
+          wranglerVersion: "4.19.1"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy ./dist --project-name "${{ env.PROJECT_NAME }}" --branch "${{ env.BRANCH_NAME }}"
+          command: deploy --project-name "${{ env.PROJECT_NAME }}" --branch "${{ env.BRANCH_NAME }}"
 
       - name: Extract hash from CF url Deploy
         run: |
