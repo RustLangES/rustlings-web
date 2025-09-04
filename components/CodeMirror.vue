@@ -3,6 +3,8 @@ import { onMounted, ref } from 'vue';
 import { basicSetup, EditorView } from 'codemirror';
 import { gruvbox } from '../helpers/codemirror/theme.ts';
 import { rust } from '../helpers/codemirror/config.ts';
+import {keymap, lineNumbers} from "@codemirror/view"
+import {indentWithTab} from "@codemirror/commands"
 
 const props = defineProps<{
   code?: string;
@@ -19,6 +21,8 @@ onMounted(() => {
       basicSetup,
       gruvbox,
       rust(),
+      keymap.of([indentWithTab]),
+
       EditorView.updateListener.of((update) => {
         if (update.docChanged) {
           const newCode = update.state.doc.toString();

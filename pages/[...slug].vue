@@ -72,7 +72,7 @@ onMounted(() => {
       <section v-bind="isMobile ? { class: 'mb-[10px] h-[calc(100vh-20px)]' } : { style: { width: `${sectionWidth}%` } }"
         class="bg-light-bg border border-stroke-color rounded-[10px] flex flex-col">
           <div class="scroll-container flex-grow m-2.5 overflow-auto">
-            <ContentRenderer :value="doc" />
+            <ContentRenderer :value="doc" class="flex flex-wrap flex-col" />
           </div>
           <div buttons class="flex justify-between m-2.5 mt-auto">
             <a :href="doc && doc.previousPath ? `/${doc.previousPath}` : '/'" :class="{
@@ -100,18 +100,18 @@ onMounted(() => {
         class="bg-light-bg p-[10px] border border-stroke-color rounded-[10px]">
         <div class="flex justify-between border border-stroke-color rounded-t-[10px] p-2 mb-1">
           <div class="flex gap-4">
-            <button @click="isCoding = true">
-              <File />
+            <button @click="isCoding = true" :class="{ 'bg-yellow/15 hover:bg-yellow/30': isCoding }" class="flex flex-row items-center justify-center gap-2 bg-neutral-500/40 p-1 px-2 rounded-md hover:bg-neutral-500/70">
+              <File :size="20" /> Código
             </button>
-            <button @click="isCoding = false">
-              <Terminal />
+            <button @click="isCoding = false" :class="{ 'bg-yellow/15 hover:bg-yellow/30': !isCoding }" class="flex flex-row items-center justify-center gap-2 bg-neutral-500/40 p-1 px-2 rounded-md hover:bg-neutral-500/70" >
+              <Terminal /> Output
             </button>
           </div>
-          <button @click="isCoding = false, isCompiling = true, getResponse()">
-            <Play />
+          <button @click="isCoding = false, isCompiling = true, getResponse()"  class="flex flex-row items-center justify-center gap-2 bg-neutral-500/40 p-1 px-2 rounded-md hover:bg-neutral-500/70" >
+            <Play /> Ejecutar
           </button>
         </div>
-        <CodeMirror v-if="isCoding" v-model:code="codeContent" />
+        <CodeMirror v-if="isCoding" v-model:code="codeContent"/>
         <!-- TODO: Make a loader -->
         <div v-else class="terminal-output">
           <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>

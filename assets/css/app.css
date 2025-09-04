@@ -46,9 +46,17 @@ section>div>div>h6 {
   margin: 0.2rem auto;
 }
 
+section>div>div{
+  gap: 0.5rem;
+}
+section>div>div>p>code{
+  padding: 0.2rem;
+}
+
 .NOTE{
   border-left: 3px solid var(--note-bg);
   margin: 0.5rem auto;
+  width: 100%;
   .title{
     font-weight: 500;
   }
