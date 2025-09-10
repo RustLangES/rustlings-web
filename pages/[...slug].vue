@@ -3,9 +3,12 @@ import { ref, onMounted, computed } from 'vue';
 import { CircleChevronRight, CircleChevronLeft, File, Terminal, Play, GripVertical } from "lucide-vue-next";
 import { mdWidth, sectionMinWidth, sectionMaxWidth } from '~/consts/consts.ts';
 import { getCodeResponse, type RustPlaygroundResponse } from '~/helpers/getCodeResponse';
+import type { ParsedContent } from '@nuxt/content';
 
 const route = useRoute()
 const contentQuery = await queryContent(route.path).findOne();
+
+console.log(contentQuery);
 
 const isCoding = ref(true);
 const isCompiling = ref(false);
@@ -19,8 +22,17 @@ const checkIfMobile = () => {
   isMobile.value = window.innerWidth <= mdWidth;
 };
 
-const couldClickInNextButton = (doc: any): boolean => {
+const canBeSkipped = (doc: ParsedContent) => {
+  return Number(localStorage.getItem("step") ?? 0) > Number(doc.order);
+};
+
+const couldClickInNextButton = (doc: ParsedContent): boolean => {
+  if(canBeSkipped(doc)) {
+    return doc && doc.nextPath;
+  }
+
   if(doc && doc.expectedResponse) {
+    localStorage.setItem("step", doc.order);
     return terminalResponse.value?.status === 200 && doc.expectedResponse === terminalResponse.value?.body?.result;
   }
 
@@ -79,8 +91,9 @@ onMounted(() => {
             
             <NuxtLink :to="couldClickInNextButton(doc) ? `/${doc.nextPath}` : '/'" :class="{
               'pointer-events-none text-gray-400': !couldClickInNextButton(doc),
-            }" class="flex items-center"
+            }" class="flex items-center gap-2 justify-center"
             >
+              <span v-if="canBeSkipped(doc)" class="text-green-200 font-semibold p-2 rounded bg-teal-400/30">Solucionado previamente</span>
               <CircleChevronRight :size="30" />
             </NuxtLink>
           </div>
