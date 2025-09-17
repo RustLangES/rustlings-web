@@ -100,9 +100,14 @@ ul > li::marker {
 
 /* Personalización de listas ordenadas */
 ol > li::marker {
-  content: none; /* Usa el comportamiento predeterminado del navegador */
-  color: var(--dark-yellow); /* Color de los números */
+  color: var(--yellow); /* Color de los números */
   font-weight: bold; /* Hace los números más prominentes */
+}
+
+ol {
+  list-style: initial;
+  list-style-type: decimal;
+  @apply list-decimal;
 }
 
 /* Estilos para listas anidadas */
@@ -115,7 +120,7 @@ ol ul {
 
 ul ul > li::marker {
   content: "◦ "; /* Cambia el marcador de listas desordenadas anidadas */
-  color: var(--stroke-color);
+  color: var(--yellow);
 }
 
 ol ol > li::marker {
