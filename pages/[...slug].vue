@@ -22,8 +22,14 @@ const checkIfMobile = () => {
   isMobile.value = window.innerWidth <= mdWidth;
 };
 
+const isSolvedNow = (doc: ParsedContent) => {
+  if(!doc) return false;
+  const step = Number(localStorage.getItem("step") ?? 0);
+  return step == Number(doc.order);
+};
+
 const canBeSkipped = (doc: ParsedContent) => {
-  return Number(localStorage.getItem("step") ?? 0) > Number(doc.order);
+  return Number(localStorage.getItem("step") ?? 0) >= Number(doc.order);
 };
 
 const couldClickInNextButton = (doc: ParsedContent): boolean => {
@@ -31,9 +37,49 @@ const couldClickInNextButton = (doc: ParsedContent): boolean => {
     return doc && doc.nextPath;
   }
 
-  if(doc && doc.expectedResponse) {
-    localStorage.setItem("step", doc.order);
-    return terminalResponse.value?.status === 200 && doc.expectedResponse === terminalResponse.value?.body?.result;
+  if(doc && (doc.expectedResponse || doc.tests) ) {
+    const compiled_successfully = terminalResponse.value?.status === 200 ;
+
+    if (compiled_successfully && doc.expectedResponse) {
+      const expectedResponse = doc.expectedResponse === terminalResponse.value?.body?.result
+      
+      if (expectedResponse) {
+        localStorage.setItem("step", doc.order);
+      } else {
+        return false;
+      }
+    }
+    console.log("tests", doc.tests);
+
+    if (compiled_successfully && doc.tests) {
+      const tests = doc.tests;
+      let evaluation = true;
+
+      tests.forEach((test:string) => {
+        if (test.startsWith("should be contain ")) {
+          const content = test.replace("should be contain ", "").trim();
+          const expresionsToTest = content.split("`").filter((exp) => exp !== " " && exp !== "");
+          if(expresionsToTest.length === 0) return;
+          let aux = false;
+
+          expresionsToTest.forEach((exp) => {
+            if (terminalResponse.value?.body?.result.includes(exp)) {
+              aux = true;
+            }
+          })
+
+          evaluation = evaluation && aux;
+        }
+      });
+      console.log("evaluation", evaluation);
+      if (evaluation) {
+        localStorage.setItem("step", doc.order);
+      } else {
+        return false;
+      }
+    }
+
+    return compiled_successfully;
   }
 
   return doc && doc.nextPath
@@ -93,7 +139,8 @@ onMounted(() => {
               'pointer-events-none text-gray-400': !couldClickInNextButton(doc),
             }" class="flex items-center gap-2 justify-center"
             >
-              <span v-if="canBeSkipped(doc)" class="text-green-200 font-semibold p-2 rounded bg-teal-400/30">Solucionado previamente</span>
+              <span v-if="canBeSkipped(doc) && !isSolvedNow(doc)" class="text-green-200 font-semibold p-2 rounded bg-teal-400/30">Solucionado previamente</span>
+              <span v-if="canBeSkipped(doc) && isSolvedNow(doc)" class="text-green-200 font-semibold p-2 rounded bg-teal-400/30">Solucionado</span>
               <CircleChevronRight :size="30" />
             </NuxtLink>
           </div>
