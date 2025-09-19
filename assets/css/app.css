@@ -24,26 +24,32 @@ body {
 section>div>div>h1 {
   font-size: 1.5rem;
   margin: 0.5rem auto;
+  width: 100%;
 }
 section>div>div>h2 {
   font-size: 1.3rem;
   margin: 0.5rem auto;
+  width: 100%;
 }
 section>div>div>h3 {
   font-size: 1.2rem;
   margin: 0.5rem auto;
+  width: 100%;
 }
 section>div>div>h4 {
   font-size: 1.1rem;
   margin: 0.2rem auto;
+  width: 100%;
 }
 section>div>div>h5 {
   font-size: 1rem;
   margin: 0.2rem auto;
+  width: 100%;
 }
 section>div>div>h6 {
   font-size: 0.5rem;
   margin: 0.2rem auto;
+  width: 100%;
 }
 
 section>div>div{
@@ -94,9 +100,14 @@ ul > li::marker {
 
 /* Personalización de listas ordenadas */
 ol > li::marker {
-  content: none; /* Usa el comportamiento predeterminado del navegador */
-  color: var(--dark-yellow); /* Color de los números */
+  color: var(--yellow); /* Color de los números */
   font-weight: bold; /* Hace los números más prominentes */
+}
+
+ol {
+  list-style: initial;
+  list-style-type: decimal;
+  @apply list-decimal;
 }
 
 /* Estilos para listas anidadas */
@@ -109,7 +120,7 @@ ol ul {
 
 ul ul > li::marker {
   content: "◦ "; /* Cambia el marcador de listas desordenadas anidadas */
-  color: var(--stroke-color);
+  color: var(--yellow);
 }
 
 ol ol > li::marker {
