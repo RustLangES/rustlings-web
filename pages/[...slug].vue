@@ -2,7 +2,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { CircleChevronRight, CircleChevronLeft, File, Terminal, Play, GripVertical } from "lucide-vue-next";
 import { mdWidth, sectionMinWidth, sectionMaxWidth } from '~/consts/consts.ts';
-import { getCodeResponse, type RustPlaygroundResponse } from '~/helpers/getCodeResponse';
+import { useRustPlayground } from '~/composables/useRustPlayground';
 import type { ParsedContent } from '@nuxt/content';
 
 const route = useRoute()
@@ -11,12 +11,11 @@ const contentQuery = await queryContent(route.path).findOne();
 console.log(contentQuery);
 
 const isCoding = ref(true);
-const isCompiling = ref(false);
 const sectionWidth = ref(50);
 const isDragging = ref(false);
 const isMobile = ref(false);
 const codeContent = ref(contentQuery.initialCode ?? "fn main(){\n\t\n}");
-const terminalResponse = ref<RustPlaygroundResponse | null>(null);
+const { executeCode, isExecuting, formattedOutput, terminalResponse } = useRustPlayground();
 
 const checkIfMobile = () => {
   isMobile.value = window.innerWidth <= mdWidth;
@@ -38,10 +37,10 @@ const couldClickInNextButton = (doc: ParsedContent): boolean => {
   }
 
   if(doc && (doc.expectedResponse || doc.tests) ) {
-    const compiled_successfully = terminalResponse.value?.status === 200 ;
+    const compiled_successfully = terminalResponse.value?.success ?? false;
 
     if (compiled_successfully && doc.expectedResponse) {
-      const expectedResponse = doc.expectedResponse === terminalResponse.value?.body?.result
+      const expectedResponse = doc.expectedResponse === terminalResponse.value?.stdout;
       
       if (expectedResponse) {
         localStorage.setItem("step", doc.order);
@@ -55,7 +54,7 @@ const couldClickInNextButton = (doc: ParsedContent): boolean => {
       const tests = doc.tests;
       let evaluation = true;
 
-      tests.forEach((test:string) => {
+      tests.forEach((test: string) => {
         if (test.startsWith("should be contain ")) {
           const content = test.replace("should be contain ", "").trim();
           const expresionsToTest = content.split("`").filter((exp) => exp !== " " && exp !== "");
@@ -63,7 +62,7 @@ const couldClickInNextButton = (doc: ParsedContent): boolean => {
           let aux = false;
 
           expresionsToTest.forEach((exp) => {
-            if (terminalResponse.value?.body?.result.includes(exp)) {
+            if (terminalResponse.value?.stdout?.includes(exp)) {
               aux = true;
             }
           })
@@ -102,15 +101,14 @@ const layoutStyle = computed(() => {
     : { main: "flex", section: "flex-grow" };
 });
 
-async function getResponse() {
-  const payload = {
+const runCode = async () => {
+  isCoding.value = false;
+  await executeCode(codeContent.value, {
     edition: "2024",
-    optimize: "0",
-    version: "stable",
-    code: codeContent.value,
-  };
-  terminalResponse.value = await getCodeResponse(payload);
-}
+    channel: "stable",
+    mode: "debug"
+  });
+};
 
 onMounted(() => {
   checkIfMobile();
@@ -163,16 +161,25 @@ onMounted(() => {
               <Terminal /> Output
             </button>
           </div>
-          <button @click="isCoding = false, isCompiling = true, getResponse()"  class="flex flex-row items-center justify-center gap-2 bg-neutral-500/40 p-1 px-2 rounded-md hover:bg-neutral-500/70" >
-            <Play /> Ejecutar
+          <button @click="runCode" :disabled="isExecuting" class="flex flex-row items-center justify-center gap-2 bg-neutral-500/40 p-1 px-2 rounded-md hover:bg-neutral-500/70 disabled:opacity-50 disabled:cursor-not-allowed">
+            <Play /> {{ isExecuting ? 'Ejecutando...' : 'Ejecutar' }}
           </button>
         </div>
         <CodeMirror v-if="isCoding" v-model:code="codeContent"/>
-        <!-- TODO: Make a loader -->
-        <div v-else class="terminal-output">
-          <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>
-          <pre class="text-pretty">{{ terminalResponse?.body?.result }}</pre>
-        </div>
+        <output v-else class="terminal-scroll block border border-stroke-color rounded-b-lg p-2 overflow-auto max-h-[calc(100vh-150px)] bg-editor-bg">
+          <span class="text-yellow mb-2">$ <span class="text-fg">cargo</span> run</span>
+          <!-- Stderr output -->
+          <TerminalStderrOutput v-if="formattedOutput.stderr" :content="formattedOutput.stderr" />
+          <!-- Standard output -->
+          <div v-if="formattedOutput.stdout" class="mt-2">
+            <div v-if="formattedOutput.stderr" class="border-t border-gray-700 mb-2"></div>
+            <pre class="leading-relaxed whitespace-pre-wrap break-words">{{ formattedOutput.stdout }}</pre>
+          </div>
+          <!-- Default message -->
+          <p v-if="!isExecuting && !formattedOutput.stderr && !formattedOutput.stdout" class="text-gray-400">
+            Presiona "Ejecutar" para ver el output
+          </p>
+        </output>
       </section>
     </main>
   </ContentDoc>
@@ -185,22 +192,31 @@ onMounted(() => {
   border-radius: 10px;
 }
 
-.scroll-container::-webkit-scrollbar {
+.terminal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--editor-bg) transparent;
+}
+
+.scroll-container::-webkit-scrollbar,
+.terminal-scroll::-webkit-scrollbar {
   width: 8px;
   border-radius: 10px;
 }
 
-.scroll-container::-webkit-scrollbar-track {
+.scroll-container::-webkit-scrollbar-track,
+.terminal-scroll::-webkit-scrollbar-track {
   background: transparent;
   border-radius: 10px;
 }
 
-.scroll-container::-webkit-scrollbar-thumb {
+.scroll-container::-webkit-scrollbar-thumb,
+.terminal-scroll::-webkit-scrollbar-thumb {
   background-color: transparent;
   border-radius: 10px;
 }
 
-.scroll-container::-webkit-scrollbar-thumb:hover {
+.scroll-container::-webkit-scrollbar-thumb:hover,
+.terminal-scroll::-webkit-scrollbar-thumb:hover {
   background-color: var(--editor-bg);
   border-radius: 10px;
 }
