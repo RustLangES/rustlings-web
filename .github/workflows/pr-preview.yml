@@ -84,7 +84,7 @@ jobs:
           wranglerVersion: "4.19.1"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy --name "${{ env.PROJECT_NAME }}" --branch "${{ env.BRANCH_NAME }}"
+          command: deploy --name "${{ env.PROJECT_NAME }}" --env preview-feature
 
       - name: Extract hash from CF url Deploy
         run: |
