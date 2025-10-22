@@ -2,7 +2,6 @@
 import { computed } from 'vue';
 
 const props = defineProps<{ content: string }>();
-
 const linePatterns = [
   { 
     regex: /^(error|warning)\[E(\d+)\]:\s*(.+)$/, 
