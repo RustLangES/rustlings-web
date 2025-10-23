@@ -1,9 +1,8 @@
 # build output
 dist/
+
 # generated types
-.nuxt/
-.output/
-.vscode/
+.astro/
 
 # dependencies
 node_modules/
@@ -23,8 +22,3 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
-
-# wrangler files
-.wrangler
-.dev.vars
-

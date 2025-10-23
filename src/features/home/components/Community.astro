@@ -1,0 +1,44 @@
+---
+import Section from "../../../components/shared/sections/Section.astro"
+---
+
+<Section
+  id="community"
+  className="min-h-screen flex flex-col justify-center items-center w-full py-20 px-6 bg-[var(--bg)] text-[var(--fg)]"
+>
+  <h1 class="text-5xl sm:text-6xl font-extrabold text-center mb-12">Comunidad Rust</h1>
+
+  <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-10">
+    <div class="md:w-1/2 w-full flex flex-col items-center md:items-start text-center md:text-left">
+      <p class="text-pretty leading-relaxed text-lg sm:text-xl">
+        <span class="block font-bold text-xl mb-4 md:mb-2">
+          Sigue aprendiendo junto a miles de entusiastas de Rust
+        </span>
+        Forma parte de nuestra comunidad, comparte tus avances, resuelve dudas y colabora con otros aprendices
+        y expertos de Rust.
+      </p>
+
+      <a
+        class="mt-6 md:mt-8 px-6 py-3 border rounded-lg border-[var(--stroke-color)] bg-[var(--light-bg)]
+               hover:border-[var(--fg)] hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300
+               font-bold flex items-center gap-2 text-lg w-max"
+        href="https://discord.com/channels/778674594856960012/1292726289479893044"
+        target="_blank"
+      >
+        <img class="h-6 w-6" src="/discord-mark-white.svg" alt="Discord" />
+        Discord
+      </a>
+    </div>
+
+    <div class="md:w-1/2 w-full flex justify-center mt-8 md:mt-0">
+      <iframe
+        src="https://discord.com/widget?id=778674594856960012&theme=dark"
+        class="w-full max-w-xl h-[400px] sm:h-[450px] md:h-[475px] lg:h-[500px] rounded-lg border border-[var(--stroke-color)]"
+        allowtransparency="true"
+        frameborder="0"
+        allowfullscreen
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+      ></iframe>
+    </div>
+  </div>
+</Section>

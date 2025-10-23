@@ -1,0 +1,26 @@
+---
+import Section from "../../../components/shared/sections/Section.astro"
+---
+
+<Section
+  id="playground"
+  className="relative flex flex-col justify-center items-center w-full py-20 px-6 bg-[var(--dark-fg)] text-[var(--fg)]"
+>
+  <div class="w-full h-12 absolute bottom-full bg-[url('/figures.svg')] bg-repeat-x"></div>
+
+  <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-10">
+    <img
+      class="w-full md:w-1/2 max-w-md h-auto z-20"
+      src="/ferris.png"
+      alt="Ferris el cangrejo de Rust"
+    />
+
+    <p class="text-center md:text-left w-full md:w-1/2 text-pretty leading-relaxed">
+      <span class="block font-bold text-xl mb-2">¡Aprende Rust sin instalar nada!</span>
+      Explora lecciones interactivas y experimenta con código en un playground integrado, directamente
+      desde tu navegador. 🚀
+    </p>
+  </div>
+
+  <div class="w-full rotate-180 h-12 absolute top-full bg-[url('/figures.svg')] bg-repeat-x"></div>
+</Section>

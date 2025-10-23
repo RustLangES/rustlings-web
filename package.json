@@ -1,31 +1,28 @@
 {
-  "name": "nuxt-app",
-  "private": true,
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate"
-  },
-  "dependencies": {
-    "@codemirror/autocomplete": "^6.18.4",
-    "@codemirror/lang-rust": "^6.0.1",
-    "@codemirror/language": "^6.10.4",
-    "@lezer/rust": "^1.0.2",
-    "@nuxt/content": "^2.13.4",
-    "@nuxtjs/color-mode": "^3.5.2",
-    "@nuxtjs/tailwindcss": "^6.14.0",
-    "@vueuse/core": "^11.3.0",
-    "codemirror": "^6.0.1",
-    "lucide-vue-next": "^0.460.0",
-    "nitro-cloudflare-dev": "^0.2.2",
-    "nuxt": "^3.14.1592",
-    "nuxt-clarity-analytics": "^0.0.9",
-    "vue": "latest",
-    "vue-router": "latest"
-  },
-  "devDependencies": {
-    "@codemirror/buildhelper": "^1.0.2"
-  }
+	"name": "rustlings-web",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro",
+		"lint": "biome lint .",
+		"format": "biome format . --write",
+		"check": "biome check . --write"
+	},
+	"dependencies": {
+		"@astrojs/react": "^4.4.0",
+		"@tabler/icons-react": "^3.35.0",
+		"@tailwindcss/vite": "^4.1.16",
+		"@types/react": "^19.2.2",
+		"@types/react-dom": "^19.2.2",
+		"astro": "^5.15.0",
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0",
+		"tailwindcss": "^4.1.16"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.2.7"
+	}
 }
