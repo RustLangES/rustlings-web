@@ -77,6 +77,11 @@ jobs:
         run: npm run build --preset=cloudflare_pages
 
       # Deploy steps
+      - name: Normalize alias
+        run: |
+          alias=$(echo "${{ env.BRANCH_NAME }}" | tr '[:upper:]' '[:lower:]' | tr '/_' '-')
+          echo "ALIAS=$alias" >> $GITHUB_ENV
+
       - name: Deploy
         id: deploy
         uses: cloudflare/wrangler-action@v3
@@ -84,7 +89,7 @@ jobs:
           wranglerVersion: "4.45.0"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: versions upload --name "${{ env.PROJECT_NAME }}" --preview-alias "${{ env.BRANCH_NAME }}"
+          command: versions upload --name "${{ env.PROJECT_NAME }}" --preview-alias "${{ env.ALIAS }}"
 
       - name: Extract hash from CF url Deploy
         run: |
