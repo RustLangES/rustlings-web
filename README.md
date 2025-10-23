@@ -45,16 +45,8 @@ git push origin feature/mejora
 
 5. Crear un Pull Request
 
-## ✨ Creadores principales
+## ✨ Contribuciones
 
-<div align="center">
-<a href="https://github.com/SergioRibera" target="_blank">
-  <img src="https://avatars.githubusercontent.com/u/56278796?v=4" style="border-radius: 50%; width: 100px; height: 100px;" />
+<a href="https://github.com/RustLangES/rustlings-web/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=RustLangES/rustlings-web" />
 </a>
-<a href="https://github.com/Wilovy09" target="_blank">
-  <img src="https://avatars.githubusercontent.com/u/68057133?v=4" style="border-radius: 50%; width: 100px; height: 100px;" />
-</a>
-<a href="https://github.com/JonathanACO" target="_blank">
-  <img src="https://avatars.githubusercontent.com/u/115114575?v=4" style="border-radius: 50%; width: 100px; height: 100px;" />
-</a>
-</div>
