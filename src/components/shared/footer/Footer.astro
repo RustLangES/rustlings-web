@@ -14,36 +14,34 @@ const socialLinks = [
 ---
 
 <footer
-  class="w-full bg-[var(--editor-bg)]/95 backdrop-blur-md border-t border-[var(--stroke-color)] shadow-inner py-12"
+  class="flex p-4 justify-between w-full bg-(--editor-bg)/95 backdrop-blur-md border-t border-(--stroke-color) shadow-inner"
 >
-  <div
-    class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-col md:flex-row items-center justify-between gap-8"
-  >
+
     <a
       href="#hero"
       class="flex items-center gap-3 mb-6 md:mb-0 justify-center md:justify-start w-full md:w-auto"
     >
       <img src={logoSrc} alt="Rustlings Web" class="h-12 w-12" />
-      <span class="text-[var(--fg)] font-bold text-2xl tracking-wide">Rustlings</span>
+      <span class="text-(--fg) font-bold text-2xl tracking-wide">Rustlings</span>
     </a>
+    
 
-    <div class="flex justify-center md:justify-end items-center gap-6 w-full md:w-auto">
+    <article class="grid place-items-end text-sm text-(--fg)/70 px-4">
+      &copy; {new Date().getFullYear()} Rustlings Web. Todos los derechos reservados.
+    </article>
+
+    <figure class="flex justify-center md:justify-end items-center gap-6 w-full md:w-auto">
       {
         socialLinks.map(link => (
           <a
             href={link.href}
             target="_blank"
             aria-label={link.label}
-            class="text-[var(--fg)] hover:text-[var(--yellow)] transition-transform duration-200 transform hover:scale-110"
+            class="text-(--fg) hover:text-(--yellow) transition-transform duration-200 transform hover:scale-110"
           >
             <link.icon size={28} className="w-7 h-7" />
           </a>
         ))
       }
-    </div>
-  </div>
-
-  <div class="mt-8 text-center text-sm text-[var(--fg)]/70 px-4">
-    &copy; {new Date().getFullYear()} Rustlings Web. Todos los derechos reservados.
-  </div>
+    </figure>
 </footer>
