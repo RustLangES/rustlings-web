@@ -9,7 +9,8 @@
 		"astro": "astro",
 		"lint": "biome lint .",
 		"format": "biome format . --write",
-		"check": "biome check . --write"
+		"check": "biome check . --write",
+		"prepare": "lefthook install"
 	},
 	"dependencies": {
 		"@astrojs/react": "^4.4.0",
@@ -23,6 +24,7 @@
 		"tailwindcss": "^4.1.16"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.7"
+		"@biomejs/biome": "2.2.7",
+		"lefthook": "^2.0.0"
 	}
 }
