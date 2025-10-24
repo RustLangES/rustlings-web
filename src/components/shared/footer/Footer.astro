@@ -1,7 +1,5 @@
 ---
-import Discord from "../../../icons/Discord.astro"
-import Github from "../../../icons/Github.astro"
-import Linkedin from "../../../icons/Linkedin.astro"
+import { IconBrandDiscord, IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react"
 
 const logoSrc = "/logo.svg"
 const githubUrl = "https://github.com/RustLangES/rustlings-web"
@@ -9,9 +7,9 @@ const linkedinUrl = "https://www.linkedin.com/company/rustlanges/posts/?feedView
 const discordUrl = "https://discord.com/channels/778674594856960012/1292726289479893044"
 
 const socialLinks = [
-	{ href: githubUrl, icon: Github, label: "GitHub" },
-	{ href: linkedinUrl, icon: Linkedin, label: "LinkedIn" },
-	{ href: discordUrl, icon: Discord, label: "Discord" },
+	{ href: githubUrl, icon: IconBrandGithub, label: "GitHub" },
+	{ href: linkedinUrl, icon: IconBrandLinkedin, label: "LinkedIn" },
+	{ href: discordUrl, icon: IconBrandDiscord, label: "Discord" },
 ]
 ---
 
@@ -38,7 +36,7 @@ const socialLinks = [
             aria-label={link.label}
             class="text-[var(--fg)] hover:text-[var(--yellow)] transition-transform duration-200 transform hover:scale-110"
           >
-            <link.icon size={28} class="w-7 h-7" />
+            <link.icon size={28} className="w-7 h-7" />
           </a>
         ))
       }

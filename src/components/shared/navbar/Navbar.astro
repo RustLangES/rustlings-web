@@ -1,0 +1,29 @@
+---
+import NavButtons from "../../../features/content/components/NavButtons.astro"
+import ToggleSidebarButton from "../../../features/content/components/ToggleSidebarButton"
+import Sidebar from "../sidebar/Sidebar"
+
+const logoSrc = "/logo.svg"
+
+const sidebarItems = [
+	{ label: "Contenido", href: "/learning" },
+	{ label: "Comunidad", href: "/community" },
+]
+---
+
+<header class="p-2 w-full">
+  <nav
+    class="flex items-center justify-between px-5 py-3 bg-[var(--dark-fg)]/80 backdrop-blur-md border border-[var(--stroke-color)] rounded-2xl shadow-lg"
+  >
+    <div class="flex items-center gap-4">
+      <img
+        src={logoSrc}
+        alt="Rustlings Web"
+        class="h-10 w-10 hover:scale-105 transition-transform duration-200"
+      />
+      <ToggleSidebarButton client:load />
+    </div>
+
+    <Sidebar items={sidebarItems} title="Menú" position="left" client:load />
+  </nav>
+</header>

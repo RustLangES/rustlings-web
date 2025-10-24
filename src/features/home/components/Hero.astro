@@ -1,12 +1,21 @@
 ---
+import { IconBrandGithub } from "@tabler/icons-react"
 import Section from "../../../components/shared/sections/Section.astro"
-import Github from "../../../icons/Github.astro"
 ---
 
 <Section
   id="hero"
-  className="min-h-screen flex flex-col justify-center items-center text-center bg-[var(--bg)] text-[var(--fg)] px-6"
+  className="relative min-h-screen flex flex-col justify-center items-center text-center bg-[var(--bg)] text-[var(--fg)] px-6"
 >
+  <a
+    href="https://github.com/RustLangES/rustlings-web"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="absolute top-4 right-6 text-[var(--fg)] hover:text-[var(--yellow)] transition-transform duration-300 hover:scale-110"
+  >
+    <IconBrandGithub />
+  </a>
+
   <img class="w-48 sm:w-56 md:w-64 logo mb-8" src="/logo.svg" alt="rustlings" />
 
   <div class="my-10">
@@ -16,7 +25,7 @@ import Github from "../../../icons/Github.astro"
 
   <div class="flex flex-col sm:flex-row gap-4 mt-6">
     <a
-      href="/introduccion"
+      href="/learning"
       class="px-8 py-2 border rounded-lg border-[var(--stroke-color)] hover:border-[var(--fg)] hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
     >
       Aprender

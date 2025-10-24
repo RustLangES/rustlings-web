@@ -2,11 +2,12 @@
 interface Props {
 	id?: string
 	className?: string
+	style?: string
 }
 
-const { id, className } = Astro.props as Props
+const { id, className, style } = Astro.props as Props
 ---
 
-<section id={id} class={className}>
+<section id={id} class={className} style={style}>
   <slot />
 </section>
