@@ -1,5 +1,6 @@
 ---
 import { IconFile, IconGripVertical, IconPlayerPlay } from "@tabler/icons-react"
+import Playground from "../../components/shared/playground/index.tsx"
 import Section from "../../components/shared/sections/Section.astro"
 import NavButtons from "../../features/content/components/NavButtons.astro"
 import LayoutContent from "../../layouts/LayoutContent.astro"
@@ -79,8 +80,7 @@ export function getStaticPaths() {
 
       <!-- Contenido -->
       <div class="flex flex-col flex-1 overflow-hidden">
-        <div id="editor" class="flex-1 min-h-[200px]"></div>
-
+        <Playground client:load/>
         <div
           id="horizontal-resizer"
           class="h-2 hover:h-4 transition-all cursor-row-resize bg-transparent"
