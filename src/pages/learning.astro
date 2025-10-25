@@ -11,24 +11,24 @@ const sortedTutorials = tutorial.sort((a, b) => (a.frontmatter.order ?? 0) - (b.
 <LayoutContent>
   <div
     id="main-container"
-    class="flex flex-col lg:flex-row flex-grow h-[calc(100vh-75px)] m-2.5 gap-2"
+    class="flex flex-col lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0"
   >
     <!-- Panel izquierdo: Contenido -->
     <Section
       id="left-pane"
-      className="flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150"
+      className="flex-1 bg-(--light-bg) border border-(--stroke-color)  rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 "
     >
-      <div class="scroll-container flex-grow m-2 overflow-auto p-2">
+      <article class="scroll-container m-2 overflow-y-auto p-2">
         {
           sortedTutorials.map(t => (
-            <article class="mb-6">
+            <article class="mb-6" id="content-markdown">
               <h2 class="text-xl font-bold mb-2">{t.frontmatter.title}</h2>
               <t.Content />
               <hr class="my-6 border-gray-700" />
             </article>
           ))
         }
-      </div>
+      </article>
       <div class="flex justify-center p-3 mt-auto">
         <NavButtons />
       </div>
@@ -45,7 +45,7 @@ const sortedTutorials = tutorial.sort((a, b) => (a.frontmatter.order ?? 0) - (b.
     <!-- Panel derecho: Editor + Terminal -->
     <Section
       id="right-pane"
-      className="flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150"
+      className="flex-1 bg-(--light-bg) border border-(--stroke-color) rounded-2xl flex flex-col min-h-[250px] transition-all duration-150"
     >
       <!-- Barra superior -->
       <div class="flex justify-between border-b border-stroke-color rounded-t-2xl p-2">

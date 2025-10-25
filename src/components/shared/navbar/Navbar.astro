@@ -1,5 +1,5 @@
 ---
-import NavButtons from "../../../features/content/components/NavButtons.astro"
+import { IconBrandGithub } from "@tabler/icons-react"
 import ToggleSidebarButton from "../../../features/content/components/ToggleSidebarButton"
 import Sidebar from "../sidebar/Sidebar"
 
@@ -13,7 +13,7 @@ const sidebarItems = [
 
 <header class="p-2 w-full">
   <nav
-    class="flex items-center justify-between px-5 py-3 bg-[var(--dark-fg)]/80 backdrop-blur-md border border-[var(--stroke-color)] rounded-2xl shadow-lg"
+    class="flex items-center justify-between px-3 py-1 border border-[#4f4e48] backdrop-blur-md bg-(--bg-nav) rounded-md shadow-lg"
   >
     <div class="flex items-center gap-4">
       <img
@@ -25,5 +25,9 @@ const sidebarItems = [
     </div>
 
     <Sidebar items={sidebarItems} title="Menú" position="left" client:load />
+
+    <figure class="text-white flex gap-1 bg-(--editor-bg) p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center">
+      <IconBrandGithub size={20} />
+    </figure>
   </nav>
 </header>
