@@ -1,10 +1,10 @@
 ---
+import Playground from "@components/shared/playground"
+import Section from "@components/shared/sections/Section.astro"
+import NavButtons from "@features/content/components/NavButtons.astro"
+import LayoutContent from "@layouts/LayoutContent.astro"
 import { IconFile, IconGripVertical, IconPlayerPlay } from "@tabler/icons-react"
-import Playground from "../../components/shared/playground/index.tsx"
-import Section from "../../components/shared/sections/Section.astro"
-import NavButtons from "../../features/content/components/NavButtons.astro"
-import LayoutContent from "../../layouts/LayoutContent.astro"
-import { content } from "../../utils/lib/content.config"
+import { content } from "@utils/lib/content.config"
 
 export function getStaticPaths() {
 	const sortedTutorials = content
@@ -83,14 +83,16 @@ export function getStaticPaths() {
         <Playground client:load/>
         <div
           id="horizontal-resizer"
-          class="h-2 hover:h-4 transition-all cursor-row-resize bg-transparent"
+          class="h-2 transition-all flex justify-center items-center cursor-row-resize bg-[#181817]"
         >
+        <div class="h-0.5 w-4 bg-neutral-500/40 rounded-md"></div>
         </div>
-
+        
         <div
           id="terminal"
-          class="h-40 overflow-auto bg-editor-bg border-t border-stroke-color p-2 text-sm font-mono"
+          class="h-40 overflow-auto bg-editor-bg border-t rounded-b-2xl border-stroke-color p-2 text-sm font-mono relative"
         >
+         
           <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>
         </div>
       </div>
@@ -130,7 +132,6 @@ export function getStaticPaths() {
 
     const startX = e.clientX
     const startLeftWidth = leftPane.offsetWidth
-    const startRightWidth = rightPane.offsetWidth
     const minWidth = 250
     const maxWidth = window.innerWidth - minWidth
 
@@ -195,25 +196,3 @@ export function getStaticPaths() {
     window.addEventListener('mouseup', onMouseUp)
   })
 </script>
-
-<style scoped>
-  .scroll-container {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-editor-bg) transparent;
-  }
-
-  .scroll-container::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .scroll-container::-webkit-scrollbar-thumb {
-    background-color: transparent;
-    border-radius: 8px;
-  }
-
-  .scroll-container::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-editor-bg);
-  }
-
-
-</style>

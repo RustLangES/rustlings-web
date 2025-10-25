@@ -8,6 +8,15 @@ function Playground() {
 	const onChange = React.useCallback((val, viewUpdate) => {
 		setValue(val)
 	}, [])
-	return <CodeMirror value={value} extensions={[rust()]} theme={gruvbox} onChange={onChange} className={"h-full"} />
+	return (
+		<CodeMirror
+			value={value}
+			extensions={[rust()]}
+			theme={gruvbox}
+			onChange={onChange}
+			className={"flex-1 min-h-[200px] overflow-y-auto scroll-container"}
+			id="editor"
+		/>
+	)
 }
 export default Playground
