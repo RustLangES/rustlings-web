@@ -1,18 +1,14 @@
 ---
+import ToggleSidebarButton from "@features/content/components/ToggleSidebarButton"
 import { IconBrandGithub } from "@tabler/icons-react"
-import ToggleSidebarButton from "../../../features/content/components/ToggleSidebarButton"
-import { content } from "../../../utils/lib/content.config"
 import Sidebar from "../sidebar/Sidebar"
 
 const logoSrc = "/logo.svg"
 
-const sidebarItems = content
-	.filter((item) => item.frontmatter?.slug && item.frontmatter?.title)
-	.sort((a, b) => (a.frontmatter.order ?? 0) - (b.frontmatter.order ?? 0))
-	.map((item) => ({
-		label: item.frontmatter.title || "",
-		href: `/content/${item.frontmatter.slug}`,
-	}))
+const sidebarItems = [
+	{ label: "Contenido", href: "/learning" },
+	{ label: "Comunidad", href: "/community" },
+]
 ---
 
 <header class="p-2 w-full">
@@ -30,7 +26,7 @@ const sidebarItems = content
       <ToggleSidebarButton client:load />
     </div>
 
-    <Sidebar items={sidebarItems} title="Contenido" position="left" client:load />
+    <Sidebar items={sidebarItems} title="Menú" position="left" client:load />
 
     <figure
       class="text-white flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
