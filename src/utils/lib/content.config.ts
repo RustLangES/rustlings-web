@@ -1,16 +1,10 @@
 import type { Frontmatter, MarkdownInstance } from "./types/mdx"
 
-export const lesson = Object.values(
-	import.meta.glob<MarkdownInstance<Frontmatter>>("../../content/lessons/*.{md,mdx}", {
+export const content = Object.values(
+	import.meta.glob<MarkdownInstance<Frontmatter>>("../../content/*.{md,mdx}", {
 		eager: true,
 	}),
 )
 
-export const tutorial = Object.values(
-	import.meta.glob<MarkdownInstance<Frontmatter>>("../../content/tutorials/*.{md,mdx}", {
-		eager: true,
-	}),
-)
-
-console.log("Lessons:", lesson)
-console.log("Tutorials:", tutorial[0])
+console.log("Content:", content[0].frontmatter.slug)
+console.log(content.map((t) => t.frontmatter.slug))

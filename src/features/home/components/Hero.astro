@@ -1,6 +1,10 @@
 ---
 import { IconBrandGithub } from "@tabler/icons-react"
 import Section from "../../../components/shared/sections/Section.astro"
+
+import { content } from "../../../utils/lib/content.config"
+
+const firstTutorial = content.find((t) => t.frontmatter.slug === "introduccion")
 ---
 
 <Section
@@ -25,7 +29,7 @@ import Section from "../../../components/shared/sections/Section.astro"
 
   <div class="flex flex-col sm:flex-row gap-4 mt-6">
     <a
-      href="/learning"
+      href={`/content/${firstTutorial?.frontmatter.slug}`}
       class="px-8 py-2 border rounded-lg border-[var(--stroke-color)] hover:border-[var(--fg)] hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
     >
       Aprender

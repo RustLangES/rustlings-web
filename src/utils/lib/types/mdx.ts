@@ -12,6 +12,7 @@ export interface Frontmatter {
 	title?: string
 	nextPath?: string
 	previousPath?: string
+	slug?: string
 	editor?: boolean
 	order?: number
 	[key: string]: unknown
