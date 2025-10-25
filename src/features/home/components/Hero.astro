@@ -1,8 +1,8 @@
 ---
+import Section from "@components/shared/sections/Section.astro"
 import { IconBrandGithub } from "@tabler/icons-react"
-import Section from "../../../components/shared/sections/Section.astro"
 
-import { content } from "../../../utils/lib/content.config"
+import { content } from "@utils/lib/content.config"
 
 const firstTutorial = content.find((t) => t.frontmatter.slug === "introduccion")
 ---
