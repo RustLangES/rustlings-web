@@ -28,7 +28,7 @@ export function getStaticPaths() {
 ---
 
 <LayoutContent>
-  <div id="main-container" class="flex flex-col lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0">
+  <div id="main-container" class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0">
     <!-- Panel izquierdo: Contenido -->
     <Section
       id="left-pane"
@@ -117,10 +117,16 @@ export function getStaticPaths() {
   }
   window.addEventListener('resize', resetLayoutOnResize)
 
+
   // 🔹 Separador vertical (desktop)
   verticalResizer?.addEventListener('mousedown', e => {
     if (window.innerWidth < 1024) return // no en móvil
     e.preventDefault()
+
+    // Deshabilitar transiciones y selección de texto
+    leftPane.style.transition = 'none'
+    rightPane.style.transition = 'none'
+    document.body.style.userSelect = 'none'
 
     const startX = e.clientX
     const startLeftWidth = leftPane.offsetWidth
@@ -139,6 +145,11 @@ export function getStaticPaths() {
     }
 
     function onMouseUp() {
+      // Restaurar transiciones y selección de texto
+      leftPane.style.transition = ''
+      rightPane.style.transition = ''
+      document.body.style.userSelect = ''
+
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
     }
@@ -150,6 +161,11 @@ export function getStaticPaths() {
   // 🔹 Separador horizontal (editor / terminal)
   horizontalResizer?.addEventListener('mousedown', e => {
     e.preventDefault()
+
+    // Deshabilitar transiciones y selección de texto
+    editor.style.transition = 'none'
+    terminal.style.transition = 'none'
+    document.body.style.userSelect = 'none'
 
     const startY = e.clientY
     const startEditorHeight = editor.offsetHeight
@@ -166,6 +182,11 @@ export function getStaticPaths() {
     }
 
     function onMouseUp() {
+      // Restaurar transiciones y selección de texto
+      editor.style.transition = ''
+      terminal.style.transition = ''
+      document.body.style.userSelect = ''
+
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', onMouseUp)
     }
@@ -193,4 +214,6 @@ export function getStaticPaths() {
   .scroll-container::-webkit-scrollbar-thumb:hover {
     background-color: var(--color-editor-bg);
   }
+
+
 </style>

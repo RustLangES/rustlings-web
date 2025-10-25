@@ -1,5 +1,7 @@
 ---
-import Section from "../../../components/shared/sections/Section.astro"
+import { Image } from "astro:assets"
+import Section from "@components/shared/sections/Section.astro"
+import discordMarkImage from "../../../assets/images/webp/discord-mark-white.webp"
 ---
 
 <Section
@@ -19,13 +21,15 @@ import Section from "../../../components/shared/sections/Section.astro"
       </p>
 
       <a
-        class="mt-6 md:mt-8 px-6 py-3 border rounded-lg borders-troke-color bg-light-bg
-               hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300
-               font-bold flex items-center gap-2 text-lg w-max"
         href="https://discord.com/channels/778674594856960012/1292726289479893044"
         target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Únete al Discord de la Comunidad Rust"
+        class="mt-6 md:mt-8 px-6 py-3 border rounded-lg border-stroke-color bg-light-bg
+         hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300
+         font-bold flex items-center gap-2 text-lg w-max"
       >
-        <img class="h-6 w-6" src="/discord-mark-white.svg" alt="Discord" />
+        <Image src={discordMarkImage} alt="Logo Discord" class="h-4 w-6" />
         Discord
       </a>
     </div>
@@ -38,7 +42,7 @@ import Section from "../../../components/shared/sections/Section.astro"
         frameborder="0"
         allowfullscreen
         sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-      ></iframe>
+        title="Widget de Discord de la Comunidad Rust"></iframe>
     </div>
   </div>
 </Section>

@@ -1,8 +1,9 @@
 ---
+import { Image } from "astro:assets"
+import Section from "@components/shared/sections/Section.astro"
 import { IconBrandGithub } from "@tabler/icons-react"
-import Section from "../../../components/shared/sections/Section.astro"
-
-import { content } from "../../../utils/lib/content.config"
+import { content } from "@utils/lib/content.config"
+import logoImage from "../../../assets/images/webp/logo.webp"
 
 const firstTutorial = content.find((t) => t.frontmatter.slug === "introduccion")
 ---
@@ -16,15 +17,23 @@ const firstTutorial = content.find((t) => t.frontmatter.slug === "introduccion")
     target="_blank"
     rel="noopener noreferrer"
     class="absolute top-4 right-6 text-secondary hover:text-yellow transition-transform duration-300 hover:scale-110"
+    aria-label="Repositorio de RustLings en GitHub"
   >
     <IconBrandGithub />
   </a>
 
-  <img class="w-48 sm:w-56 md:w-64 logo mb-8" src="/logo.svg" alt="rustlings" />
+  <Image
+    class="w-48 sm:w-56 md:w-64 logo mb-8"
+    src={logoImage}
+    alt="Rustlings logo"
+    width={256}
+    height={256}
+    fetchpriority="high"
+  />
 
   <div class="my-10">
     <h1 class="font-semibold text-4xl sm:text-5xl md:text-6xl mb-4">RustLings Web</h1>
-    <h3 class="text-lg sm:text-xl opacity-90">Aprender Rust nunca fue tan fácil</h3>
+    <h2 class="text-lg sm:text-xl opacity-90">Aprender Rust nunca fue tan fácil</h2>
   </div>
 
   <div class="flex flex-col sm:flex-row gap-4 mt-6">

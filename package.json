@@ -22,6 +22,7 @@
 		"@codemirror/view": "^6.38.6",
 		"@lezer/highlight": "^1.2.2",
 		"@lezer/rust": "^1.0.2",
+		"@fontsource/poppins": "^5.2.7",
 		"@nanostores/react": "^1.0.0",
 		"@tabler/icons-react": "^3.35.0",
 		"@tailwindcss/vite": "^4.1.16",
