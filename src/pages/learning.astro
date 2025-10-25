@@ -11,14 +11,14 @@ const sortedTutorials = tutorial.sort((a, b) => (a.frontmatter.order ?? 0) - (b.
 <LayoutContent>
   <div
     id="main-container"
-    class="flex flex-col lg:flex-row mx-2"
+    class="flex flex-col lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0"
   >
     <!-- Panel izquierdo: Contenido -->
     <Section
       id="left-pane"
       className="flex-1 bg-(--light-bg) border border-(--stroke-color)  rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 "
     >
-      <article class="scroll-container m-2 h-[80vh] overflow-y-auto p-2">
+      <article class="scroll-container m-2 overflow-y-auto p-2">
         {
           sortedTutorials.map(t => (
             <article class="mb-6">
