@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/noUnknownAtRules: <don't works biome on css> */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
@@ -19,4 +20,27 @@ body {
 	--note-bg: #4795cc;
 	--note-dark-bg: #205275;
 	--bg-nav: #99561426;
+}
+
+#content-markdown {
+	h1 {
+		@apply py-2 text-2xl;
+	}
+
+	h2 {
+		color: var(--yellow);
+	}
+
+	strong {
+		color: var(--yellow);
+	}
+
+	ul {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+
+		li {
+			margin-bottom: 0.5rem;
+		}
+	}
 }
