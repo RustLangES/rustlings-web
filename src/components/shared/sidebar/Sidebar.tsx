@@ -40,7 +40,7 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 			<aside
 				className={`fixed top-[-10px]  ${sidePosition}
           h-[calc(100vh-2px)] w-84
-          bg-[var(--dark-fg)]/95 backdrop-blur-md
+          bg-dark-fg/95 backdrop-blur-md
           border-[var(--stroke-color)] shadow-[0_0_30px_rgba(0,0,0,0.4)]
           transform transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
           z-50 flex flex-col overflow-hidden
@@ -48,18 +48,18 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
         `}
 			>
 				<div className="flex justify-between items-center p-4 border-b border-white/10">
-					<h2 className="text-lg font-semibold text-[var(--fg)]">{title}</h2>
+					<h2 className="text-lg font-semibold text-secondary">{title}</h2>
 					<button
 						type="button"
 						onClick={closeSidebarStore}
 						aria-label="Cerrar sidebar"
-						className="p-1 text-[var(--fg)] hover:text-[var(--yellow)] transition-colors duration-200"
+						className="p-1 text-secondary hover:text-yellow transition-colors duration-200"
 					>
 						<IconX size={22} stroke={2} />
 					</button>
 				</div>
 
-				<nav className="flex flex-col gap-2 p-4 text-[var(--fg)] overflow-y-auto" aria-label="Menú de navegación">
+				<nav className="flex flex-col gap-2 p-4 text-secondary overflow-y-auto" aria-label="Menú de navegación">
 					<ul className="space-y-2">
 						{items.map((item) => (
 							<li key={item.label}>
@@ -67,7 +67,7 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 									<a
 										href={item.href}
 										onClick={closeSidebarStore}
-										className="block px-3 py-2 rounded-md hover:bg-[var(--yellow)]/10 hover:text-[var(--yellow)] transition-all duration-200"
+										className="block px-3 py-2 rounded-md hover:bg-yellow/10 hover:text-yellow transition-all duration-200"
 									>
 										{item.label}
 									</a>
@@ -78,7 +78,7 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 											item.onClick?.()
 											closeSidebarStore()
 										}}
-										className="w-full text-left px-3 py-2 rounded-md hover:bg-[var(--yellow)]/10 hover:text-[var(--yellow)] transition-all duration-200"
+										className="w-full text-left px-3 py-2 rounded-md hover:bg-yellow/10 hover:text-yellow transition-all duration-200"
 									>
 										{item.label}
 									</button>

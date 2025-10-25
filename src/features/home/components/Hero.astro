@@ -5,13 +5,13 @@ import Section from "../../../components/shared/sections/Section.astro"
 
 <Section
   id="hero"
-  className="relative min-h-screen flex flex-col justify-center items-center text-center bg-[var(--bg)] text-[var(--fg)] px-6"
+  className="relative min-h-screen flex flex-col justify-center items-center text-center text-px-6"
 >
   <a
     href="https://github.com/RustLangES/rustlings-web"
     target="_blank"
     rel="noopener noreferrer"
-    class="absolute top-4 right-6 text-[var(--fg)] hover:text-[var(--yellow)] transition-transform duration-300 hover:scale-110"
+    class="absolute top-4 right-6 text-secondary hover:text-yellow transition-transform duration-300 hover:scale-110"
   >
     <IconBrandGithub />
   </a>
@@ -35,7 +35,7 @@ import Section from "../../../components/shared/sections/Section.astro"
 
 <style>
   .logo {
-    -webkit-filter: drop-shadow(0 -6mm 100mm var(--yellow));
-    filter: drop-shadow(0 -6mm 90mm var(--yellow));
+    -webkit-filter: drop-shadow(0 -6mm 100mm var(--color-yellow));
+    filter: drop-shadow(0 -6mm 90mm var(--color-yellow));
   }
 </style>

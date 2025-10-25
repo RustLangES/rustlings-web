@@ -14,7 +14,7 @@ const socialLinks = [
 ---
 
 <footer
-  class="flex p-4 justify-between w-full bg-(--editor-bg)/95 backdrop-blur-md border-t border-(--stroke-color) shadow-inner"
+  class="flex p-4 justify-between w-full bg-editor-bg/95 backdrop-blur-md border-t border-stroke-color shadow-inner"
 >
 
     <a
@@ -22,11 +22,11 @@ const socialLinks = [
       class="flex items-center gap-3 mb-6 md:mb-0 justify-center md:justify-start w-full md:w-auto"
     >
       <img src={logoSrc} alt="Rustlings Web" class="h-12 w-12" />
-      <span class="text-(--fg) font-bold text-2xl tracking-wide">Rustlings</span>
+      <span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
     </a>
     
 
-    <article class="grid place-items-end text-sm text-(--fg)/70 px-4">
+    <article class="grid place-items-end text-sm text-secondary/70 px-4">
       &copy; {new Date().getFullYear()} Rustlings Web. Todos los derechos reservados.
     </article>
 
@@ -37,7 +37,7 @@ const socialLinks = [
             href={link.href}
             target="_blank"
             aria-label={link.label}
-            class="text-(--fg) hover:text-(--yellow) transition-transform duration-200 transform hover:scale-110"
+            class="text-secondary hover:text-yellow transition-transform duration-200 transform hover:scale-110"
           >
             <link.icon size={28} className="w-7 h-7" />
           </a>
