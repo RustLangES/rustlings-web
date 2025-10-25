@@ -1,11 +1,25 @@
-/** biome-ignore-all lint/suspicious/noUnknownAtRules: <don't works biome on css> */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
 
 body {
-	font-family: "Poppins", sans-serif;
+	font-family: var(--font-family);
 	background-color: var(--bg);
 	color: var(--fg);
+}
+
+@theme {
+	--font-family: "Poppins", sans-serif;
+	--color-bg: #191918;
+	--color-fg: #fcfcfc;
+	--color-light-bg: #272726;
+	--color-editor-bg: #1a1b1a;
+	--color-stroke-color: #4f4e48;
+	--color-dark-yellow: #995614;
+	--color-yellow: #ffd776;
+	--color-dark-fg: #151515;
+	--color-note-bg: #4795cc;
+	--color-note-dark-bg: #205275;
+	--color-bg-nav: #99561426;
 }
 
 :root {
