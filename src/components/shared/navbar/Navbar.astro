@@ -1,10 +1,11 @@
 ---
+import { Image } from "astro:assets"
+
 import ToggleSidebarButton from "@features/content/components/ToggleSidebarButton"
 import { IconBrandGithub } from "@tabler/icons-react"
 import { content } from "@utils/lib/content.config"
+import logoImage from "../../../assets/images/webp/logo.webp"
 import Sidebar from "../sidebar/Sidebar"
-
-const logoSrc = "/logo.svg"
 
 const sidebarItems = content
 	.filter((item) => item.frontmatter?.slug && item.frontmatter?.title)
@@ -21,8 +22,8 @@ const sidebarItems = content
   >
     <div class="flex items-center gap-4">
       <a href="/">
-        <img
-          src={logoSrc}
+        <Image
+          src={logoImage}
           alt="Rustlings Web"
           class="h-10 w-10 hover:scale-105 transition-transform duration-200"
         />
