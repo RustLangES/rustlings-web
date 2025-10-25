@@ -1,5 +1,5 @@
 ---
-import NavButtons from "../../../features/content/components/NavButtons.astro"
+import { IconBrandGithub } from "@tabler/icons-react"
 import ToggleSidebarButton from "../../../features/content/components/ToggleSidebarButton"
 import Sidebar from "../sidebar/Sidebar"
 
@@ -25,5 +25,9 @@ const sidebarItems = [
     </div>
 
     <Sidebar items={sidebarItems} title="Menú" position="left" client:load />
+
+    <figure class="text-white flex gap-1 bg-(--editor-bg) p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center">
+      <IconBrandGithub size={20} />
+    </figure>
   </nav>
 </header>
