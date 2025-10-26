@@ -3,7 +3,7 @@ import { CodeEditor } from "@components/shared/editor/CodeEditor"
 import Section from "@components/shared/sections/Section.astro"
 import NavButtons from "@features/content/components/NavButtons.astro"
 import LayoutContent from "@layouts/LayoutContent.astro"
-import { IconFile, IconGripVertical, IconPlayerPlay } from "@tabler/icons-react"
+import { IconFile, IconGripVertical, IconPlayerPlay, IconTerminal } from "@tabler/icons-react"
 import { content } from "@utils/lib/content.config"
 
 export function getStaticPaths() {
@@ -28,7 +28,10 @@ export function getStaticPaths() {
 ---
 
 <LayoutContent>
-  <div id="main-container" class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0">
+  <div
+    id="main-container"
+    class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0"
+  >
     <!-- Panel izquierdo: Contenido -->
     <Section
       id="left-pane"
@@ -42,10 +45,7 @@ export function getStaticPaths() {
         </article>
       </article>
       <div class="flex justify-center p-3 mt-auto">
-        <NavButtons
-          previousPath={Astro.props.previousPath}
-          nextPath={Astro.props.nextPath}
-        />
+        <NavButtons previousPath={Astro.props.previousPath} nextPath={Astro.props.nextPath} />
       </div>
     </Section>
 
@@ -80,20 +80,31 @@ export function getStaticPaths() {
 
       <!-- Contenido -->
       <div class="flex flex-col flex-1 overflow-hidden">
-        <CodeEditor client:load/>
+        <CodeEditor client:load />
         <div
           id="horizontal-resizer"
           class="h-2 transition-all flex justify-center items-center cursor-row-resize bg-[#181817]"
         >
-        <div class="h-0.5 w-4 bg-neutral-500/40 rounded-md"></div>
+          <div class="h-0.5 w-4 bg-neutral-500/40 rounded-md"></div>
         </div>
-        
+
         <div
           id="terminal"
-          class="h-40 overflow-auto bg-editor-bg border-t rounded-b-2xl border-stroke-color p-2 text-sm font-mono relative"
+          class="h-40 overflow-auto bg-editor-bg border-t border-stroke-color rounded-b-2xl text-sm font-mono bg-dark-fg"
         >
-         
-          <span class="text-yellow">$ <span class="text-fg">cargo</span> run</span>
+          <div class="flex items-center gap- border-b border-stroke-color bg-light-bg px-3 py-2">
+            <button
+              class="flex items-center gap-2 px-3 rounded-sm text-fg font-medium shadow-inner hover:bg-neutral-600/90 transition-colors"
+            >
+              <IconTerminal size={18} />
+              <span>Terminal</span>
+            </button>
+          </div>
+
+          <div class="flex items-start p-3 text-fg">
+            <span class="text-yellow">$&nbsp;</span>
+            <span class="text-fg">cargo run</span>
+          </div>
         </div>
       </div>
     </Section>
@@ -118,7 +129,6 @@ export function getStaticPaths() {
     }
   }
   window.addEventListener('resize', resetLayoutOnResize)
-
 
   // 🔹 Separador vertical (desktop)
   verticalResizer?.addEventListener('mousedown', e => {
