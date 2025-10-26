@@ -2,10 +2,10 @@
 import { Image } from "astro:assets"
 import Section from "@components/shared/sections/Section.astro"
 import { IconBrandGithub } from "@tabler/icons-react"
-import { content } from "@utils/lib/content.config"
+import { allContent } from "~/content.config"
 import logoImage from "../../../assets/images/webp/logo.webp"
 
-const firstTutorial = content.find((t) => t.frontmatter.slug === "introduccion")
+const test = allContent.find((t) => t.id.replace(/^\d+/, ""))
 ---
 
 <Section
@@ -38,7 +38,7 @@ const firstTutorial = content.find((t) => t.frontmatter.slug === "introduccion")
 
   <div class="flex flex-col sm:flex-row gap-4 mt-6">
     <a
-      href={`/content/${firstTutorial?.frontmatter.slug}`}
+      href={`/content/${test?.id}`}
       class="px-8 py-2 border rounded-lg border-[var(--stroke-color)] hover:border-[var(--fg)] hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
     >
       Aprender

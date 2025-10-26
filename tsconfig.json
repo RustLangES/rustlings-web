@@ -7,6 +7,7 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"paths": {
+			"~/*": ["./src/*"],
 			"@components/*": ["./src/components/*"],
 			"@styles/*": ["./src/styles/*"],
 			"@layouts/*": ["./src/layouts/*"],
