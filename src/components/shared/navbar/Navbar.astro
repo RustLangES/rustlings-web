@@ -8,9 +8,11 @@ import logoImage from "../../../assets/images/webp/logo.webp"
 import Sidebar from "../sidebar/Sidebar"
 
 const sidebarItems = allContent.map((i) => ({
-	label: i.data.title || "",
-	href: `/content/${i.id}`,
+	label: i.slug || "",
+	href: `/${i.slug}`,
 }))
+
+console.log("sidebarItems", sidebarItems)
 ---
 
 <header class="p-2 w-full">
@@ -32,7 +34,7 @@ const sidebarItems = allContent.map((i) => ({
       class="md:absolute md:left-1/2 md:-translate-x-1/2 ml-auto flex items-center gap-1.5 bg-neutral-500/40 px-2 py-1 rounded-md
     hover:bg-neutral-500/70 text-sm"
     >
-      <IconPlayerPlay size={18}/> Ejecutar
+      <IconPlayerPlay size={18} /> Ejecutar
     </button>
 
     <Sidebar items={sidebarItems} title="Contenido" position="left" client:load />

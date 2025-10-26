@@ -5,7 +5,8 @@ import { IconBrandGithub } from "@tabler/icons-react"
 import { allContent } from "~/content.config"
 import logoImage from "../../../assets/images/webp/logo.webp"
 
-const test = allContent.find((t) => t.id.replace(/^\d+/, ""))
+const content = allContent.find((c) => c.slug)
+console.log(content)
 ---
 
 <Section
@@ -38,7 +39,7 @@ const test = allContent.find((t) => t.id.replace(/^\d+/, ""))
 
   <div class="flex flex-col sm:flex-row gap-4 mt-6">
     <a
-      href={`/content/${test?.id}`}
+      href={`/${content?.slug}`}
       class="px-8 py-2 border rounded-lg border-[var(--stroke-color)] hover:border-[var(--fg)] hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
     >
       Aprender

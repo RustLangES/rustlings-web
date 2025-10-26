@@ -3,33 +3,31 @@ import { render } from "astro:content"
 import { CodeEditor } from "@components/shared/editor/CodeEditor"
 import Section from "@components/shared/sections/Section.astro"
 import NavButtons from "@features/content/components/NavButtons.astro"
-import LayoutContent from "@layouts/LayoutContent.astro"
-import { IconFile, IconGripVertical, IconPlayerPlay, IconTerminal } from "@tabler/icons-react"
+import { IconFile, IconGripVertical, IconTerminal } from "@tabler/icons-react"
+import Navbar from "~/components/shared/navbar/Navbar.astro"
 import { allContent } from "~/content.config"
+import Layout from "~/layouts/Layout.astro"
 
 export function getStaticPaths() {
-	const sortedTutorials = allContent.filter((t) => !!t.id)
-
-	return sortedTutorials.map((tutorial, i) => {
-		const prev = i > 0 ? sortedTutorials[i - 1].data.previousPath : null
-		const next = i < sortedTutorials.length - 1 ? sortedTutorials[i + 1].data.nextPath : null
-
+	return allContent.map((tutorial) => {
 		return {
-			params: { slug: tutorial.id },
+			params: { slug: tutorial.slug },
 			props: {
 				tutorial,
-				previous: prev,
-				next: next,
+				previous: tutorial.data.previousPath || null,
+				next: tutorial.data.nextPath || null,
 			},
 		}
 	})
 }
 
-const { tutorial } = Astro.props
+const { tutorial, previous, next } = Astro.props
 const { Content } = await render(tutorial)
 ---
 
-<LayoutContent>
+<Layout>
+  <Navbar />
+
   <div
     id="main-container"
     class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0"
@@ -45,12 +43,9 @@ const { Content } = await render(tutorial)
           <Content />
           <hr class="my-6 border-gray-700" />
         </article>
-      <div class="flex justify-center pb-2 mt-auto">
-          <NavButtons
-            previousPath={Astro.props.previous}
-            nextPath={Astro.props.next}
-          />
-      </div>
+        <div class="flex justify-center pb-2 mt-auto">
+          <NavButtons title={tutorial.slug} previousPath={previous} nextPath={next} />
+        </div>
       </article>
     </Section>
 
@@ -109,7 +104,7 @@ const { Content } = await render(tutorial)
       </div>
     </Section>
   </div>
-</LayoutContent>
+</Layout>
 
 <script lang="ts" is:inline>
   const verticalResizer = document.getElementById('vertical-resizer')
