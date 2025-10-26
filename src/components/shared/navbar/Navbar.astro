@@ -3,17 +3,14 @@ import { Image } from "astro:assets"
 
 import ToggleSidebarButton from "@features/content/components/ToggleSidebarButton"
 import { IconBrandGithub, IconPlayerPlay } from "@tabler/icons-react"
-import { content } from "@utils/lib/content.config"
+import { allContent } from "~/content.config"
 import logoImage from "../../../assets/images/webp/logo.webp"
 import Sidebar from "../sidebar/Sidebar"
 
-const sidebarItems = content
-	.filter((item) => item.frontmatter?.slug && item.frontmatter?.title)
-	.sort((a, b) => (a.frontmatter.order ?? 0) - (b.frontmatter.order ?? 0))
-	.map((item) => ({
-		label: item.frontmatter.title || "",
-		href: `/content/${item.frontmatter.slug}`,
-	}))
+const sidebarItems = allContent.map((i) => ({
+	label: i.data.title || "",
+	href: `/content/${i.id}`,
+}))
 ---
 
 <header class="p-2 w-full">

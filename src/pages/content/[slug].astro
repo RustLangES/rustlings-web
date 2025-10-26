@@ -1,22 +1,21 @@
 ---
+import { render } from "astro:content"
 import { CodeEditor } from "@components/shared/editor/CodeEditor"
 import Section from "@components/shared/sections/Section.astro"
 import NavButtons from "@features/content/components/NavButtons.astro"
 import LayoutContent from "@layouts/LayoutContent.astro"
 import { IconFile, IconGripVertical, IconPlayerPlay, IconTerminal } from "@tabler/icons-react"
-import { content } from "@utils/lib/content.config"
+import { allContent } from "~/content.config"
 
 export function getStaticPaths() {
-	const sortedTutorials = content
-		.filter((t) => !!t.frontmatter?.slug)
-		.sort((a, b) => (a.frontmatter.order ?? 0) - (b.frontmatter.order ?? 0))
+	const sortedTutorials = allContent.filter((t) => !!t.id)
 
 	return sortedTutorials.map((tutorial, i) => {
-		const prev = i > 0 ? sortedTutorials[i - 1].frontmatter : null
-		const next = i < sortedTutorials.length - 1 ? sortedTutorials[i + 1].frontmatter : null
+		const prev = i > 0 ? sortedTutorials[i - 1].data.previousPath : null
+		const next = i < sortedTutorials.length - 1 ? sortedTutorials[i + 1].data.nextPath : null
 
 		return {
-			params: { slug: tutorial.frontmatter.slug },
+			params: { slug: tutorial.id },
 			props: {
 				tutorial,
 				previous: prev,
@@ -25,6 +24,9 @@ export function getStaticPaths() {
 		}
 	})
 }
+
+const { tutorial } = Astro.props
+const { Content } = await render(tutorial)
 ---
 
 <LayoutContent>
@@ -39,8 +41,8 @@ export function getStaticPaths() {
     >
       <article class="scroll-container m-2 overflow-y-auto p-2">
         <article class="mb-6 text-secondary" id="content-markdown">
-          <h2 class="text-xl font-bold mb-2">{Astro.props.tutorial.frontmatter.title}</h2>
-          <Astro.props.tutorial.Content />
+          <h2 class="text-xl font-bold mb-2">{tutorial.data.title}</h2>
+          <Content />
           <hr class="my-6 border-gray-700" />
         </article>
       <div class="flex justify-center pb-2 mt-auto">
