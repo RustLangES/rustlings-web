@@ -2,7 +2,7 @@
 import { Image } from "astro:assets"
 
 import ToggleSidebarButton from "@features/content/components/ToggleSidebarButton"
-import { IconBrandGithub } from "@tabler/icons-react"
+import { IconBrandGithub, IconPlayerPlay } from "@tabler/icons-react"
 import { content } from "@utils/lib/content.config"
 import logoImage from "../../../assets/images/webp/logo.webp"
 import Sidebar from "../sidebar/Sidebar"
@@ -31,10 +31,17 @@ const sidebarItems = content
       <ToggleSidebarButton client:load />
     </div>
 
+    <button
+      class="md:absolute md:left-1/2 md:-translate-x-1/2 ml-auto flex items-center gap-1.5 bg-neutral-500/40 px-2 py-1 rounded-md
+    hover:bg-neutral-500/70 text-sm"
+    >
+      <IconPlayerPlay size={18}/> Ejecutar
+    </button>
+
     <Sidebar items={sidebarItems} title="Contenido" position="left" client:load />
 
     <figure
-      class="text-white flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
+      class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
     >
       <IconBrandGithub size={20} />
     </figure>
