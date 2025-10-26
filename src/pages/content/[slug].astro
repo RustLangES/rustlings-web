@@ -12,15 +12,15 @@ export function getStaticPaths() {
 		.sort((a, b) => (a.frontmatter.order ?? 0) - (b.frontmatter.order ?? 0))
 
 	return sortedTutorials.map((tutorial, i) => {
-		const prev = i > 0 ? sortedTutorials[i - 1].frontmatter.slug : null
-		const next = i < sortedTutorials.length - 1 ? sortedTutorials[i + 1].frontmatter.slug : null
+		const prev = i > 0 ? sortedTutorials[i - 1].frontmatter : null
+		const next = i < sortedTutorials.length - 1 ? sortedTutorials[i + 1].frontmatter : null
 
 		return {
 			params: { slug: tutorial.frontmatter.slug },
 			props: {
 				tutorial,
-				previousPath: prev,
-				nextPath: next,
+				previous: prev,
+				next: next,
 			},
 		}
 	})
@@ -40,13 +40,14 @@ export function getStaticPaths() {
           <Astro.props.tutorial.Content />
           <hr class="my-6 border-gray-700" />
         </article>
-      </article>
-      <div class="flex justify-center p-3 mt-auto">
-        <NavButtons
-          previousPath={Astro.props.previousPath}
-          nextPath={Astro.props.nextPath}
-        />
+        <div class="flex justify-center pb-2 mt-auto">
+          <NavButtons
+            previousPath={Astro.props.previous}
+            nextPath={Astro.props.next}
+          />
       </div>
+      </article>
+      
     </Section>
 
     <!-- Separador vertical (solo desktop) -->
