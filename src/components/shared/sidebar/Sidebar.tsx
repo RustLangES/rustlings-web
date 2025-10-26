@@ -69,7 +69,7 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 										onClick={closeSidebarStore}
 										className="block px-3 py-2 rounded-md hover:bg-yellow/10 hover:text-yellow transition-all duration-200"
 									>
-										{item.label}
+										{item.label.toUpperCase()}
 									</a>
 								) : (
 									<button
@@ -80,7 +80,7 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 										}}
 										className="w-full text-left px-3 py-2 rounded-md hover:bg-yellow/10 hover:text-yellow transition-all duration-200"
 									>
-										{item.label}
+										{item.label.toUpperCase()}
 									</button>
 								)}
 							</li>

@@ -14,10 +14,18 @@ const content = defineCollection({
 })
 
 /**
- * * Obtiene todo el contenido de la colección "content" y lo ordena por el campo 'order'.
+ * Obtiene todo el contenido de la colección "content", lo ordena por el campo 'order'
+ * @returns id (número inicial) y slug (nombre) de cada entrada.
  */
-export const allContent = await getCollection("content").then((e) => e.sort((a, b) => a.data.order - b.data.order))
-
+export const allContent = await getCollection("content").then((entries) => {
+	return entries
+		.sort((a, b) => a.data.order - b.data.order)
+		.map((entry) => {
+			const [, id, slug] = entry.id.match(/^(\d+)(.+)$/) || []
+			return { ...entry, id, slug }
+		})
+})
+console.log("allContent", allContent)
 /**
  * Exporta las colecciones definidas para Astro.
  *
