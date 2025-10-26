@@ -1,5 +1,5 @@
 ---
-import Playground from "@components/shared/playground"
+import { CodeEditor } from "@components/shared/editor/CodeEditor"
 import Section from "@components/shared/sections/Section.astro"
 import NavButtons from "@features/content/components/NavButtons.astro"
 import LayoutContent from "@layouts/LayoutContent.astro"
@@ -80,7 +80,7 @@ export function getStaticPaths() {
 
       <!-- Contenido -->
       <div class="flex flex-col flex-1 overflow-hidden">
-        <Playground client:load/>
+        <CodeEditor client:load/>
         <div
           id="horizontal-resizer"
           class="h-2 transition-all flex justify-center items-center cursor-row-resize bg-[#181817]"
