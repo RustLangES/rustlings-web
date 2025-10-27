@@ -1,10 +1,9 @@
 ---
 import { Image } from "astro:assets"
-
-import ToggleSidebarButton from "@features/content/components/ToggleSidebarButton"
 import { IconBrandGithub, IconPlayerPlay } from "@tabler/icons-react"
+import logoImage from "~/assets/images/webp/logo.webp"
 import { allContent } from "~/content.config"
-import logoImage from "../../../assets/images/webp/logo.webp"
+import ToggleSidebarButton from "~/features/content/components/ToggleSidebarButton"
 import Sidebar from "../sidebar/Sidebar"
 
 const sidebarItems = allContent.map((i) => ({
@@ -17,7 +16,7 @@ console.log("sidebarItems", sidebarItems)
 
 <header class="p-2 w-full">
   <nav
-    class="flex items-center justify-between px-3 py-1 border border-[#4f4e48] backdrop-blur-md bg-bg-nav rounded-md shadow-lg"
+    class="relative z-50 flex items-center justify-between px-3 py-1 border border-[#4f4e48] backdrop-blur-md bg-bg-nav rounded-md shadow-lg"
   >
     <div class="flex items-center gap-4">
       <a href="/">

@@ -1,9 +1,9 @@
 ---
 import { Image } from "astro:assets"
-import Section from "@components/shared/sections/Section.astro"
 import { IconBrandGithub } from "@tabler/icons-react"
+import logoImage from "~/assets/images/webp/logo.webp"
+import Section from "~/components/shared/sections/Section.astro"
 import { allContent } from "~/content.config"
-import logoImage from "../../../assets/images/webp/logo.webp"
 
 const content = allContent.find((c) => c.slug)
 console.log(content)
