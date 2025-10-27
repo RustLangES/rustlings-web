@@ -1,11 +1,11 @@
 ---
 import { render } from "astro:content"
-import { CodeEditor } from "@components/shared/editor/CodeEditor"
-import Section from "@components/shared/sections/Section.astro"
-import NavButtons from "@features/content/components/NavButtons.astro"
-import { IconFile, IconGripVertical, IconTerminal } from "@tabler/icons-react"
+import { IconCode, IconFile, IconGripVertical, IconLicense, IconTerminal } from "@tabler/icons-react"
+import { CodeEditor } from "~/components/shared/editor/CodeEditor"
 import Navbar from "~/components/shared/navbar/Navbar.astro"
+import Section from "~/components/shared/sections/Section.astro"
 import { allContent } from "~/content.config"
+import NavButtons from "~/features/content/components/NavButtons.astro"
 import Layout from "~/layouts/Layout.astro"
 
 export function getStaticPaths() {
@@ -30,22 +30,28 @@ const { Content } = await render(tutorial)
 
   <div
     id="main-container"
-    class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0"
+    class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0 overflow-hidden"
   >
     <!-- Panel izquierdo: Contenido -->
     <Section
       id="left-pane"
-      className="flex-1 bg-light-bg border border-stroke-color  rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 "
+      className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 overflow-x-auto"
     >
-      <article class="scroll-container m-2 overflow-y-auto p-2">
-        <article class="mb-6 text-secondary" id="content-markdown">
-          <h2 class="text-xl font-bold mb-2">{tutorial.data.title}</h2>
+    <div id="title-info"  class="absolute left-0 top-14 w-full hidden">
+        <div class="relative">
+          <IconLicense stroke={2} size={14} className="rotate-90 absolute -top-9 left-4.5 text-yellow" />
+          <h2 class="text-[12px] font-bold text-center rotate-90">Contenido</h2>
+        </div>
+      </div>
+      <article id="article-info" class="scroll-container m-2 overflow-y-auto p-2">
+        <article class="mb-6 text-secondary min-w-[400px]" id="content-markdown">
+           <h2 class="text-xl font-bold mb-2">{tutorial.data.title}</h2>
           <Content />
           <hr class="my-6 border-gray-700" />
         </article>
-        <div class="flex justify-center pb-2 mt-auto">
+      <div class="flex justify-center pb-2 mt-auto min-w-[400px]">
           <NavButtons title={tutorial.slug} previousPath={previous} nextPath={next} />
-        </div>
+      </div>
       </article>
     </Section>
 
@@ -60,10 +66,20 @@ const { Content } = await render(tutorial)
     <!-- Panel derecho: Editor + Terminal -->
     <Section
       id="right-pane"
-      className="flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150"
+      className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150"
     >
-      <!-- Barra superior -->
-      <div class="flex justify-between border-b border-stroke-color rounded-t-2xl p-2">
+
+    <div id="title-editor"  class="absolute left-0 top-14 w-full hidden">
+        <div class="relative">
+          <IconCode stroke={2} size={16} className="rotate-90 absolute -top-9 left-4.5 text-yellow" />
+          <h2 class="text-[12px] font-bold text-center rotate-90">Editor</h2>
+        </div>
+      </div>
+      
+
+
+       <!-- Barra superior -->
+      <div id="bar-top" class="flex justify-between border-b border-stroke-color rounded-t-2xl p-2">
         <div class="flex gap-2">
           <button
             class="flex items-center gap-1.5 bg-neutral-500/40 px-2 py-1 rounded-md hover:bg-neutral-500/70 text-sm"
@@ -74,7 +90,7 @@ const { Content } = await render(tutorial)
       </div>
 
       <!-- Contenido -->
-      <div class="flex flex-col flex-1 overflow-hidden">
+      <div id="content-editor" class="flex flex-col flex-1 overflow-hidden">
         <CodeEditor client:load />
         <div
           id="horizontal-resizer"
@@ -106,13 +122,19 @@ const { Content } = await render(tutorial)
   </div>
 </Layout>
 
-<script lang="ts" is:inline>
+<script lang="ts" is:inline >
   const verticalResizer = document.getElementById('vertical-resizer')
   const leftPane = document.getElementById('left-pane')
   const rightPane = document.getElementById('right-pane')
   const horizontalResizer = document.getElementById('horizontal-resizer')
   const editor = document.getElementById('editor')
   const terminal = document.getElementById('terminal')
+  const articleInfo = document.getElementById('article-info')
+  const contentEditor = document.getElementById('content-editor')
+  const barTopEditor = document.getElementById('bar-top')
+  const titleInfo = document.getElementById('title-info')
+  const titleEditor = document.getElementById('title-editor')
+  
 
   // 🔹 Ajustar al cambio de tamaño de ventana (modo móvil/deskop)
   function resetLayoutOnResize() {
@@ -137,17 +159,41 @@ const { Content } = await render(tutorial)
 
     const startX = e.clientX
     const startLeftWidth = leftPane.offsetWidth
-    const minWidth = 250
+    const minWidth = 10
     const maxWidth = window.innerWidth - minWidth
 
     function onMouseMove(ev) {
       const dx = ev.clientX - startX
       const newLeftWidth = Math.min(Math.max(startLeftWidth + dx, minWidth), maxWidth)
       const newRightWidth = window.innerWidth - newLeftWidth - 40 // margen del separador
+
       leftPane.style.flex = 'none'
       rightPane.style.flex = 'none'
       leftPane.style.width = newLeftWidth + 'px'
       rightPane.style.width = newRightWidth + 'px'
+
+      //dentro del manejador de movimiento o lógica:
+      if (newLeftWidth <= 150 ) {
+        leftPane.style.width = '50px'
+        rightPane.style.flex = '1'
+        articleInfo.style.opacity = '0'
+        titleInfo.style.display = 'block'
+      } else {
+       articleInfo.style.opacity = '1'
+       titleInfo.style.display = 'none'
+      }
+
+      if (newRightWidth <= 150) {
+        rightPane.style.width = '50px'
+        leftPane.style.flex = '1'
+        contentEditor.style.opacity = '0'
+        barTopEditor.style.opacity = '0'
+        titleEditor.style.display = 'block'
+      } else {
+        contentEditor.style.opacity = '1'
+        barTopEditor.style.opacity = '1'
+        titleEditor.style.display = 'none'
+      }
     }
 
     function onMouseUp() {
