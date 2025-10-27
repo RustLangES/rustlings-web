@@ -1,7 +1,7 @@
 import CodeMirror from "@uiw/react-codemirror"
 import { useCallback, useState } from "react"
-import { rust } from "../../../helpers/config"
-import { gruvbox } from "../../../helpers/theme"
+import { rust } from "~/helpers/config"
+import { gruvbox } from "~/helpers/theme"
 
 export function CodeEditor() {
 	const [value, setValue] = useState('fn main() {\n    println!("Hola, mundo!");\n}\n')
