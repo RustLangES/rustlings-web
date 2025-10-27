@@ -38,9 +38,9 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 			)}
 
 			<aside
-				className={`fixed top-[-10px]  ${sidePosition}
+				className={`fixed top-[-10px] z-50  ${sidePosition}
           h-[calc(100vh-2px)] w-84
-          bg-dark-fg/95 backdrop-blur-md
+          bg-dark-fg/98 backdrop-blur-md
           border-[var(--stroke-color)] shadow-[0_0_30px_rgba(0,0,0,0.4)]
           transform transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
           z-50 flex flex-col overflow-hidden
