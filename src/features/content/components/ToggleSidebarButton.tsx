@@ -1,5 +1,5 @@
 import { IconMenu4 } from "@tabler/icons-react"
-import { toggleOpenSidebarStore } from "../../../stores/sidebar/open-sidebar-store"
+import { toggleOpenSidebarStore } from "~/stores/sidebar/open-sidebar-store"
 
 export default function ToggleSidebarButton() {
 	return (

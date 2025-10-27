@@ -1,10 +1,9 @@
 ---
 import { Image } from "astro:assets"
-
-import ToggleSidebarButton from "@features/content/components/ToggleSidebarButton"
 import { IconBrandGithub, IconPlayerPlay } from "@tabler/icons-react"
+import logoImage from "~/assets/images/webp/logo.webp"
 import { allContent } from "~/content.config"
-import logoImage from "../../../assets/images/webp/logo.webp"
+import ToggleSidebarButton from "~/features/content/components/ToggleSidebarButton"
 import Sidebar from "../sidebar/Sidebar"
 
 const sidebarItems = allContent.map((i) => ({
