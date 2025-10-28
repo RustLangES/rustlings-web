@@ -1,7 +1,6 @@
 import { useStore } from "@nanostores/react"
 import { IconX } from "@tabler/icons-react"
-
-import { closeSidebarStore, useOpenSidebarStore } from "../../../stores/sidebar/open-sidebar-store"
+import { closeSidebarStore, useOpenSidebarStore } from "~/stores/sidebar/open-sidebar-store"
 
 export type SidebarItem = {
 	label: string
