@@ -25,7 +25,6 @@ export const allContent = await getCollection("content").then((entries) => {
 			return { ...entry, id, slug }
 		})
 })
-console.log("allContent", allContent)
 /**
  * Exporta las colecciones definidas para Astro.
  *
