@@ -1,13 +1,11 @@
 ---
+import { Image } from "astro:assets"
 import { IconBrandDiscord, IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react"
+import logoImage from "~/assets/images/webp/logo.webp"
 
-const logoSrc = "/logo.webp"
 const githubUrl = "https://github.com/RustLangES/rustlings-web"
 const linkedinUrl = "https://www.linkedin.com/company/rustlanges/posts/?feedView=all"
 const discordUrl = "https://discord.com/channels/778674594856960012/1292726289479893044"
-
-import { Image } from "astro:assets"
-import logoImage from "../../../assets/images/webp/logo.webp"
 
 const socialLinks = [
 	{ href: githubUrl, icon: IconBrandGithub, label: "GitHub" },
