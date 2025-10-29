@@ -7,7 +7,7 @@ export default function ToggleSidebarButton() {
 			type="button"
 			aria-label="Abrir menú"
 			onClick={toggleOpenSidebarStore}
-			className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary border border-transparent hover:border-yellow hover:text-yellow rounded-lg transition-all duration-300"
+			className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary border border-transparent hover:border-yellow hover:text-yellow rounded-lg transition-all duration-300 cursor-pointer"
 		>
 			<IconMenu4 size={22} stroke={2} />
 			<span>Contenido</span>

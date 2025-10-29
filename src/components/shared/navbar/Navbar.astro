@@ -29,7 +29,7 @@ const sidebarItems = allContent.map((i) => ({
 
     <button
       class="md:absolute md:left-1/2 md:-translate-x-1/2 ml-auto flex items-center gap-1.5 bg-neutral-500/40 px-2 py-1 rounded-md
-    hover:bg-neutral-500/70 text-sm"
+    hover:bg-neutral-500/70 text-sm cursor-pointer"
     >
       <IconPlayerPlay size={18} /> Ejecutar
     </button>
@@ -37,7 +37,7 @@ const sidebarItems = allContent.map((i) => ({
     <Sidebar items={sidebarItems} title="Contenido" position="left" client:load />
 
     <figure
-      class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
+      class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center cursor-pointer"
     >
       <IconBrandGithub size={20} />
     </figure>
