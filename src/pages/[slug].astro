@@ -1,6 +1,6 @@
 ---
 import { render } from "astro:content"
-import { IconCode, IconFile, IconGripVertical, IconLicense, IconTerminal } from "@tabler/icons-react"
+import { IconCode, IconGripVertical, IconLicense, IconTerminal } from "@tabler/icons-react"
 import { CodeEditor } from "~/components/shared/editor/CodeEditor"
 import Navbar from "~/components/shared/navbar/Navbar.astro"
 import Section from "~/components/shared/sections/Section.astro"
@@ -29,13 +29,14 @@ const { Content } = await render(tutorial)
   <Navbar />
   <div
     id="main-container"
-    class="flex flex-col gap-2 lg:gap-0 lg:flex-row mx-2 max-h-[calc(100vh-75px)] mt-0 overflow-hidden"
+    class="flex flex-col flex-1 gap-2 lg:gap-0 lg:flex-row px-2 max-h-[calc(100vh-75px)] mt-0 overflow-hidden"
   >
     <!-- Panel izquierdo: Contenido -->
     <Section
       id="left-pane"
       className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 overflow-x-auto"
     >
+    <!-- titulo: Contenido -->
     <div id="title-info"  class="absolute left-0 top-14 w-full hidden">
         <div class="relative">
           <IconLicense stroke={2} size={14} className="rotate-90 absolute -top-9 left-4.5 text-yellow" />
@@ -65,26 +66,21 @@ const { Content } = await render(tutorial)
     <!-- Panel derecho: Editor + Terminal -->
     <Section
       id="right-pane"
-      className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150"
+      className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-100"
     >
-
+    <!-- titulo: Editor -->
     <div id="title-editor"  class="absolute left-0 top-14 w-full hidden">
         <div class="relative">
           <IconCode stroke={2} size={16} className="rotate-90 absolute -top-9 left-4.5 text-yellow" />
           <h2 class="text-[12px] font-bold text-center rotate-90">Editor</h2>
         </div>
       </div>
-      
 
-
-       <!-- Barra superior -->
+       <!-- Header -->
       <div id="bar-top" class="flex justify-between border-b border-stroke-color rounded-t-2xl p-2">
         <div class="flex gap-2">
-          <button
-            class="flex items-center gap-1.5 bg-neutral-500/40 px-2 py-1 rounded-md hover:bg-neutral-500/70 text-sm"
-          >
-            <IconFile size={18} /> Código
-          </button>
+          <IconCode stroke={2} size={16} className="ml-1 text-yellow" />
+          <h2 class="text-[13px] font-semibold text-center">Editor</h2>
         </div>
       </div>
 
@@ -102,9 +98,9 @@ const { Content } = await render(tutorial)
           id="terminal"
           class="h-40 overflow-auto bg-editor-bg border-t border-stroke-color rounded-b-2xl text-sm font-mono bg-dark-fg"
         >
-          <div class="flex items-center gap- border-b border-stroke-color bg-light-bg px-3 py-2">
+          <div class="flex items-end gap-2 border-b border-stroke-color bg-light-bg px-3 h-8">
             <button
-              class="flex items-center gap-2 px-3 rounded-sm text-fg font-medium shadow-inner hover:bg-neutral-600/90 transition-colors"
+              class="flex items-center gap-2 px-3 py-1 rounded-t-sm text-fg font-medium shadow-inner hover:bg-neutral-600/90 transition-colors"
             >
               <IconTerminal size={18} />
               <span>Terminal</span>
@@ -164,7 +160,7 @@ const { Content } = await render(tutorial)
     function onMouseMove(ev) {
       const dx = ev.clientX - startX
       const newLeftWidth = Math.min(Math.max(startLeftWidth + dx, minWidth), maxWidth)
-      const newRightWidth = window.innerWidth - newLeftWidth - 40 // margen del separador
+      const newRightWidth = window.innerWidth - newLeftWidth - 30 // margen del separador
 
       leftPane.style.flex = 'none'
       rightPane.style.flex = 'none'
