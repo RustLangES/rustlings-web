@@ -16,7 +16,7 @@ export function CodeEditor() {
 			extensions={[rust()]}
 			theme={gruvbox}
 			onChange={onChange}
-			className="flex-1 min-h-[200px] overflow-y-auto scroll-container"
+			className="flex-1 min-h-[300px] overflow-y-auto scroll-container"
 			id="editor"
 		/>
 	)
