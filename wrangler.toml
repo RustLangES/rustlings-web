@@ -1,0 +1,11 @@
+name = "rustlings"
+compatibility_date = "2025-10-29"
+
+[assets]
+directory = "./dist"
+
+[placement]
+mode = "smart"
+
+[observability]
+enabled = true
