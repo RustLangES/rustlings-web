@@ -1,5 +1,7 @@
 ---
 import "~/styles/global.css"
+
+const { title = "RustLings Web" } = Astro.props
 ---
 
 <!doctype html>
@@ -9,7 +11,7 @@ import "~/styles/global.css"
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml+webp" href="" />
     <meta name="generator" content={Astro.generator} />
-    <title>RustLings Web</title>
+    <title>{title}</title>
   </head>
   <body class="bg-primary text-secondary font-family-poppins">
     <slot />
