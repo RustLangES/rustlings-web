@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets"
+import figuresSvg from "~/assets/images/figures.svg"
 import ferrisImage from "~/assets/images/webp/ferris.webp"
 import Section from "~/components/shared/sections/Section.astro"
 ---
@@ -8,9 +9,9 @@ import Section from "~/components/shared/sections/Section.astro"
   id="playground"
   className="relative flex flex-col justify-center items-center w-full py-20 px-6 bg-dark-fg"
 >
-  <div class="w-full h-12 absolute bottom-full bg-[url('/images/figures.svg')] bg-repeat-x"></div>
+  <div class="w-full h-12 absolute bottom-full bg-repeat-x" style={`background-image: url(${figuresSvg.src})`}></div>
 
-  <h1 class="text-5xl sm:text-6xl font-extrabold text-center mb-12">Prueba Rust en tu navegador</h1>
+  <h2 class="text-5xl md:text-6xl font-extrabold text-center mb-12">Prueba Rust en tu navegador</h2>
 
   <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-10">
     <Image
@@ -27,8 +28,5 @@ import Section from "~/components/shared/sections/Section.astro"
     </p>
   </div>
 
-  <div
-    class="w-full rotate-180 h-12 absolute top-full bg-[url('/images/figures.svg')] bg-repeat-x"
-  >
-  </div>
+  <div class="w-full rotate-180 h-12 absolute top-full bg-repeat-x" style={`background-image: url(${figuresSvg.src})`}></div>
 </Section>
