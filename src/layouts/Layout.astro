@@ -1,14 +1,18 @@
 ---
 import "~/styles/global.css"
 
-const { title = "RustLings Web" } = Astro.props
+const {
+	title = "RustLings Web",
+	description = "Aprende Rust mediante ejercicios interactivos y desafíos. ¡Todo explicado aquí!",
+} = Astro.props
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml+webp" href="" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
