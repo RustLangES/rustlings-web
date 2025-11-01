@@ -1,9 +1,10 @@
 ---
+import { render } from "astro:content"
 import { allContent } from "~/content.config"
-import CodeEditor from "~/features/content/ui/CodeEditor.astro"
+import ReactMarkdownContainer from "~/features/content/react/ReactMarkdownContainer.tsx"
+import ReactPanelContainer from "~/features/content/react/ReactPanelContainer.tsx"
+import ReactPlayground from "~/features/content/react/ReactPlayground.tsx"
 import Main from "~/features/content/ui/Main.astro"
-import Markdown from "~/features/content/ui/Markdown.astro"
-import SplitPanel from "~/features/content/ui/SplitPanel.astro"
 import Navbar from "~/features/shared/ui/Navbar.astro"
 import Layout from "~/layouts/Layout.astro"
 
@@ -20,15 +21,28 @@ export function getStaticPaths() {
 	})
 }
 
-let { tutorial, previous, next } = Astro.props
+const { tutorial, previous, next } = Astro.props
+const { Content } = await render(tutorial)
 ---
 
 <Layout>
   <Main>
     <Navbar/>
-    <SplitPanel>
-      <Markdown slot="left" tutorial={tutorial} previous={previous} next={next}/>
-      <CodeEditor slot="right"/>
-    </SplitPanel>
+    <ReactPanelContainer direction="horizontal" defaultLayout={[50, 50]} client:only="react">
+      <div
+        slot="first"
+        class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color mx-2 rounded-lg"
+      >
+        <ReactMarkdownContainer tutorial={'Probando Tutorial'}>
+          <Content/>
+        </ReactMarkdownContainer>
+      </div>
+      <div
+        slot="second"
+        class="h-full min-h-0 relative flex flex-col bg-light-bg border border-stroke-color mx-2 rounded-lg"
+      >
+          <ReactPlayground client:load />
+      </div>
+    </ReactPanelContainer>
   </Main>
 </Layout>

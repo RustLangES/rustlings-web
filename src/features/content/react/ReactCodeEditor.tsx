@@ -11,13 +11,16 @@ export default function ReactCodeEditor() {
 	}, [])
 
 	return (
-		<CodeMirror
-			value={value}
-			extensions={[rust()]}
-			theme={gruvbox}
-			onChange={onChange}
-			className="flex-1 min-h-[300px] overflow-y-auto scroll-container"
-			id="editor"
-		/>
+		<div className="h-full min-h-[300px]">
+			<CodeMirror
+				value={value}
+				extensions={[rust()]}
+				theme={gruvbox}
+				onChange={onChange}
+				height="100%"
+				className="overflow-hidden"
+				id="editor"
+			/>
+		</div>
 	)
 }
