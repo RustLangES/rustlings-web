@@ -22,9 +22,6 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"security": {
-				"noDangerouslySetInnerHtml": "off"
-			},
 			"recommended": true,
 			"suspicious": {
 				"noExplicitAny": "warn",
