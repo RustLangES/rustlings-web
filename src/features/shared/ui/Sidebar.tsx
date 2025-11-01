@@ -61,7 +61,7 @@ export default function Sidebar({ title = "Menú", items = [], position = "left"
 				<nav className="flex flex-col gap-2 p-4 text-secondary overflow-y-auto" aria-label="Menú de navegación">
 					<ul className="space-y-2">
 						{items.map((item) => (
-							<li key={item.label}>
+							<li key={item.label + Math.random()}>
 								{item.href ? (
 									<a
 										href={item.href}
