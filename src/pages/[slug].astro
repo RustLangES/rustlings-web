@@ -31,7 +31,7 @@ const { Content } = await render(tutorial)
     <ReactPanelContainer direction="horizontal" defaultLayout={[50, 50]} client:only="react">
       <div
         slot="first"
-        class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color mx-2 rounded-lg"
+        class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color ms-2 rounded-lg"
       >
         <ReactMarkdownContainer tutorial={'Probando Tutorial'}>
           <Content/>
@@ -39,7 +39,7 @@ const { Content } = await render(tutorial)
       </div>
       <div
         slot="second"
-        class="h-full min-h-0 relative flex flex-col bg-light-bg border border-stroke-color mx-2 rounded-lg"
+        class="h-full min-h-0 relative flex flex-col bg-light-bg border border-stroke-color me-2 rounded-lg"
       >
           <ReactPlayground client:load />
       </div>
