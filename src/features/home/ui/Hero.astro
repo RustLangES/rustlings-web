@@ -2,15 +2,14 @@
 import { Image } from "astro:assets"
 import { IconBrandGithub } from "@tabler/icons-react"
 import logoImage from "~/assets/images/webp/logo.webp"
-import Section from "~/components/shared/sections/Section.astro"
 import { allContent } from "~/content.config"
 
 const content = allContent.find((c) => c.slug)
 ---
 
-<Section
+<section
   id="hero"
-  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6"
+  class="relative min-h-screen flex flex-col justify-center items-center text-center px-6"
 >
   <a
     href="https://github.com/RustLangES/rustlings-web"
@@ -43,7 +42,7 @@ const content = allContent.find((c) => c.slug)
   >
     Aprender
   </a>
-</Section>
+</section>
 
 <style>
   .logo {

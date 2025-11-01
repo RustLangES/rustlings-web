@@ -2,9 +2,9 @@
 import { Image } from "astro:assets"
 import { IconBrandGithub, IconPlayerPlay } from "@tabler/icons-react"
 import logoImage from "~/assets/images/webp/logo.webp"
-import Sidebar from "~/components/shared/sidebar/Sidebar"
 import { allContent } from "~/content.config"
-import ToggleSidebarButton from "~/features/content/components/ToggleSidebarButton"
+import ToggleSidebarButton from "~/features/content/ui/ToggleSidebarButton.tsx"
+import Sidebar from "~/features/shared/ui/Sidebar.tsx"
 
 const sidebarItems = allContent.map((i) => ({
 	label: i.slug || "",

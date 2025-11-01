@@ -1,0 +1,15 @@
+---
+import { IconLicense } from "@tabler/icons-react"
+---
+
+<section
+  class="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 overflow-x-auto"
+>
+  <div id="title-info" class="absolute left-0 top-14 w-full hidden">
+    <div class="relative">
+      <IconLicense stroke={2} size={14} className="rotate-90 absolute -top-9 left-4.5 text-yellow"/>
+      <h2 class="text-[12px] font-bold text-center rotate-90">Contenido</h2>
+    </div>
+  </div>
+  <slot/>
+</section>

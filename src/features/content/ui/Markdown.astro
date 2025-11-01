@@ -1,0 +1,30 @@
+---
+import { render } from "astro:content"
+import { IconLicense } from "@tabler/icons-react"
+import React from "react"
+import NavButtons from "~/features/content/ui/NavButtons.astro"
+
+const { tutorial, previous, next } = Astro.props
+const { Content } = await render(tutorial)
+---
+
+<section
+  class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color mx-2 rounded-lg"
+>
+  <div id="title-info" class="absolute left-0 top-14 w-full hidden">
+    <div class="relative">
+      <IconLicense stroke={2} size={14} className="rotate-90 absolute -top-9 left-4.5 text-yellow"/>
+      <h2 class="text-[12px] font-bold text-center rotate-90">Contenido</h2>
+    </div>
+  </div>
+  <article id="article-info" class="scroll-container m-2 overflow-y-auto p-2">
+    <article class="mb-6 text-secondary min-w-[400px]" id="content-markdown">
+      <h2 class="text-xl font-bold mb-2">{tutorial.data.title}</h2>
+      <Content/>
+      <hr class="my-6 border-gray-700"/>
+    </article>
+    <div class="flex justify-center pb-2 mt-auto min-w-[400px]">
+      <NavButtons previous={previous} next={next}/>
+    </div>
+  </article>
+</section>

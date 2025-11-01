@@ -1,0 +1,13 @@
+---
+import ReactPanelContainer from "~/features/content/react/ReactPanelContainer.tsx"
+
+const leftHtml = await Astro.slots.render("left")
+const rightHtml = await Astro.slots.render("right")
+---
+
+<ReactPanelContainer
+  leftHtml={leftHtml}
+  rightHtml={rightHtml}
+  client:load
+/>
+

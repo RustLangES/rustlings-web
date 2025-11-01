@@ -3,7 +3,7 @@ import { useCallback, useState } from "react"
 import { rust } from "~/helpers/config"
 import { gruvbox } from "~/helpers/theme"
 
-export function CodeEditor() {
+export default function ReactCodeEditor() {
 	const [value, setValue] = useState('fn main() {\n    println!("Hola, mundo!");\n}\n')
 
 	const onChange = useCallback((val: string) => {
