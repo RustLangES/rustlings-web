@@ -1,8 +1,13 @@
-import { IconTerminal } from "@tabler/icons-react"
+import { IconLoader2, IconTerminal } from "@tabler/icons-react"
+import { useRustCompilerStore } from "~/features/content/stores/useRustCompilerStore.ts"
 
 export default function ReactTerminal() {
+	const isExecuting = useRustCompilerStore((state) => state.isExecuting)
+	const liveOutput = useRustCompilerStore((state) => state.liveOutput)
+	const result = useRustCompilerStore((state) => state.result)
+
 	return (
-		<div className="overflow-auto border-t border-stroke-color rounded-b-lg text-sm font-mono bg-dark-fg h-full">
+		<div className="border-t border-stroke-color rounded-b-lg text-sm font-mono bg-dark-fg h-full flex flex-col">
 			<div className="flex items-end gap-2 border-b border-stroke-color bg-light-bg px-3 h-8">
 				<button
 					type="button"
@@ -13,9 +18,31 @@ export default function ReactTerminal() {
 				</button>
 			</div>
 
-			<div className="flex items-start p-3 text-fg">
-				<span className="text-yellow">$&nbsp;</span>
-				<span className="text-fg">cargo run</span>
+			<div className="p-3 text-fg space-y-2 font-mono overflow-auto flex-1 min-h-0">
+				{isExecuting && (
+					<div className="text-yellow-400 font-semibold flex items-center gap-2">
+						<IconLoader2 className={"animate-spin size-4"} /> $ cargo run
+					</div>
+				)}
+
+				{liveOutput.stdout && (
+					<div className="whitespace-pre-wrap font-medium">
+						<span className="text-cyan-400">{">>> "}</span>
+						<span className="text-emerald-300">{liveOutput.stdout}</span>
+					</div>
+				)}
+
+				{liveOutput.stderr && (
+					<div className="whitespace-pre-wrap">
+						<span className="text-neutral-400">{liveOutput.stderr}</span>
+					</div>
+				)}
+
+				{result && !isExecuting && (
+					<div className={`font-semibold ${result.success ? "text-emerald-400" : "text-red-500"}`}>
+						{result.success ? "✓ Compilado exitosamente" : "✗ Error de compilación"}
+					</div>
+				)}
 			</div>
 		</div>
 	)
