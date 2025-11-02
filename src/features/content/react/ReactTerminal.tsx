@@ -2,7 +2,7 @@ import { IconTerminal } from "@tabler/icons-react"
 
 export default function ReactTerminal() {
 	return (
-		<div className="overflow-auto border-t border-stroke-color rounded-b-2xl text-sm font-mono bg-dark-fg h-full">
+		<div className="overflow-auto border-t border-stroke-color rounded-b-lg text-sm font-mono bg-dark-fg h-full">
 			<div className="flex items-end gap-2 border-b border-stroke-color bg-light-bg px-3 h-8">
 				<button
 					type="button"
