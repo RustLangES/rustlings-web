@@ -15,7 +15,7 @@ const chalky = "#d79921",
 	sage = "#8ec07c",
 	whiskey = "#fe9019",
 	violet = "#b16286",
-	// darkBackground = "#1d2021",
+	darkBackground = "#1d2021",
 	highlightBackground = "#1d2021",
 	tooltipBackground = "#3c3836",
 	selection = "#504945",
@@ -32,13 +32,33 @@ export const gruvboxDarkTheme = EditorView.theme(
 			height: "100%",
 		},
 
-		".cm-editor": { height: "100%" },
-		".cm-scroller": { height: "100%" },
+		".cm-content": {
+			caretColor: cursor,
+		},
 
-		".cm-content": { caretColor: cursor },
 		".cm-cursor, .cm-dropCursor": { borderLeftColor: cursor },
 		"&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection": {
 			backgroundColor: selection,
+		},
+
+		".cm-panels": { backgroundColor: darkBackground, color: ivory },
+		".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
+		".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
+
+		".cm-searchMatch": {
+			backgroundColor: "#72a1ff59",
+			outline: "1px solid #457dff",
+		},
+		".cm-searchMatch.cm-searchMatch-selected": {
+			backgroundColor: "#6199ff2f",
+		},
+
+		".cm-activeLine": { backgroundColor: highlightBackground },
+		".cm-selectionMatch": { backgroundColor: "#aafe661a" },
+
+		"&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
+			backgroundColor: "#bad0f847",
+			outline: "1px solid #515a6b",
 		},
 
 		".cm-gutters": {
