@@ -1,10 +1,15 @@
-import { IconCode } from "@tabler/icons-react"
+import type { ReactNode } from "react"
 
-export default function ReactPanelHeader() {
+interface ReactPanelHeaderProps {
+	icon: ReactNode
+	title: string
+}
+
+export default function ReactPanelHeader({ icon, title }: ReactPanelHeaderProps) {
 	return (
 		<div className="flex items-center gap-2 px-4 h-10 bg-light-bg border-b border-stroke-color">
-			<IconCode size={16} />
-			<span className="font-medium">Editor</span>
+			{icon}
+			<span className="font-medium">{title}</span>
 		</div>
 	)
 }
