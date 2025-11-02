@@ -1,10 +1,12 @@
+import { OutputVariant } from "~/features/content/enums/OutputVariant.enum.ts"
+
 interface OutputLineProps {
 	type: "stdout" | "stderr"
 	content: string
 }
 
 export default function OutputLine({ type, content }: OutputLineProps) {
-	if (type === "stdout") {
+	if (type === OutputVariant.Stdout) {
 		return (
 			<div className="whitespace-pre-wrap font-medium">
 				<span className="text-cyan-400">{">>> "}</span>
@@ -13,7 +15,7 @@ export default function OutputLine({ type, content }: OutputLineProps) {
 		)
 	}
 
-	if (type === "stderr") {
+	if (type === OutputVariant.Stderr) {
 		return (
 			<div className="whitespace-pre-wrap">
 				<span className="text-neutral-400">{content}</span>
