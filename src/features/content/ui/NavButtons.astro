@@ -1,53 +1,43 @@
 ---
 import { IconArrowBigLeftLinesFilled, IconArrowBigRightLinesFilled } from "@tabler/icons-react"
 
-const { ...pagination } = Astro.props
+const { previous, next } = Astro.props
 ---
 
+<nav class="w-full flex items-center justify-between min-w-[200px]" aria-label="Navegación de contenido">
+  <a
+    {...((previous && { href: `/${previous.slug}`, "aria-label": `Anterior: ${previous.title}` }) || {})}
+    class:list={[
+      "flex items-center gap-2 h-14 px-4 group hover:bg-dark-fg/40 transition-all duration-200 rounded-md",
+      { "opacity-50 pointer-events-none": !previous }
+    ]}
+  >
+    <span class="block w-6 h-6 rounded-lg group-hover:text-yellow transition-all duration-200 transform group-hover:-translate-x-1">
+      <IconArrowBigLeftLinesFilled size={20} stroke={2} />
+    </span>
+    <div class="text-left flex flex-col">
+      <span class:list={["text-md font-medium", previous ? "text-yellow" : "text-stroke-color"]}>
+        Anterior
+      </span>
+      <span class="text-xs text-[#ccc]">{previous?.title || "-"}</span>
+    </div>
+  </a>
 
-<div class="w-full flex items-center justify-between min-w-[200px]">
-  {
-    (
-      <a
-        href={`/${pagination.previousPath}`}
-        aria-label="Anterior"
-        class={`flex items-center justify-center gap-2 h-14 px-4 group hover:bg-dark-fg/40 transition-all duration-200 ease-in-out rounded-md cursor-pointer
-      ${!pagination.previousPath ? 'opacity-50 pointer-events-none' : ''}`}
-      >
-        <span class="block w-6 h-6 rounded-lg group-hover:text-yellow transform group-hover:-translate-x-1 transition-all duration-200 ease-in-out">
-          <IconArrowBigLeftLinesFilled size={20} stroke={2} />
-        </span>
-        <div class="text-left flex flex-col">
-          <h3
-            class={`text-md font-medium ${!pagination.previousPath ? 'text-stroke-color' : 'text-yellow'}`}
-          >
-            Anterior
-          </h3>
-          <span class="text-[12px] text-[#ccc]">{pagination.previousPath}</span>
-        </div>
-      </a>
-    )
-  }
-  {
-    (
-      <a
-        href={`/${pagination.nextPath}`}
-        aria-label="Siguiente"
-        class={`flex items-center justify-center gap-2 h-14 px-4 group hover:bg-dark-fg/40 transition-all duration-200 ease-in-out rounded-md cursor-pointer
-      ${!pagination.nextPath ? 'opacity-50 pointer-events-none' : ''}`}
-      >
-        <div class="text-right flex flex-col">
-          <h3
-            class={`text-md font-medium ${!pagination.nextPath ? 'text-stroke-color' : 'text-yellow'}`}
-          >
-            Siguiente
-          </h3>
-          <span class="text-[12px] text-[#ccc]">{pagination.nextPath}</span>
-        </div>
-        <span class="block w-6 h-6 rounded-lg group-hover:text-yellow transform group-hover:translate-x-1 transition-all duration-200 ease-in-out">
-          <IconArrowBigRightLinesFilled size={20} stroke={2} />
-        </span>
-      </a>
-    )
-  }
-</div>
+  <a
+    {...((next && { href: `/${next.slug}`, "aria-label": `Siguiente: ${next.title}` }) || {})}
+    class:list={[
+      "flex items-center gap-2 h-14 px-4 group hover:bg-dark-fg/40 transition-all duration-200 rounded-md",
+      { "opacity-50 pointer-events-none": !next }
+    ]}
+  >
+    <div class="text-right flex flex-col">
+      <span class:list={["text-md font-medium", next ? "text-yellow" : "text-stroke-color"]}>
+        Siguiente
+      </span>
+      <span class="text-xs text-[#ccc]">{next?.title || "-"}</span>
+    </div>
+    <span class="block w-6 h-6 rounded-lg group-hover:text-yellow transition-all duration-200 transform group-hover:translate-x-1">
+      <IconArrowBigRightLinesFilled size={20} stroke={2} />
+    </span>
+  </a>
+</nav>

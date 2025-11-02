@@ -1,29 +1,26 @@
 ---
-import { render } from "astro:content"
-import { allContent } from "~/content.config"
 import { PanelVariant } from "~/features/content/enums/PanelVariant.enum.ts"
 import ReactMarkdownContainer from "~/features/content/react/ReactMarkdownContainer.tsx"
 import ReactPanelContainer from "~/features/content/react/ReactPanelContainer.tsx"
 import ReactPlayground from "~/features/content/react/ReactPlayground.tsx"
 import Main from "~/features/content/ui/Main.astro"
+import NavButtons from "~/features/content/ui/NavButtons.astro"
 import Navbar from "~/features/shared/ui/Navbar.astro"
+import articles from "~/helpers/content-manager"
 import Layout from "~/layouts/Layout.astro"
 
 export function getStaticPaths() {
-	return allContent.map((tutorial) => {
-		return {
-			params: { slug: tutorial.slug },
-			props: {
-				tutorial,
-				previous: tutorial.data.previousPath || null,
-				next: tutorial.data.nextPath || null,
-			},
-		}
-	})
+	return articles.map((article, index) => ({
+		params: { slug: article.meta.slug },
+		props: {
+			Content: article.Content,
+			previousArticle: articles[index - 1],
+			nextArticle: articles[index + 1],
+		},
+	}))
 }
 
-const { tutorial, previous, next } = Astro.props
-const { Content } = await render(tutorial)
+const { Content, previousArticle, nextArticle } = Astro.props
 ---
 
 <Layout>
@@ -35,7 +32,9 @@ const { Content } = await render(tutorial)
         class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color ms-2 rounded-lg"
       >
         <ReactMarkdownContainer client:only="react">
-          <Content/>
+          <Content />
+          <hr class="my-6 border-gray-700" />
+          <NavButtons previous={previousArticle?.meta} next={nextArticle?.meta} />
         </ReactMarkdownContainer>
       </div>
       <div
