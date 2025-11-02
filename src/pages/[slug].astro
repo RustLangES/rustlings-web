@@ -33,7 +33,7 @@ const { Content } = await render(tutorial)
         slot="first"
         class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color ms-2 rounded-lg"
       >
-        <ReactMarkdownContainer tutorial={'Probando Tutorial'}>
+        <ReactMarkdownContainer client:only="react">
           <Content/>
         </ReactMarkdownContainer>
       </div>
