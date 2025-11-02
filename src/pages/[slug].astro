@@ -1,6 +1,7 @@
 ---
 import { render } from "astro:content"
 import { allContent } from "~/content.config"
+import { PanelVariant } from "~/features/content/PanelVariant.enum.ts"
 import ReactMarkdownContainer from "~/features/content/react/ReactMarkdownContainer.tsx"
 import ReactPanelContainer from "~/features/content/react/ReactPanelContainer.tsx"
 import ReactPlayground from "~/features/content/react/ReactPlayground.tsx"
@@ -28,7 +29,7 @@ const { Content } = await render(tutorial)
 <Layout>
   <Main>
     <Navbar/>
-    <ReactPanelContainer direction="horizontal" defaultLayout={[50, 50]} client:only="react">
+    <ReactPanelContainer direction="horizontal" defaultLayout={[50, 50]} variant={PanelVariant.ContentToEditor} client:only="react">
       <div
         slot="first"
         class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color ms-2 rounded-lg"
@@ -41,7 +42,7 @@ const { Content } = await render(tutorial)
         slot="second"
         class="h-full min-h-0 relative flex flex-col bg-light-bg border border-stroke-color me-2 rounded-lg"
       >
-          <ReactPlayground client:load />
+        <ReactPlayground client:load />
       </div>
     </ReactPanelContainer>
   </Main>
