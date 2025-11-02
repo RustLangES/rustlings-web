@@ -1,6 +1,6 @@
 import { IconLicense } from "@tabler/icons-react"
 import { type ReactNode } from "react"
-import { PanelVariant } from "~/features/content/PanelVariant.enum.ts"
+import { PanelVariant } from "~/features/content/enums/PanelVariant.enum.ts"
 import ReactCollapsiblePanel from "~/features/content/react/ReactCollapsiblePanel.tsx"
 import { usePanelStore } from "~/features/content/stores/Panel.store.ts"
 

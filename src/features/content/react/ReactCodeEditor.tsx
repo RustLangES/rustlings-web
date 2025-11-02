@@ -1,17 +1,23 @@
 import CodeMirror from "@uiw/react-codemirror"
-import { useCallback, useState } from "react"
+import { useCallback } from "react"
+import { useRustCompilerStore } from "~/features/content/stores/useRustCompilerStore.ts"
 import { rust } from "~/helpers/config"
 import { gruvbox } from "~/helpers/theme"
 
 export default function ReactCodeEditor() {
-	const [value, setValue] = useState("fn main() {\n" + '    println!("Hola, mundo!");\n'.repeat(100) + "}\n")
-	const onChange = useCallback((val: string) => {
-		setValue(val)
-	}, [])
+	const code = useRustCompilerStore((state) => state.code)
+	const setCode = useRustCompilerStore((state) => state.setCode)
+
+	const onChange = useCallback(
+		(val: string) => {
+			setCode(val)
+		},
+		[setCode],
+	)
 
 	return (
 		<CodeMirror
-			value={value}
+			value={code}
 			extensions={[rust()]}
 			theme={gruvbox}
 			onChange={onChange}

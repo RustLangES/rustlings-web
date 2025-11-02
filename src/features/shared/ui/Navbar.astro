@@ -3,6 +3,7 @@ import { Image } from "astro:assets"
 import { IconBrandGithub, IconPlayerPlay } from "@tabler/icons-react"
 import logoImage from "~/assets/images/webp/logo.webp"
 import { allContent } from "~/content.config"
+import ReactExecuteRust from "~/features/content/react/ReactExecuteRust.tsx"
 import ToggleSidebarButton from "~/features/content/ui/ToggleSidebarButton.tsx"
 import Sidebar from "~/features/shared/ui/Sidebar.tsx"
 
@@ -24,22 +25,17 @@ const sidebarItems = allContent.map((i) => ({
           class="h-10 w-10 hover:scale-105 transition-transform duration-200"
         />
       </a>
-      <ToggleSidebarButton client:load />
+      <ToggleSidebarButton client:load/>
     </div>
 
-    <button
-      class="md:absolute md:left-1/2 md:-translate-x-1/2 ml-auto flex items-center gap-1.5 bg-neutral-500/40 px-2 py-1 rounded-md
-    hover:bg-neutral-500/70 text-sm cursor-pointer"
-    >
-      <IconPlayerPlay size={18} /> Ejecutar
-    </button>
+    <ReactExecuteRust client:load/>
 
-    <Sidebar items={sidebarItems} title="Contenido" position="left" client:load />
+    <Sidebar items={sidebarItems} title="Contenido" position="left" client:load/>
 
     <figure
       class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center cursor-pointer"
     >
-      <IconBrandGithub size={20} />
+      <IconBrandGithub size={20}/>
     </figure>
   </nav>
 </header>

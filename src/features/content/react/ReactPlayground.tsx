@@ -1,5 +1,5 @@
 import { IconCode } from "@tabler/icons-react"
-import { PanelVariant } from "~/features/content/PanelVariant.enum.ts"
+import { PanelVariant } from "~/features/content/enums/PanelVariant.enum.ts"
 import ReactCodeEditor from "~/features/content/react/ReactCodeEditor.tsx"
 import ReactCollapsiblePanel from "~/features/content/react/ReactCollapsiblePanel.tsx"
 import ReactPanelContainer from "~/features/content/react/ReactPanelContainer.tsx"

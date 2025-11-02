@@ -1,8 +1,8 @@
 import { IconGripVertical } from "@tabler/icons-react"
 import { type ReactNode, useEffect, useMemo, useRef } from "react"
 import { type ImperativePanelHandle, Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels"
+import { PanelVariant } from "~/features/content/enums/PanelVariant.enum.ts"
 import usePanelContainerBreakpoints from "~/features/content/hooks/usePanelContainerBreakpoints.ts"
-import { PanelVariant } from "~/features/content/PanelVariant.enum.ts"
 import { usePanelStore } from "~/features/content/stores/Panel.store.ts"
 import useWindowSize from "~/features/shared/hooks/useWindowSize.ts"
 
