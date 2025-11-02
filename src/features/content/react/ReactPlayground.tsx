@@ -16,7 +16,7 @@ export default function ReactPlayground() {
 				defaultLayout={[70, 30]}
 				second={<ReactTerminal />}
 				first={
-					<div className="min-h-0 grow">
+					<div className="h-full min-h-0 flex flex-col">
 						<ReactCodeEditor />
 					</div>
 				}
