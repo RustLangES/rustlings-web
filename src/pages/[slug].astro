@@ -26,12 +26,12 @@ const { Content, previousArticle, nextArticle } = Astro.props
 <Layout>
   <Main>
     <Navbar/>
-    <ReactPanelContainer direction="horizontal" defaultLayout={[50, 50]} variant={PanelVariant.ContentToEditor} client:only="react">
+    <ReactPanelContainer direction="horizontal" defaultLayout={[50, 50]} variant={PanelVariant.ContentToEditor} client:load>
       <div
         slot="first"
         class="overflow-auto bg-dark-secondary h-full relative flex flex-col bg-light-bg border border-stroke-color ms-2 rounded-lg"
       >
-        <ReactMarkdownContainer client:only="react">
+        <ReactMarkdownContainer client:idle>
           <Content />
           <hr class="my-6 border-gray-700" />
           <NavButtons previous={previousArticle?.meta} next={nextArticle?.meta} />
@@ -41,7 +41,7 @@ const { Content, previousArticle, nextArticle } = Astro.props
         slot="second"
         class="h-full min-h-0 relative flex flex-col bg-light-bg border border-stroke-color me-2 rounded-lg"
       >
-        <ReactPlayground client:load />
+        <ReactPlayground client:idle />
       </div>
     </ReactPanelContainer>
   </Main>
