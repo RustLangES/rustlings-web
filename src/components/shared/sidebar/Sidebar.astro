@@ -1,0 +1,134 @@
+---
+import { Image } from "astro:assets"
+import IconX from "~icons/tabler/x"
+
+export interface SidebarItem {
+	label: string
+	href?: string
+	icon?: string
+}
+
+interface Props {
+	title?: string
+	items?: SidebarItem[]
+	position?: "left" | "right"
+	id?: string
+	logo?: ImageMetadata
+}
+
+const { title = "Menú", items = [], position = "left", id = "sidebar", logo } = Astro.props
+---
+
+<div
+	data-sidebar-overlay={id}
+	class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300 z-100"
+	role="presentation"
+	aria-hidden="true"
+></div>
+
+<aside
+	data-sidebar={id}
+	aria-label={title}
+	inert
+	class:list={[
+		"fixed inset-y-0 w-80 flex flex-col bg-dark-fg/80 border-stroke-color transition-transform duration-500 ease-out z-101",
+		{
+			"right-0 border-l translate-x-full": position === "right",
+			"left-0 border-r -translate-x-full": position === "left"
+		}
+	]}
+>
+	<header class="relative flex flex-col gap-5 pt-6 px-6 pb-5 border-b border-stroke-color bg-linear-to-b from-yellow/5 to-transparent">
+		{logo && (
+			<a 
+				href="/" 
+				class="group flex justify-center items-center mx-auto p-3 rounded-xl bg-yellow/10 hover:bg-yellow/20 border border-yellow/20 hover:border-yellow/40 transition-all duration-300 hover:shadow-lg hover:shadow-yellow/20"
+			>
+				<Image
+					src={logo}
+					alt="Rustlings Web"
+					class="h-14 w-14 group-hover:scale-110 transition-transform duration-300"
+				/>
+			</a>
+		)}
+
+		<div class="flex items-center justify-between">
+			<span class="text-sm font-medium text-secondary/60 uppercase tracking-wider pl-1">
+				{title}
+			</span>
+			<button
+				type="button"
+				data-sidebar-close={id}
+				aria-label="Cerrar menú"
+				class="p-1.5 rounded-lg text-secondary/70 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/30 border border-transparent transition-all duration-200 hover:scale-110"
+			>
+				<IconX font-size={20} aria-hidden="true" />
+			</button>
+		</div>
+	</header>
+
+	<nav class="flex-1 px-4 pt-4 pb-4 overflow-y-auto" aria-label={`Navegación de ${title.toLowerCase()}`}>
+		<ul class="space-y-1">
+			{items.map((item) => (
+				<li>
+					<a
+						href={item.href}
+						data-sidebar-link={id}
+						class="group flex items-center gap-3 px-3 py-2.5 rounded-md text-secondary hover:text-yellow hover:bg-yellow/10 hover:translate-x-1 transition-all duration-200 border border-transparent hover:border-yellow/20"
+					>
+						{item.icon && <span class="text-lg" aria-hidden="true">{item.icon}</span>}
+						<span class="font-medium text-sm">{item.label}</span>
+					</a>
+				</li>
+			))}
+		</ul>
+	</nav>
+</aside>
+
+<script define:vars={{ id }}>
+	function initSidebar() {
+		const sidebar = document.querySelector(`[data-sidebar="${id}"]`)
+		const overlay = document.querySelector(`[data-sidebar-overlay="${id}"]`)
+		const closeBtn = document.querySelector(`[data-sidebar-close="${id}"]`)
+		const links = document.querySelectorAll(`[data-sidebar-link="${id}"]`)
+
+		if (!sidebar || !overlay) return
+
+		const close = () => {
+			const isRight = sidebar.classList.contains('right-0')
+			sidebar.classList.add(isRight ? 'translate-x-full' : '-translate-x-full')
+			sidebar.toggleAttribute('inert', true)
+			overlay.classList.add('opacity-0', 'invisible')
+		}
+
+		const open = () => {
+			sidebar.classList.remove('translate-x-full', '-translate-x-full')
+			sidebar.toggleAttribute('inert', false)
+			overlay.classList.remove('opacity-0', 'invisible')
+		}
+
+		const toggle = () => {
+			const isOpen = !sidebar.classList.contains('translate-x-full') && !sidebar.classList.contains('-translate-x-full')
+			isOpen ? close() : open()
+		}
+
+		const handleEscape = (e) => e.key === 'Escape' && close()
+
+		closeBtn?.addEventListener('click', close)
+		overlay.addEventListener('click', close)
+		links.forEach(link => link.addEventListener('click', close))
+		document.addEventListener('keydown', handleEscape)
+
+		window[`${id}Sidebar`] = { open, close, toggle }
+
+		return () => {
+			closeBtn?.removeEventListener('click', close)
+			overlay.removeEventListener('click', close)
+			links.forEach(link => link.removeEventListener('click', close))
+			document.removeEventListener('keydown', handleEscape)
+			delete window[`${id}Sidebar`]
+		}
+	}
+
+	document.addEventListener('astro:page-load', initSidebar)
+</script>
