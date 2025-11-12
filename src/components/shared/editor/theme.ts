@@ -5,21 +5,22 @@ import type { Extension } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 import { tags as t } from "@lezer/highlight"
 
-const chalky = "#d79921",
-	coral = "#fb4934",
-	cyan = "#83a598",
+// Colores ajustados para cumplir WCAG AA (4.5:1 contrast ratio) contra #1d2021
+const chalky = "#fdd835",
+	coral = "#ff6b6b",
+	cyan = "#4dd0e1",
 	invalid = "#ffffff",
-	ivory = "#abb2bf",
-	stone = "#7d8799",
-	malibu = "#458588",
-	sage = "#8ec07c",
-	whiskey = "#fe9019",
-	violet = "#b16286",
+	ivory = "#f5f5f5",
+	stone = "#b0b0b0",
+	malibu = "#64b5f6",
+	sage = "#aed581",
+	whiskey = "#ffb74d",
+	violet = "#f06292",
 	darkBackground = "#1d2021",
 	highlightBackground = "#1d2021",
 	tooltipBackground = "#3c3836",
 	selection = "#504945",
-	cursor = "#fabd2f"
+	cursor = "#fdd835"
 
 export const gruvboxDarkTheme = EditorView.theme(
 	{
