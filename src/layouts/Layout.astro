@@ -1,5 +1,7 @@
 ---
+import { ClientRouter } from "astro:transitions"
 import "~/styles/global.css"
+import favicon from "~/assets/images/webp/favicon.webp"
 
 const {
 	title = "RustLings Web",
@@ -11,13 +13,13 @@ const {
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml+webp" href="" />
-    <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <link rel="icon" type="image/webp" href={favicon.src} />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ClientRouter />
   </head>
-  <body class="bg-primary text-secondary font-family-poppins">
+  <body class="h-screen flex flex-col bg-primary text-secondary font-family-poppins">
     <slot />
   </body>
 </html>
