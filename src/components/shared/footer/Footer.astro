@@ -1,43 +1,49 @@
 ---
 import { Image } from "astro:assets"
-import { IconBrandDiscord, IconBrandGithub, IconBrandLinkedin } from "@tabler/icons-react"
 import logoImage from "~/assets/images/webp/logo.webp"
-
-const githubUrl = "https://github.com/RustLangES/rustlings-web"
-const linkedinUrl = "https://www.linkedin.com/company/rustlanges/posts/?feedView=all"
-const discordUrl = "https://discord.com/channels/778674594856960012/1292726289479893044"
+import IconBrandDiscord from "~icons/tabler/brand-discord"
+import IconBrandGithub from "~icons/tabler/brand-github"
+import IconBrandLinkedin from "~icons/tabler/brand-linkedin"
 
 const socialLinks = [
-	{ href: githubUrl, icon: IconBrandGithub, label: "GitHub" },
-	{ href: linkedinUrl, icon: IconBrandLinkedin, label: "LinkedIn" },
-	{ href: discordUrl, icon: IconBrandDiscord, label: "Discord" },
+	{ href: "https://github.com/RustLangES/rustlings-web", icon: IconBrandGithub, label: "GitHub" },
+	{
+		href: "https://www.linkedin.com/company/rustlanges/posts/?feedView=all",
+		icon: IconBrandLinkedin,
+		label: "LinkedIn",
+	},
+	{
+		href: "https://discord.com/channels/778674594856960012/1292726289479893044",
+		icon: IconBrandDiscord,
+		label: "Discord",
+	},
 ]
 ---
 
 <footer
-  class="flex flex-col md:flex-row gap-6 p-6 md:p-4 justify-between items-center w-full bg-editor-bg/95 backdrop-blur-md border-t border-stroke-color shadow-inner"
+	class="flex flex-col md:flex-row gap-6 p-6 md:p-4 justify-between items-center w-full bg-editor-bg/95 backdrop-blur-md border-t border-stroke-color shadow-inner"
 >
-  <a href="#hero" class="flex items-center gap-3">
-    <Image src={logoImage} alt="Rustlings Web" class="h-12 w-12" />
-    <span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
-  </a>
+	<a href="#hero" class="flex items-center gap-3">
+		<Image src={logoImage} alt="Rustlings Web" class="h-12 w-12"/>
+		<span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
+	</a>
 
-  <div class="text-center text-sm text-secondary/70 px-4">
-    &copy; {new Date().getFullYear()} Rustlings Web. Todos los derechos reservados.
-  </div>
+	<div class="text-center text-sm text-secondary/70 px-4">
+		&copy; {new Date().getFullYear()}Rustlings Web. Todos los derechos reservados.
+	</div>
 
-  <nav class="flex items-center gap-6" aria-label="Redes sociales">
-    {
-      socialLinks.map(link => (
+	<nav class="flex items-center gap-6" aria-label="Redes sociales">
+	{
+		socialLinks.map(link => (
         <a
           href={link.href}
           target="_blank"
           aria-label={link.label}
           class="text-secondary hover:text-yellow transition-transform duration-200 hover:scale-110"
         >
-          <link.icon size={28} className="w-7 h-7" />
+          <link.icon font-size={28} />
         </a>
       ))
     }
-  </nav>
+	</nav>
 </footer>

@@ -4,8 +4,7 @@
 	"exclude": ["dist"],
 	"compilerOptions": {
 		"baseUrl": ".",
-		"jsx": "react-jsx",
-		"jsxImportSource": "react",
+		"types": ["unplugin-icons/types/astro"],
 		"paths": {
 			"~/*": ["./src/*"]
 		}

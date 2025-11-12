@@ -1,0 +1,34 @@
+---
+import logoImage from "~/assets/images/webp/logo.webp"
+import Sidebar from "~/components/shared/sidebar/Sidebar.astro"
+import ToggleSidebarButton from "~/components/shared/sidebar/ToggleSidebarButton.astro"
+import { lessons } from "~/content-manager"
+import IconBrandGithub from "~icons/tabler/brand-github"
+
+const sidebarItems = lessons.map((content) => ({
+	label: content.meta.title,
+	href: `/${content.meta.slug}`,
+}))
+---
+
+<header class="p-2 w-full">
+  <nav
+    class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg"
+  >
+    <div class="flex items-center gap-4">
+      <ToggleSidebarButton sidebarId="content" label="Contenido" />
+    </div>
+
+    <a
+      href="https://github.com/RustLangES/rustlings-web"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="GitHub Repository"
+      class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
+    >
+      <IconBrandGithub font-size={20} />
+    </a>
+  </nav>
+</header>
+
+<Sidebar id="content" items={sidebarItems} title="Contenido" position="left" logo={logoImage} />

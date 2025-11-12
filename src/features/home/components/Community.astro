@@ -1,7 +1,6 @@
 ---
-import { Image } from "astro:assets"
-import discordMarkImage from "~/assets/images/webp/discord-mark-white.webp"
 import Section from "~/components/shared/sections/Section.astro"
+import FaBrandsDiscord from "~icons/fa-brands/discord"
 ---
 
 <Section
@@ -27,7 +26,7 @@ import Section from "~/components/shared/sections/Section.astro"
         aria-label="Únete al Discord de la Comunidad Rust"
         class="mt-8 px-6 py-3 border rounded-lg border-stroke-color bg-light-bg hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300 font-bold flex items-center gap-2 text-lg"
       >
-        <Image src={discordMarkImage} alt="Logo Discord" class="h-4 w-6" />
+        <FaBrandsDiscord />
         Discord
       </a>
     </div>
