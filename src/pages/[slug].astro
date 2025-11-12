@@ -1,244 +1,157 @@
 ---
-import { render } from "astro:content"
-import { IconCode, IconGripVertical, IconLicense, IconTerminal } from "@tabler/icons-react"
-import { CodeEditor } from "~/components/shared/editor/CodeEditor"
-import Navbar from "~/components/shared/navbar/Navbar.astro"
-import Section from "~/components/shared/sections/Section.astro"
-import { allContent } from "~/content.config"
+import CodeEditor from "~/components/shared/editor/CodeEditor.astro"
+import Terminal from "~/components/shared/editor/output/Terminal.astro"
+import { lessons } from "~/content-manager"
 import NavButtons from "~/features/content/components/NavButtons.astro"
+import Navbar from "~/features/content/components/Navbar.astro"
 import Layout from "~/layouts/Layout.astro"
+import IconBook from "~icons/tabler/book"
+import IconCode from "~icons/tabler/code"
+import IconGripVertical from "~icons/tabler/grip-vertical"
 
 export function getStaticPaths() {
-	return allContent.map((tutorial) => {
-		return {
-			params: { slug: tutorial.slug },
-			props: {
-				tutorial,
-				previous: tutorial.data.previousPath || null,
-				next: tutorial.data.nextPath || null,
-			},
-		}
-	})
+	return lessons.map((lesson, index) => ({
+		params: { slug: lesson.meta.slug },
+		props: {
+			lesson,
+			previousLesson: lessons[index - 1],
+			nextLesson: lessons[index + 1],
+		},
+	}))
 }
 
-const { tutorial, previous, next } = Astro.props
-const { Content } = await render(tutorial)
+const { lesson, previousLesson, nextLesson } = Astro.props
 ---
 
 <Layout>
   <Navbar />
-  <div
-    id="main-container"
-    class="flex flex-col flex-1 gap-2 lg:gap-0 lg:flex-row px-2 max-h-[calc(100vh-75px)] mt-0 overflow-hidden"
-  >
-    <!-- Panel izquierdo: Contenido -->
-    <Section
-      id="left-pane"
-      className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-150 overflow-x-auto"
+  <main class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 min-h-0 overflow-hidden" data-container>
+    <!-- Content Panel -->
+    <aside 
+      class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
+      style="flex: 1 1 0%; min-width: 50px;"
+      data-panel="left"
     >
-    <!-- titulo: Contenido -->
-    <div id="title-info"  class="absolute left-0 top-14 w-full hidden">
-        <div class="relative">
-          <IconLicense stroke={2} size={14} className="rotate-90 absolute -top-9 left-4.5 text-yellow" />
-          <h2 class="text-[12px] font-bold text-center rotate-90">Contenido</h2>
-        </div>
+      <div class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg" aria-hidden="true">
+        <IconBook class="text-yellow" font-size={22} />
+        <span class="text-xs text-neutral-300 font-semibold tracking-widest uppercase" style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;">Contenido</span>
       </div>
-      <article id="article-info" class="scroll-container m-2 overflow-y-auto p-2">
-        <article class="mb-6 text-secondary min-w-[400px]" id="content-markdown">
-           <h2 class="text-xl font-bold mb-2">{tutorial.data.title}</h2>
-          <Content />
-          <hr class="my-6 border-gray-700" />
-        </article>
-      <div class="flex justify-center pb-2 mt-auto min-w-[400px]">
-          <NavButtons title={tutorial.slug} previousPath={previous} nextPath={next} />
-      </div>
-      </article>
-    </Section>
 
-    <!-- Separador vertical (solo desktop) -->
-    <div
-      id="vertical-resizer"
-      class="hidden lg:flex items-center justify-center w-3 hover:w-4 transition-all cursor-col-resize select-none"
+      <div class="flex flex-col flex-1 m-2 p-2 overflow-y-auto in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none" data-panel-content>
+        <article id="content-markdown" class="mb-6 text-secondary min-w-[400px]">
+          <lesson.Content />
+          <hr class="my-6 border-gray-700" />
+          <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} />
+        </article>
+      </div>
+    </aside>
+
+    <!-- Vertical Resizer -->
+    <div 
+      class="hidden lg:flex items-center justify-center w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none" 
+      data-direction="vertical" 
+      role="separator" 
+      aria-orientation="vertical"
     >
-      <IconGripVertical size={14} />
+      <IconGripVertical font-size={14} aria-hidden="true" />
     </div>
 
-    <!-- Panel derecho: Editor + Terminal -->
-    <Section
-      id="right-pane"
-      className="relative flex-1 bg-light-bg border border-stroke-color rounded-2xl flex flex-col min-h-[250px] transition-all duration-100"
+    <!-- Editor Panel -->
+    <section 
+      class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
+      style="flex: 1 1 0%; min-width: 50px;"
+      data-panel="right"
     >
-    <!-- titulo: Editor -->
-    <div id="title-editor"  class="absolute left-0 top-14 w-full hidden">
-        <div class="relative">
-          <IconCode stroke={2} size={16} className="rotate-90 absolute -top-9 left-4.5 text-yellow" />
-          <h2 class="text-[12px] font-bold text-center rotate-90">Editor</h2>
-        </div>
+      <div class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg" aria-hidden="true">
+        <IconCode class="text-green-500" font-size={22} />
+        <span class="text-xs text-neutral-300 font-semibold tracking-widest uppercase" style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;">Editor</span>
       </div>
 
-       <!-- Header -->
-      <div id="bar-top" class="flex justify-between border-b border-stroke-color rounded-t-2xl p-2">
-        <div class="flex gap-2">
-          <IconCode stroke={2} size={16} className="ml-1 text-yellow" />
-          <h2 class="text-[13px] font-semibold text-center">Editor</h2>
+      <div class="flex flex-col flex-1 overflow-hidden in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none" data-panel-content>
+        <div class="flex-1 min-h-[100px] overflow-hidden mt-2 pt-2" data-editor-wrapper>
+          <CodeEditor slug={lesson.meta.slug} />
         </div>
-      </div>
 
-      <!-- Contenido -->
-      <div id="content-editor" class="flex flex-col flex-1 overflow-hidden">
-        <CodeEditor client:load />
-        <div
-          id="horizontal-resizer"
-          class="h-2 transition-all flex justify-center items-center cursor-row-resize bg-[#181817]"
+        <!-- Horizontal Resizer -->
+        <div 
+          class="h-2 shrink-0 flex justify-center items-center cursor-row-resize bg-[#181817]" 
+          data-direction="horizontal" 
+          role="separator" 
+          aria-orientation="horizontal"
         >
           <div class="h-0.5 w-4 bg-neutral-500/40 rounded-md"></div>
         </div>
 
-        <div
-          id="terminal"
-          class="h-40 overflow-auto bg-editor-bg border-t border-stroke-color rounded-b-2xl text-sm font-mono bg-dark-fg"
-        >
-          <div class="flex items-end gap-2 border-b border-stroke-color bg-light-bg px-3 h-8">
-            <button
-              class="flex items-center gap-2 px-3 py-1 rounded-t-sm text-fg font-medium shadow-inner hover:bg-neutral-600/90 transition-colors"
-            >
-              <IconTerminal size={18} />
-              <span>Terminal</span>
-            </button>
-          </div>
-
-          <div class="flex items-start p-3 text-fg">
-            <span class="text-yellow">$&nbsp;</span>
-            <span class="text-fg">cargo run</span>
-          </div>
+        <div class="h-64 shrink-0 overflow-auto" data-terminal>
+          <Terminal />
         </div>
       </div>
-    </Section>
-  </div>
+    </section>
+  </main>
 </Layout>
 
-<script lang="ts" is:inline >
-  const verticalResizer = document.getElementById('vertical-resizer')
-  const leftPane = document.getElementById('left-pane')
-  const rightPane = document.getElementById('right-pane')
-  const horizontalResizer = document.getElementById('horizontal-resizer')
-  const editor = document.getElementById('editor')
-  const terminal = document.getElementById('terminal')
-  const articleInfo = document.getElementById('article-info')
-  const contentEditor = document.getElementById('content-editor')
-  const barTopEditor = document.getElementById('bar-top')
-  const titleInfo = document.getElementById('title-info')
-  const titleEditor = document.getElementById('title-editor')
-  
+<script>
+  const COLLAPSE_THRESHOLD = 150;
+  const SNAP_THRESHOLD = 50;
 
-  // 🔹 Ajustar al cambio de tamaño de ventana (modo móvil/deskop)
-  function resetLayoutOnResize() {
-    if (window.innerWidth < 1024) {
-      leftPane.style.width = ''
-      rightPane.style.width = ''
-      leftPane.style.flex = '1'
-      rightPane.style.flex = '1'
-    }
+  function initResizer(resizer: HTMLElement) {
+    resizer.addEventListener("mousedown", (e) => {
+      if (resizer.dataset.direction === "vertical" && window.innerWidth < 1024) return;
+
+      e.preventDefault();
+      document.body.classList.add("is-resizing");
+
+      const isVertical = resizer.dataset.direction === "vertical";
+      const container = resizer.parentElement!;
+      const leftPanel = container.querySelector<HTMLElement>(isVertical ? "[data-panel='left']" : "[data-editor-wrapper]")!;
+      const rightPanel = container.querySelector<HTMLElement>(isVertical ? "[data-panel='right']" : "[data-terminal]")!;
+
+      const onMove = (ev: MouseEvent) => {
+        const rect = container.getBoundingClientRect();
+        const total = isVertical ? rect.width : rect.height;
+        const pos = isVertical ? ev.clientX - rect.left : ev.clientY - rect.top;
+        const resizerSize = isVertical ? 12 : 8;
+
+        let leftSize = Math.max(50, Math.min(pos, total - resizerSize - 50));
+        if (Math.abs(leftSize - total / 2) < SNAP_THRESHOLD) leftSize = total / 2;
+
+        const rightSize = total - leftSize - resizerSize;
+
+        if (isVertical) {
+          const collapsed = leftSize <= COLLAPSE_THRESHOLD ? "left" : rightSize <= COLLAPSE_THRESHOLD ? "right" : null;
+          const ratio = leftSize / (total - resizerSize);
+
+          leftPanel.style.flex = collapsed === "left" ? "0 0 50px" : collapsed === "right" ? "1 1 0%" : `${ratio} 1 0%`;
+          rightPanel.style.flex = collapsed === "left" ? "1 1 0%" : collapsed === "right" ? "0 0 50px" : `${1 - ratio} 1 0%`;
+          leftPanel.classList.toggle("collapsed", collapsed === "left");
+          rightPanel.classList.toggle("collapsed", collapsed === "right");
+        } else {
+          leftPanel.style.height = `${leftSize}px`;
+          rightPanel.style.height = `${rightSize}px`;
+        }
+      };
+
+      const onUp = () => {
+        document.body.classList.remove("is-resizing");
+        window.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
+
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseup", onUp);
+    });
   }
-  window.addEventListener('resize', resetLayoutOnResize)
 
-  // 🔹 Separador vertical (desktop)
-  verticalResizer?.addEventListener('mousedown', e => {
-    if (window.innerWidth < 1024) return // no en móvil
-    e.preventDefault()
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLElement>("[data-direction]").forEach(initResizer);
+  });
 
-    // Deshabilitar transiciones y selección de texto
-    leftPane.style.transition = 'none'
-    rightPane.style.transition = 'none'
-    document.body.style.userSelect = 'none'
-
-    const startX = e.clientX
-    const startLeftWidth = leftPane.offsetWidth
-    const minWidth = 10
-    const maxWidth = window.innerWidth - minWidth
-
-    function onMouseMove(ev) {
-      const dx = ev.clientX - startX
-      const newLeftWidth = Math.min(Math.max(startLeftWidth + dx, minWidth), maxWidth)
-      const newRightWidth = window.innerWidth - newLeftWidth - 30 // margen del separador
-
-      leftPane.style.flex = 'none'
-      rightPane.style.flex = 'none'
-      leftPane.style.width = newLeftWidth + 'px'
-      rightPane.style.width = newRightWidth + 'px'
-
-      //dentro del manejador de movimiento o lógica:
-      if (newLeftWidth <= 150 ) {
-        leftPane.style.width = '50px'
-        rightPane.style.flex = '1'
-        articleInfo.style.opacity = '0'
-        titleInfo.style.display = 'block'
-      } else {
-       articleInfo.style.opacity = '1'
-       titleInfo.style.display = 'none'
-      }
-
-      if (newRightWidth <= 150) {
-        rightPane.style.width = '50px'
-        leftPane.style.flex = '1'
-        contentEditor.style.opacity = '0'
-        barTopEditor.style.opacity = '0'
-        titleEditor.style.display = 'block'
-      } else {
-        contentEditor.style.opacity = '1'
-        barTopEditor.style.opacity = '1'
-        titleEditor.style.display = 'none'
-      }
+  window.addEventListener("resize", () => {
+    if (window.innerWidth < 1024) {
+      document.querySelectorAll<HTMLElement>("[data-panel]").forEach(panel => {
+        panel.style.flex = "1 1 0%";
+        panel.classList.remove("collapsed");
+      });
     }
-
-    function onMouseUp() {
-      // Restaurar transiciones y selección de texto
-      leftPane.style.transition = ''
-      rightPane.style.transition = ''
-      document.body.style.userSelect = ''
-
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
-    }
-
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
-  })
-
-  // 🔹 Separador horizontal (editor / terminal)
-  horizontalResizer?.addEventListener('mousedown', e => {
-    e.preventDefault()
-
-    // Deshabilitar transiciones y selección de texto
-    editor.style.transition = 'none'
-    terminal.style.transition = 'none'
-    document.body.style.userSelect = 'none'
-
-    const startY = e.clientY
-    const startEditorHeight = editor.offsetHeight
-    const startTerminalHeight = terminal.offsetHeight
-    const minHeight = 100
-    const maxHeight = 500
-
-    function onMouseMove(ev) {
-      const dy = ev.clientY - startY
-      const newEditorHeight = Math.min(Math.max(startEditorHeight + dy, minHeight), maxHeight)
-      const newTerminalHeight = Math.min(Math.max(startTerminalHeight - dy, minHeight), maxHeight)
-      editor.style.height = newEditorHeight + 'px'
-      terminal.style.height = newTerminalHeight + 'px'
-    }
-
-    function onMouseUp() {
-      // Restaurar transiciones y selección de texto
-      editor.style.transition = ''
-      terminal.style.transition = ''
-      document.body.style.userSelect = ''
-
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
-    }
-
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
-  })
+  });
 </script>
