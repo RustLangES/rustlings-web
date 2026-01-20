@@ -1,0 +1,63 @@
+@import "tailwindcss";
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+@import "@fontsource/poppins/800.css";
+
+@theme {
+	--font-family-poppins: "Poppins", sans-serif;
+	--color-primary: #191918;
+	--color-secondary: #fcfcfc;
+	--color-light-bg: #272726;
+	--color-editor-bg: #1a1b1a;
+	--color-stroke-color: #4f4e48;
+	--color-dark-yellow: #995614;
+	--color-yellow: #ffd776;
+	--color-dark-fg: #151515;
+	--color-note-bg: #4795cc;
+	--color-note-dark-bg: #205275;
+	--color-bg-nav: #99561426;
+}
+
+#content-markdown {
+	h1 {
+		@apply py-2 text-2xl;
+	}
+
+	h2 {
+		color: var(--color-yellow);
+	}
+
+	strong {
+		color: var(--color-yellow);
+	}
+
+	ul {
+		list-style-type: disc;
+		padding-left: 1.5rem;
+
+		li {
+			margin-bottom: 0.5rem;
+		}
+	}
+}
+
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-editor-bg) transparent;
+}
+
+*::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: transparent;
+	border-radius: 8px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-editor-bg);
+}

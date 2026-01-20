@@ -1,13 +1,8 @@
 name = "rustlings"
-main = "./.output/server/index.mjs"
-compatibility_date = "2025-06-10"
-compatibility_flags = [
-  "nodejs_compat",
-  "no_nodejs_compat_v2"
-]
+compatibility_date = "2025-10-29"
 
 [assets]
-directory = "./.output/public"
+directory = "./dist"
 
 [placement]
 mode = "smart"

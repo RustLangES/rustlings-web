@@ -1,0 +1,44 @@
+---
+import Section from "~/components/shared/sections/Section.astro"
+import FaBrandsDiscord from "~icons/fa-brands/discord"
+---
+
+<Section
+  id="community"
+  className="min-h-screen flex flex-col justify-center items-center w-full py-20 px-6"
+>
+  <h2 class="text-5xl md:text-6xl font-extrabold text-center mb-12">Comunidad Rust</h2>
+
+  <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-10">
+    <div class="md:w-1/2 w-full flex flex-col items-center md:items-start text-center md:text-left">
+      <p class="text-pretty leading-relaxed text-xl">
+        <span class="block font-bold text-xl mb-2">
+          Sigue aprendiendo junto a miles de entusiastas de Rust
+        </span>
+        Forma parte de nuestra comunidad, comparte tus avances, resuelve dudas y colabora con otros aprendices
+        y expertos de Rust.
+      </p>
+
+      <a
+        href="https://discord.com/channels/778674594856960012/1292726289479893044"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Únete al Discord de la Comunidad Rust"
+        class="mt-8 px-6 py-3 border rounded-lg border-stroke-color bg-light-bg hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300 font-bold flex items-center gap-2 text-lg"
+      >
+        <FaBrandsDiscord />
+        Discord
+      </a>
+    </div>
+
+    <div class="md:w-1/2 w-full flex justify-center">
+      <iframe
+        src="https://discord.com/widget?id=778674594856960012&theme=dark"
+        class="w-full max-w-xl h-[450px] md:h-[500px] rounded-lg border border-stroke-color"
+        allow="fullscreen"
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+        loading="lazy"
+        title="Widget de Discord de la Comunidad Rust"></iframe>
+    </div>
+  </div>
+</Section>

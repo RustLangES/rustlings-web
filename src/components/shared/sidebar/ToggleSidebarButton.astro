@@ -1,0 +1,40 @@
+---
+import IconMenu4 from "~icons/tabler/menu-4"
+
+interface Props {
+	sidebarId?: string
+	label?: string
+}
+
+const { sidebarId = "sidebar", label = "Menú" } = Astro.props
+---
+
+<button
+	type="button"
+	data-sidebar-toggle={sidebarId}
+	aria-label={`Abrir menú de ${label.toLowerCase()}`}
+	aria-expanded="false"
+	class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300 cursor-pointer"
+>
+	<IconMenu4 font-size={22} aria-hidden="true" />
+	<span>{label}</span>
+</button>
+
+<script define:vars={{ sidebarId }}>
+	function initToggleButton() {
+		const btn = document.querySelector(`[data-sidebar-toggle="${sidebarId}"]`)
+		if (!btn) return
+
+		const handleClick = () => {
+			const isOpen = btn.getAttribute('aria-expanded') === 'true'
+			btn.setAttribute('aria-expanded', String(!isOpen))
+			window[`${sidebarId}Sidebar`]?.toggle()
+		}
+
+		btn.addEventListener('click', handleClick)
+
+		return () => btn.removeEventListener('click', handleClick)
+	}
+
+	document.addEventListener('astro:page-load', initToggleButton)
+</script>

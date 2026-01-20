@@ -1,0 +1,50 @@
+---
+import { Image } from "astro:assets"
+import logoImage from "~/assets/images/webp/logo.webp"
+import Section from "~/components/shared/sections/Section.astro"
+import JamGithub from "~icons/jam/github"
+---
+
+<Section
+  id="hero"
+  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6"
+>
+  <a
+    href="https://github.com/RustLangES/rustlings-web"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="absolute top-4 right-6 text-secondary hover:text-yellow transition-transform duration-300 hover:scale-110"
+    aria-label="Repositorio de RustLings en GitHub"
+  >
+    <JamGithub font-size={32} />
+  </a>
+
+  <Image
+    class="w-56 md:w-64 logo mb-8"
+    src={logoImage}
+    alt="Rustlings logo"
+    width={256}
+    height={256}
+    fetchpriority="high"
+    loading="eager"
+  />
+
+  <div class="my-10">
+    <h1 class="font-semibold text-5xl md:text-6xl mb-4">RustLings Web</h1>
+    <p class="text-xl opacity-90">Aprender Rust nunca fue tan fácil</p>
+  </div>
+
+  <a
+    href="/introduccion"
+    class="mt-6 px-8 py-2 border rounded-lg border-stroke-color hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
+  >
+    Aprender
+  </a>
+</Section>
+
+<style>
+  .logo {
+    -webkit-filter: drop-shadow(0 -6mm 100mm var(--color-yellow));
+    filter: drop-shadow(0 -6mm 90mm var(--color-yellow));
+  }
+</style>

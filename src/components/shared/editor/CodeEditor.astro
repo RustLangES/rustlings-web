@@ -1,0 +1,80 @@
+---
+interface Props {
+	slug: string
+	initialCode?: string
+}
+
+const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } = Astro.props
+---
+
+<div 
+	id="editor" 
+	data-slug={slug}
+	data-initial-code={initialCode}
+	class="flex-1 min-w-0 min-h-0 overflow-hidden" 
+	role="textbox" 
+	aria-label="Editor de código" 
+	aria-multiline="true"
+></div>
+
+<script>
+	import { EditorView, keymap } from "@codemirror/view"
+	import { EditorState } from "@codemirror/state"
+	import { basicSetup } from "codemirror"
+	import { indentWithTab } from "@codemirror/commands"
+	import { gruvbox } from "~/components/shared/editor/theme"
+	import { db, editorCode } from "~/lib/stores/editor-store"
+	import { rust } from "~/components/shared/editor/config"
+
+	let editorView: EditorView | null = null
+	let saveTimeout: number | undefined
+
+	async function initEditor() {
+		const editorElement = document.getElementById("editor")
+		if (!editorElement) return
+
+		if (editorView) {
+			editorView.destroy()
+			editorView = null
+		}
+
+		const { slug, initialCode } = editorElement.dataset as { slug: string; initialCode: string }
+		const initialDoc = (await db.getCode(slug)) ?? initialCode
+
+		editorView = new EditorView({
+			state: EditorState.create({
+				doc: initialDoc,
+				extensions: [
+					basicSetup,
+					gruvbox,
+					rust(),
+					keymap.of([indentWithTab]),
+					EditorView.updateListener.of((update) => {
+						if (update.docChanged) {
+							const value = update.state.doc.toString()
+							editorCode.set(value)
+							clearTimeout(saveTimeout)
+							saveTimeout = window.setTimeout(() => db.saveCode(slug, value), 500)
+						}
+					}),
+				],
+			}),
+			parent: editorElement,
+		})
+
+		editorView.contentDOM.setAttribute("aria-label", "Editor de código Rust")
+		editorView.contentDOM.setAttribute("role", "textbox")
+		editorCode.set(initialDoc)
+	}
+
+	document.addEventListener("astro:page-load", initEditor)
+
+	document.addEventListener("astro:before-swap", () => {
+		if (editorView) {
+			editorView.destroy()
+			editorView = null
+		}
+
+		clearTimeout(saveTimeout)
+	})
+</script>
