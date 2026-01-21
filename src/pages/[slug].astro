@@ -32,7 +32,9 @@ const { lesson, previousLesson, nextLesson } = Astro.props
     <!-- Content Panel -->
     <aside
       class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
-      style="flex: 1 1 0%; min-width: 50px;"
+      style={lesson.data.editor === false
+        ? "flex: 1 1 0%; min-width: 50px;"
+        : "flex: 1 1 0%; min-width: 50px;"}
       data-panel="left"
     >
       <div
@@ -64,7 +66,7 @@ const { lesson, previousLesson, nextLesson } = Astro.props
 
     <!-- Vertical Resizer -->
     <div
-      class="hidden lg:flex items-center justify-center w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none"
+      class={`flex items-center justify-center h-full ${lesson.data.editor === false ? "cursor-not-allowed w-4" : "w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none"}`}
       data-direction="vertical"
       role="separator"
       aria-orientation="vertical"
@@ -74,8 +76,10 @@ const { lesson, previousLesson, nextLesson } = Astro.props
 
     <!-- Editor Panel -->
     <section
-      class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
-      style="flex: 1 1 0%; min-width: 50px;"
+      class={`relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden ${lesson.data.editor === false ? "collapsed" : ""}`}
+      style={lesson.data.editor === false
+        ? "flex: 0 0 50px; min-width: 50px;"
+        : "flex: 1 1 0%; min-width: 50px;"}
       data-panel="right"
     >
       <div
@@ -128,15 +132,21 @@ const { lesson, previousLesson, nextLesson } = Astro.props
       if (resizer.dataset.direction === "vertical" && window.innerWidth < 1024)
         return;
 
+      // Check if editor is disabled by looking for collapsed class on right panel
+      const container = resizer.parentElement!;
+      const rightPanel = container.querySelector<HTMLElement>(
+        "[data-panel='right']",
+      )!;
+      if (rightPanel.classList.contains("collapsed")) return;
+
       e.preventDefault();
       document.body.classList.add("is-resizing");
 
       const isVertical = resizer.dataset.direction === "vertical";
-      const container = resizer.parentElement!;
       const leftPanel = container.querySelector<HTMLElement>(
         isVertical ? "[data-panel='left']" : "[data-editor-wrapper]",
       )!;
-      const rightPanel = container.querySelector<HTMLElement>(
+      const rightPanelForResize = container.querySelector<HTMLElement>(
         isVertical ? "[data-panel='right']" : "[data-terminal]",
       )!;
 
@@ -167,17 +177,20 @@ const { lesson, previousLesson, nextLesson } = Astro.props
               : collapsed === "right"
                 ? "1 1 0%"
                 : `${ratio} 1 0%`;
-          rightPanel.style.flex =
+          rightPanelForResize.style.flex =
             collapsed === "left"
               ? "1 1 0%"
               : collapsed === "right"
                 ? "0 0 50px"
                 : `${1 - ratio} 1 0%`;
           leftPanel.classList.toggle("collapsed", collapsed === "left");
-          rightPanel.classList.toggle("collapsed", collapsed === "right");
+          rightPanelForResize.classList.toggle(
+            "collapsed",
+            collapsed === "right",
+          );
         } else {
           leftPanel.style.height = `${leftSize}px`;
-          rightPanel.style.height = `${rightSize}px`;
+          rightPanelForResize.style.height = `${rightSize}px`;
         }
       };
 
