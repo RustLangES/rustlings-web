@@ -18,14 +18,28 @@
 	--color-note-bg: #4795cc;
 	--color-note-dark-bg: #205275;
 	--color-bg-nav: #99561426;
+
+	/* Admonition colors */
+	--color-note: #4795cc;
+	--color-note-bg: #1e3a5f;
+	--color-tip: #00d4aa;
+	--color-tip-bg: #003d36;
+	--color-important: #a855f7;
+	--color-important-bg: #3c1a5b;
+	--color-warning: #f59e0b;
+	--color-warning-bg: #451a03;
+	--color-caution: #ef4444;
+	--color-caution-bg: #4c1d1d;
 }
 
 #content-markdown {
 	h1 {
-		@apply py-2 text-2xl;
+		font-size: 1.5rem;
+		padding: 1rem 0;
 	}
 
 	h2 {
+		margin: 0.5rem 0 0.2rem 0;
 		color: var(--color-yellow);
 	}
 
@@ -41,6 +55,147 @@
 			margin-bottom: 0.5rem;
 		}
 	}
+}
+
+pre {
+	background-color: var(--color-editor-bg);
+	border: 1px solid var(--color-stroke-color);
+	border-radius: 0.5rem;
+	padding: 1rem;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1rem;
+
+	th,
+	td {
+		border: 1px solid var(--color-stroke-color);
+		padding: 0.5rem;
+		text-align: left;
+	}
+
+	th {
+		background-color: var(--color-light-bg);
+	}
+}
+
+p code {
+	background-color: var(--color-editor-bg);
+	padding: 0.2rem 0.4rem;
+	border-radius: 0.25rem;
+	font-family: "Fira Code", monospace;
+	font-size: 0.95rem;
+}
+
+/* Admonitions/Callouts */
+#content-markdown blockquote {
+	margin: 1rem 0;
+	padding: 1rem;
+	border-radius: 0.5rem;
+	border-left: 4px solid;
+	position: relative;
+
+	/* Default styling */
+	background-color: var(--color-light-bg);
+	border-left-color: var(--color-stroke-color);
+}
+
+#content-markdown blockquote p {
+	margin: 0.5rem 0;
+	line-height: 1.6;
+}
+
+#content-markdown blockquote p:first-child {
+	font-weight: 600;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+
+#content-markdown blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* Admonition types - requires JavaScript to add classes */
+#content-markdown blockquote.admonition-note {
+	background-color: var(--color-note-bg);
+	border-left-color: var(--color-note);
+}
+
+#content-markdown blockquote.admonition-note p:first-child {
+	color: var(--color-note);
+}
+
+#content-markdown blockquote.admonition-note p:first-child::before {
+	content: "💡";
+	font-size: 1.1rem;
+}
+
+#content-markdown blockquote.admonition-tip {
+	background-color: var(--color-tip-bg);
+	border-left-color: var(--color-tip);
+}
+
+#content-markdown blockquote.admonition-tip p:first-child {
+	color: var(--color-tip);
+}
+
+#content-markdown blockquote.admonition-tip p:first-child::before {
+	content: "💡";
+	font-size: 1.1rem;
+}
+
+#content-markdown blockquote.admonition-important {
+	background-color: var(--color-important-bg);
+	border-left-color: var(--color-important);
+}
+
+#content-markdown blockquote.admonition-important p:first-child {
+	color: var(--color-important);
+}
+
+#content-markdown blockquote.admonition-important p:first-child::before {
+	content: "❗";
+	font-size: 1.1rem;
+}
+
+#content-markdown blockquote.admonition-warning {
+	background-color: var(--color-warning-bg);
+	border-left-color: var(--color-warning);
+}
+
+#content-markdown blockquote.admonition-warning p:first-child {
+	color: var(--color-warning);
+}
+
+#content-markdown blockquote.admonition-warning p:first-child::before {
+	content: "⚠️";
+	font-size: 1.1rem;
+}
+
+#content-markdown blockquote.admonition-caution {
+	background-color: var(--color-caution-bg);
+	border-left-color: var(--color-caution);
+}
+
+#content-markdown blockquote.admonition-caution p:first-child {
+	color: var(--color-caution);
+}
+
+#content-markdown blockquote.admonition-caution p:first-child::before {
+	content: "🚨";
+	font-size: 1.1rem;
+}
+
+/* Hide the [!TYPE] marker text */
+#content-markdown blockquote p:first-child strong:first-of-type {
+	display: none;
 }
 
 * {
