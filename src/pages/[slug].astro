@@ -1,6 +1,6 @@
 ---
-import CodeEditor from "~/components/shared/editor/CodeEditor.astro"
-import Terminal from "~/components/shared/editor/output/Terminal.astro"
+import CodeEditor from "~/components/editor/CodeEditor.astro"
+import Terminal from "~/components/editor/output/Terminal.astro"
 import { lessons } from "~/content-manager"
 import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
@@ -25,20 +25,36 @@ const { lesson, previousLesson, nextLesson } = Astro.props
 
 <Layout>
   <Navbar />
-  <main class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 min-h-0 overflow-hidden" data-container>
+  <main
+    class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 min-h-0 overflow-hidden"
+    data-container
+  >
     <!-- Content Panel -->
-    <aside 
+    <aside
       class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
       style="flex: 1 1 0%; min-width: 50px;"
       data-panel="left"
     >
-      <div class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg" aria-hidden="true">
+      <div
+        class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg"
+        aria-hidden="true"
+      >
         <IconBook class="text-yellow" font-size={22} />
-        <span class="text-xs text-neutral-300 font-semibold tracking-widest uppercase" style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;">Contenido</span>
+        <span
+          class="text-xs text-neutral-300 font-semibold tracking-widest uppercase"
+          style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;"
+          >Contenido</span
+        >
       </div>
 
-      <div class="flex flex-col flex-1 m-2 p-2 overflow-y-auto in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none" data-panel-content>
-        <article id="content-markdown" class="mb-6 text-secondary min-w-[400px]">
+      <div
+        class="flex flex-col flex-1 m-2 p-2 overflow-y-auto in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
+        data-panel-content
+      >
+        <article
+          id="content-markdown"
+          class="mb-6 text-secondary min-w-[400px]"
+        >
           <lesson.Content />
           <hr class="my-6 border-gray-700" />
           <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} />
@@ -47,36 +63,49 @@ const { lesson, previousLesson, nextLesson } = Astro.props
     </aside>
 
     <!-- Vertical Resizer -->
-    <div 
-      class="hidden lg:flex items-center justify-center w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none" 
-      data-direction="vertical" 
-      role="separator" 
+    <div
+      class="hidden lg:flex items-center justify-center w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none"
+      data-direction="vertical"
+      role="separator"
       aria-orientation="vertical"
     >
       <IconGripVertical font-size={14} aria-hidden="true" />
     </div>
 
     <!-- Editor Panel -->
-    <section 
+    <section
       class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
       style="flex: 1 1 0%; min-width: 50px;"
       data-panel="right"
     >
-      <div class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg" aria-hidden="true">
+      <div
+        class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg"
+        aria-hidden="true"
+      >
         <IconCode class="text-green-500" font-size={22} />
-        <span class="text-xs text-neutral-300 font-semibold tracking-widest uppercase" style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;">Editor</span>
+        <span
+          class="text-xs text-neutral-300 font-semibold tracking-widest uppercase"
+          style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;"
+          >Editor</span
+        >
       </div>
 
-      <div class="flex flex-col flex-1 overflow-hidden in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none" data-panel-content>
-        <div class="flex-1 min-h-[100px] overflow-hidden mt-2 pt-2" data-editor-wrapper>
+      <div
+        class="flex flex-col flex-1 overflow-hidden in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
+        data-panel-content
+      >
+        <div
+          class="flex-1 min-h-[100px] overflow-hidden mt-2 pt-2"
+          data-editor-wrapper
+        >
           <CodeEditor slug={lesson.meta.slug} />
         </div>
 
         <!-- Horizontal Resizer -->
-        <div 
-          class="h-2 shrink-0 flex justify-center items-center cursor-row-resize bg-[#181817]" 
-          data-direction="horizontal" 
-          role="separator" 
+        <div
+          class="h-2 shrink-0 flex justify-center items-center cursor-row-resize bg-[#181817]"
+          data-direction="horizontal"
+          role="separator"
           aria-orientation="horizontal"
         >
           <div class="h-0.5 w-4 bg-neutral-500/40 rounded-md"></div>
@@ -96,15 +125,20 @@ const { lesson, previousLesson, nextLesson } = Astro.props
 
   function initResizer(resizer: HTMLElement) {
     resizer.addEventListener("mousedown", (e) => {
-      if (resizer.dataset.direction === "vertical" && window.innerWidth < 1024) return;
+      if (resizer.dataset.direction === "vertical" && window.innerWidth < 1024)
+        return;
 
       e.preventDefault();
       document.body.classList.add("is-resizing");
 
       const isVertical = resizer.dataset.direction === "vertical";
       const container = resizer.parentElement!;
-      const leftPanel = container.querySelector<HTMLElement>(isVertical ? "[data-panel='left']" : "[data-editor-wrapper]")!;
-      const rightPanel = container.querySelector<HTMLElement>(isVertical ? "[data-panel='right']" : "[data-terminal]")!;
+      const leftPanel = container.querySelector<HTMLElement>(
+        isVertical ? "[data-panel='left']" : "[data-editor-wrapper]",
+      )!;
+      const rightPanel = container.querySelector<HTMLElement>(
+        isVertical ? "[data-panel='right']" : "[data-terminal]",
+      )!;
 
       const onMove = (ev: MouseEvent) => {
         const rect = container.getBoundingClientRect();
@@ -113,16 +147,32 @@ const { lesson, previousLesson, nextLesson } = Astro.props
         const resizerSize = isVertical ? 12 : 8;
 
         let leftSize = Math.max(50, Math.min(pos, total - resizerSize - 50));
-        if (Math.abs(leftSize - total / 2) < SNAP_THRESHOLD) leftSize = total / 2;
+        if (Math.abs(leftSize - total / 2) < SNAP_THRESHOLD)
+          leftSize = total / 2;
 
         const rightSize = total - leftSize - resizerSize;
 
         if (isVertical) {
-          const collapsed = leftSize <= COLLAPSE_THRESHOLD ? "left" : rightSize <= COLLAPSE_THRESHOLD ? "right" : null;
+          const collapsed =
+            leftSize <= COLLAPSE_THRESHOLD
+              ? "left"
+              : rightSize <= COLLAPSE_THRESHOLD
+                ? "right"
+                : null;
           const ratio = leftSize / (total - resizerSize);
 
-          leftPanel.style.flex = collapsed === "left" ? "0 0 50px" : collapsed === "right" ? "1 1 0%" : `${ratio} 1 0%`;
-          rightPanel.style.flex = collapsed === "left" ? "1 1 0%" : collapsed === "right" ? "0 0 50px" : `${1 - ratio} 1 0%`;
+          leftPanel.style.flex =
+            collapsed === "left"
+              ? "0 0 50px"
+              : collapsed === "right"
+                ? "1 1 0%"
+                : `${ratio} 1 0%`;
+          rightPanel.style.flex =
+            collapsed === "left"
+              ? "1 1 0%"
+              : collapsed === "right"
+                ? "0 0 50px"
+                : `${1 - ratio} 1 0%`;
           leftPanel.classList.toggle("collapsed", collapsed === "left");
           rightPanel.classList.toggle("collapsed", collapsed === "right");
         } else {
@@ -143,15 +193,19 @@ const { lesson, previousLesson, nextLesson } = Astro.props
   }
 
   document.addEventListener("astro:page-load", () => {
-    document.querySelectorAll<HTMLElement>("[data-direction]").forEach(initResizer);
+    document
+      .querySelectorAll<HTMLElement>("[data-direction]")
+      .forEach(initResizer);
   });
 
   window.addEventListener("resize", () => {
     if (window.innerWidth < 1024) {
-      document.querySelectorAll<HTMLElement>("[data-panel]").forEach(panel => {
-        panel.style.flex = "1 1 0%";
-        panel.classList.remove("collapsed");
-      });
+      document
+        .querySelectorAll<HTMLElement>("[data-panel]")
+        .forEach((panel) => {
+          panel.style.flex = "1 1 0%";
+          panel.classList.remove("collapsed");
+        });
     }
   });
 </script>
