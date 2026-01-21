@@ -1,7 +1,7 @@
 ---
 import logoImage from "~/assets/images/webp/logo.webp"
-import Sidebar from "~/components/shared/sidebar/Sidebar.astro"
-import ToggleSidebarButton from "~/components/shared/sidebar/ToggleSidebarButton.astro"
+import Sidebar from "~/components/sidebar/Sidebar.astro"
+import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
 import { lessons } from "~/content-manager"
 import IconBrandGithub from "~icons/tabler/brand-github"
 
@@ -31,4 +31,10 @@ const sidebarItems = lessons.map((content) => ({
   </nav>
 </header>
 
-<Sidebar id="content" items={sidebarItems} title="Contenido" position="left" logo={logoImage} />
+<Sidebar
+  id="content"
+  items={sidebarItems}
+  title="Contenido"
+  position="left"
+  logo={logoImage}
+/>

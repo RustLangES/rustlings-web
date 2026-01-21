@@ -8,7 +8,7 @@ import {
 	LRLanguage,
 } from "@codemirror/language"
 import { parser } from "@lezer/rust"
-import { rustCompletions } from "~/components/shared/editor/keywords"
+import { rustCompletions } from "~/components/editor/keywords"
 
 const rustLanguage = LRLanguage.define({
 	name: "rust",
