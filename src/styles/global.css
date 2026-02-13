@@ -4,6 +4,7 @@
 @import "@fontsource/poppins/600.css";
 @import "@fontsource/poppins/700.css";
 @import "@fontsource/poppins/800.css";
+@plugin "@tailwindcss/typography";
 
 @theme {
 	--font-family-poppins: "Poppins", sans-serif;
@@ -33,28 +34,115 @@
 }
 
 #content-markdown {
-	h1 {
-		font-size: 1.5rem;
-		padding: 1rem 0;
-	}
-
-	h2 {
-		margin: 0.5rem 0 0.2rem 0;
-		color: var(--color-yellow);
-	}
-
 	strong {
 		color: var(--color-yellow);
 	}
 
-	ul {
-		list-style-type: disc;
-		padding-left: 1.5rem;
+	.markdown-alert {
+		margin: 0.75rem 0;
+		padding: 0.75rem 1rem;
+		border-radius: 0.5rem;
+		border-left: 3px solid;
+	}
 
-		li {
-			margin-bottom: 0.5rem;
+	.markdown-alert > :first-child {
+		margin-top: 0;
+	}
+
+	.markdown-alert > :last-child {
+		margin-bottom: 0;
+	}
+
+	.markdown-alert p {
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.markdown-alert-title {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+
+		svg {
+			display: none;
 		}
 	}
+
+	.markdown-alert-note {
+		background-color: var(--color-note-bg);
+		border-left-color: var(--color-note);
+	}
+
+	.markdown-alert-note .markdown-alert-title {
+		color: var(--color-note);
+	}
+
+	.markdown-alert-note .markdown-alert-title::before {
+		content: "💡";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-tip {
+		background-color: var(--color-tip-bg);
+		border-left-color: var(--color-tip);
+	}
+
+	.markdown-alert-tip .markdown-alert-title {
+		color: var(--color-tip);
+	}
+
+	.markdown-alert-tip .markdown-alert-title::before {
+		content: "💡";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-important {
+		background-color: var(--color-important-bg);
+		border-left-color: var(--color-important);
+	}
+
+	.markdown-alert-important .markdown-alert-title {
+		color: var(--color-important);
+	}
+
+	.markdown-alert-important .markdown-alert-title::before {
+		content: "❗";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-warning {
+		background-color: var(--color-warning-bg);
+		border-left-color: var(--color-warning);
+	}
+
+	.markdown-alert-warning .markdown-alert-title {
+		color: var(--color-warning);
+	}
+
+	.markdown-alert-warning .markdown-alert-title::before {
+		content: "⚠️";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-caution {
+		background-color: var(--color-caution-bg);
+		border-left-color: var(--color-caution);
+	}
+
+	.markdown-alert-caution .markdown-alert-title {
+		color: var(--color-caution);
+	}
+
+	.markdown-alert-caution .markdown-alert-title::before {
+		content: "🚨";
+		font-size: 1.1rem;
+	}
+}
+
+.btn-control {
+	@apply flex cursor-pointer items-center gap-1 border-none bg-transparent px-2 py-1 text-secondary transition-colors disabled:cursor-not-allowed disabled:opacity-50;
 }
 
 pre {
@@ -92,112 +180,6 @@ p code {
 	font-size: 0.95rem;
 }
 
-/* Admonitions/Callouts */
-#content-markdown blockquote {
-	margin: 1rem 0;
-	padding: 1rem;
-	border-radius: 0.5rem;
-	border-left: 4px solid;
-	position: relative;
-
-	/* Default styling */
-	background-color: var(--color-light-bg);
-	border-left-color: var(--color-stroke-color);
-}
-
-#content-markdown blockquote p {
-	margin: 0.5rem 0;
-	line-height: 1.6;
-}
-
-#content-markdown blockquote p:first-child {
-	font-weight: 600;
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-	margin-bottom: 0.5rem;
-}
-
-#content-markdown blockquote p:last-child {
-	margin-bottom: 0;
-}
-
-/* Admonition types - requires JavaScript to add classes */
-#content-markdown blockquote.admonition-note {
-	background-color: var(--color-note-bg);
-	border-left-color: var(--color-note);
-}
-
-#content-markdown blockquote.admonition-note p:first-child {
-	color: var(--color-note);
-}
-
-#content-markdown blockquote.admonition-note p:first-child::before {
-	content: "💡";
-	font-size: 1.1rem;
-}
-
-#content-markdown blockquote.admonition-tip {
-	background-color: var(--color-tip-bg);
-	border-left-color: var(--color-tip);
-}
-
-#content-markdown blockquote.admonition-tip p:first-child {
-	color: var(--color-tip);
-}
-
-#content-markdown blockquote.admonition-tip p:first-child::before {
-	content: "💡";
-	font-size: 1.1rem;
-}
-
-#content-markdown blockquote.admonition-important {
-	background-color: var(--color-important-bg);
-	border-left-color: var(--color-important);
-}
-
-#content-markdown blockquote.admonition-important p:first-child {
-	color: var(--color-important);
-}
-
-#content-markdown blockquote.admonition-important p:first-child::before {
-	content: "❗";
-	font-size: 1.1rem;
-}
-
-#content-markdown blockquote.admonition-warning {
-	background-color: var(--color-warning-bg);
-	border-left-color: var(--color-warning);
-}
-
-#content-markdown blockquote.admonition-warning p:first-child {
-	color: var(--color-warning);
-}
-
-#content-markdown blockquote.admonition-warning p:first-child::before {
-	content: "⚠️";
-	font-size: 1.1rem;
-}
-
-#content-markdown blockquote.admonition-caution {
-	background-color: var(--color-caution-bg);
-	border-left-color: var(--color-caution);
-}
-
-#content-markdown blockquote.admonition-caution p:first-child {
-	color: var(--color-caution);
-}
-
-#content-markdown blockquote.admonition-caution p:first-child::before {
-	content: "🚨";
-	font-size: 1.1rem;
-}
-
-/* Hide the [!TYPE] marker text */
-#content-markdown blockquote p:first-child strong:first-of-type {
-	display: none;
-}
-
 * {
 	scrollbar-width: thin;
 	scrollbar-color: var(--color-editor-bg) transparent;
@@ -215,4 +197,17 @@ p code {
 
 *::-webkit-scrollbar-thumb:hover {
 	background-color: var(--color-editor-bg);
+}
+
+#console {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-stroke-color) transparent;
+}
+
+#console::-webkit-scrollbar-thumb {
+	background-color: var(--color-stroke-color);
+}
+
+#console::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-yellow);
 }
