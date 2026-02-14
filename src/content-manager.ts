@@ -2,6 +2,8 @@ import type { AstroComponentFactory } from "astro/runtime/server/index.js"
 
 type ContentFrontmatter = {
 	editor: boolean
+	code?: string
+	expectedOutput?: string
 }
 
 type ContentHeading = {

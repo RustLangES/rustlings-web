@@ -4,7 +4,7 @@ interface Props {
 	initialCode?: string
 }
 
-const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } = Astro.props
+const { slug, initialCode = "fn main() {\n  \n}\n" } = Astro.props
 ---
 
 <div
@@ -43,6 +43,7 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
       slug: string;
       initialCode: string;
     };
+
     const initialDoc = (await db.getCode(slug)) ?? initialCode;
 
     editorView = new EditorView({
@@ -58,10 +59,7 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
               const value = update.state.doc.toString();
               editorCode.set(value);
               clearTimeout(saveTimeout);
-              saveTimeout = window.setTimeout(
-                () => db.saveCode(slug, value),
-                500,
-              );
+              saveTimeout = window.setTimeout(() => db.saveCode(slug, value), 500);
             }
           }),
         ],
@@ -72,16 +70,28 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
     editorView.contentDOM.setAttribute("aria-label", "Editor de código Rust");
     editorView.contentDOM.setAttribute("role", "textbox");
     editorCode.set(initialDoc);
+
+    window.addEventListener("editor:reset", handleReset);
+  }
+
+  function handleReset(e: Event) {
+    const { code } = (e as CustomEvent).detail;
+
+    if (editorView) {
+      const doc = editorView.state.doc.toString();
+      editorView.dispatch({ changes: { from: 0, to: doc.length, insert: code } });
+    }
   }
 
   document.addEventListener("astro:page-load", initEditor);
 
   document.addEventListener("astro:before-swap", () => {
+    clearTimeout(saveTimeout);
+    window.removeEventListener("editor:reset", handleReset);
+
     if (editorView) {
       editorView.destroy();
       editorView = null;
     }
-
-    clearTimeout(saveTimeout);
   });
 </script>
