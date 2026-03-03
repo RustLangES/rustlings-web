@@ -28,8 +28,11 @@ const socialLinks = [
 		<span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
 	</a>
 
-	<div class="text-center text-sm text-secondary/70 px-4">
-		&copy; {new Date().getFullYear()}Rustlings Web. Todos los derechos reservados.
+	<div class="flex flex-col items-center gap-1 text-center text-sm text-secondary/70 px-4">
+		<span>&copy; {new Date().getFullYear()} Rustlings Web. Todos los derechos reservados.</span>
+		<a href="/privacidad" class="text-xs text-secondary/50 hover:text-yellow transition-colors">
+			Política de Privacidad
+		</a>
 	</div>
 
 	<nav class="flex items-center gap-6" aria-label="Redes sociales">

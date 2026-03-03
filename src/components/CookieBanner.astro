@@ -1,0 +1,105 @@
+---
+import { Image } from "astro:assets"
+import ferrisCooking from "~/assets/images/webp/ferris_cooking.webp"
+
+const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
+---
+
+<div
+  id="cookie-overlay"
+  class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4"
+>
+  <div
+    id="cookie-banner"
+    data-clarity-id={projectId}
+    class="w-full max-w-2xl bg-editor-bg border border-stroke-color rounded-xl shadow-2xl overflow-hidden grid grid-cols-2"
+  >
+    <div class="relative min-h-[380px]">
+      <Image
+        src={ferrisCooking}
+        alt="Ferris cocinando cookies"
+        class="absolute inset-0 w-full h-full object-cover"
+      />
+    </div>
+
+    <div class="flex flex-col justify-center gap-5 p-6">
+      <div class="flex flex-col gap-3">
+        <h2 class="text-secondary font-semibold text-lg">🍪 Aviso de Cookies</h2>
+        <p class="text-sm text-secondary/70 leading-relaxed">
+          Utilizamos cookies propias y de terceros para mejorar tu experiencia
+          en nuestro sitio web, analizar el tráfico y entender cómo interactúan
+          los usuarios con nuestro contenido.
+        </p>
+        <p class="text-sm text-secondary/70 leading-relaxed">
+          También utilizamos <span class="text-secondary font-medium">Microsoft Clarity</span>,
+          una herramienta de análisis que nos permite comprender el comportamiento
+          de navegación mediante mapas de calor y grabaciones anónimas de sesiones,
+          con el fin de optimizar nuestro servicio.
+        </p>
+        <p class="text-xs text-secondary/50 leading-relaxed">
+          Al hacer clic en "Aceptar", consientes el uso de cookies según nuestra
+          Política de Privacidad.
+        </p>
+      </div>
+
+      <div class="flex gap-3">
+        <button
+          id="reject-cookies"
+          class="flex-1 px-4 py-2 text-sm text-secondary/60 border border-stroke-color rounded-lg hover:bg-stroke-color/20 transition-colors cursor-pointer"
+        >
+          Rechazar
+        </button>
+        <button
+          id="accept-cookies"
+          class="flex-1 px-4 py-2 text-sm bg-yellow text-primary font-semibold rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import Clarity from "@microsoft/clarity"
+
+  const overlay = document.getElementById("cookie-overlay")
+  const banner = document.getElementById("cookie-banner")
+  const projectId = banner?.dataset.clarityId ?? ""
+
+  function loadClarity() {
+    if (projectId) {
+      Clarity.init(projectId)
+      Clarity.consentV2({ ad_Storage: "granted", analytics_Storage: "granted" })
+    }
+  }
+
+  function showOverlay() {
+    overlay?.classList.remove("hidden")
+    overlay?.classList.add("flex")
+  }
+
+  function hideOverlay() {
+    overlay?.classList.remove("flex")
+    overlay?.classList.add("hidden")
+  }
+
+  const consent = localStorage.getItem("cookiesAccepted")
+
+  if (consent === "true") {
+    loadClarity()
+  } else if (consent === null) {
+    showOverlay()
+  }
+
+  document.getElementById("accept-cookies")?.addEventListener("click", () => {
+    localStorage.setItem("cookiesAccepted", "true")
+    loadClarity()
+    hideOverlay()
+  })
+
+  document.getElementById("reject-cookies")?.addEventListener("click", () => {
+    localStorage.setItem("cookiesAccepted", "false")
+    hideOverlay()
+  })
+</script>
