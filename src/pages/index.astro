@@ -1,9 +1,14 @@
 ---
+import Clarity from "@microsoft/clarity"
 import Footer from "~/components/footer/Footer.astro"
 import Community from "~/features/home/components/Community.astro"
 import Hero from "~/features/home/components/Hero.astro"
 import Playground from "~/features/home/components/Playground.astro"
 import Layout from "~/layouts/Layout.astro"
+
+const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
+
+Clarity.init(projectId)
 ---
 
 <Layout>
