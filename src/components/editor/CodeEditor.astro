@@ -4,7 +4,7 @@ interface Props {
 	initialCode?: string
 }
 
-const { slug, initialCode = "fn main() {\n  \n}\n" } = Astro.props
+const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } = Astro.props
 ---
 
 <div
@@ -59,7 +59,10 @@ const { slug, initialCode = "fn main() {\n  \n}\n" } = Astro.props
               const value = update.state.doc.toString();
               editorCode.set(value);
               clearTimeout(saveTimeout);
-              saveTimeout = window.setTimeout(() => db.saveCode(slug, value), 500);
+              saveTimeout = window.setTimeout(
+                () => db.saveCode(slug, value),
+                500,
+              );
             }
           }),
         ],
