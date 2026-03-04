@@ -1,13 +1,14 @@
 ---
-import CodeEditor from "~/components/editor/CodeEditor.astro"
-import Terminal from "~/components/editor/output/Terminal.astro"
 import { lessons } from "~/content-manager"
-import NavButtons from "~/features/content/components/NavButtons.astro"
-import Navbar from "~/features/content/components/Navbar.astro"
-import Layout from "~/layouts/Layout.astro"
+import { tracks } from "~/const/tracks"
+import CodeEditor from "~/components/editor/CodeEditor.astro"
 import IconBook from "~icons/tabler/book"
 import IconCode from "~icons/tabler/code"
 import IconGripVertical from "~icons/tabler/grip-vertical"
+import Layout from "~/layouts/Layout.astro"
+import Navbar from "~/features/content/components/Navbar.astro"
+import NavButtons from "~/features/content/components/NavButtons.astro"
+import Terminal from "~/components/editor/output/Terminal.astro"
 
 export function getStaticPaths() {
 	return lessons.map((lesson, index) => ({
@@ -21,12 +22,23 @@ export function getStaticPaths() {
 }
 
 const { lesson, previousLesson, nextLesson } = Astro.props
+const currentTrack = tracks.find(t => t.slugs.includes(lesson.meta.slug))
 ---
+
+<style>
+  @media (max-width: 1023px) {
+    [data-panel] {
+      flex: none !important;
+      width: 100% !important;
+      min-width: 0 !important;
+    }
+  }
+</style>
 
 <Layout>
   <Navbar />
   <main
-    class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 min-h-0 overflow-hidden"
+    class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 lg:min-h-0 lg:overflow-hidden"
     data-container
   >
     <!-- Content Panel -->
@@ -50,23 +62,35 @@ const { lesson, previousLesson, nextLesson } = Astro.props
       </div>
 
       <div
-        class="flex flex-col flex-1 m-2 p-2 overflow-y-auto in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
+        class="flex flex-col flex-1 m-2 lg:min-h-0 in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
         data-panel-content
       >
-        <article
-          id="content-markdown"
-          class="prose prose-invert mb-1 min-w-[400px] max-w-none prose-headings:mt-0 prose-headings:mb-2"
-        >
-          <lesson.Content />
-          <hr class="not-prose my-6 border-gray-700" />
-          <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} hasEditor={lesson.data.editor} />
-        </article>
+        <div class="relative lg:flex-1 lg:min-h-0">
+          <div class="p-2 overflow-y-auto lg:h-full" data-scroll-area>
+            <article
+              id="content-markdown"
+              class="prose prose-invert mb-1 max-w-none prose-headings:mt-0 prose-headings:mb-2"
+            >
+              <lesson.Content />
+            </article>
+          </div>
+          <div
+            data-scroll-indicator
+            class="pointer-events-none absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pb-3 pt-16 bg-linear-to-t from-light-bg to-transparent opacity-0 transition-opacity duration-500"
+            aria-hidden="true"
+          >
+            <span class="text-xs text-secondary/60 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">↓ Hay más contenido abajo</span>
+          </div>
+        </div>
+        <div class="border-t border-gray-700 shrink-0">
+          <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} />
+        </div>
       </div>
     </aside>
 
     <!-- Vertical Resizer -->
     <div
-      class={`flex items-center justify-center h-full ${lesson.data.editor === false ? "cursor-not-allowed w-4" : "w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none"}`}
+      class={`hidden lg:flex items-center justify-center h-full ${lesson.data.editor === false ? "cursor-not-allowed w-4" : "w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none"}`}
       data-direction="vertical"
       role="separator"
       aria-orientation="vertical"
@@ -76,11 +100,12 @@ const { lesson, previousLesson, nextLesson } = Astro.props
 
     <!-- Editor Panel -->
     <section
-      class={`relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden ${lesson.data.editor === false ? "collapsed" : ""}`}
+      class={`relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden ${lesson.data.editor === false ? "collapsed max-lg:hidden" : ""}`}
       style={lesson.data.editor === false
         ? "flex: 0 0 50px; min-width: 50px;"
         : "flex: 1 1 0%; min-width: 50px;"}
       data-panel="right"
+      data-initial-collapsed={lesson.data.editor === false ? "" : undefined}
     >
       <div
         class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg"
@@ -95,11 +120,11 @@ const { lesson, previousLesson, nextLesson } = Astro.props
       </div>
 
       <div
-        class="flex flex-col flex-1 overflow-hidden in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
+        class="flex flex-col flex-1 lg:overflow-hidden in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
         data-panel-content
       >
         <div
-          class="flex-1 min-h-[100px] overflow-hidden mt-2 pt-2"
+          class="flex flex-col flex-1 min-h-[100px] max-lg:h-[280px] overflow-hidden mt-2 pt-2"
           data-editor-wrapper
         >
           <CodeEditor slug={lesson.meta.slug} initialCode={lesson.data.code} />
@@ -116,12 +141,62 @@ const { lesson, previousLesson, nextLesson } = Astro.props
         </div>
 
         <div class="h-64 shrink-0 overflow-auto" data-terminal>
-          <Terminal expectedOutput={lesson.data.expectedOutput} />
+          <Terminal expectedOutput={lesson.data.expectedOutput} testCode={lesson.data.testCode} />
         </div>
       </div>
     </section>
   </main>
 </Layout>
+
+{currentTrack && (
+  <div
+    id="lesson-tracker"
+    data-track-id={currentTrack.id}
+    data-slug={lesson.meta.slug}
+    hidden
+  />
+)}
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const scrollArea = document.querySelector<HTMLElement>("[data-scroll-area]")
+    const indicator = document.querySelector<HTMLElement>("[data-scroll-indicator]")
+    if (!scrollArea || !indicator) return
+
+    const show = () => {
+      if (scrollArea.scrollHeight > scrollArea.clientHeight + 4) {
+        indicator.classList.replace("opacity-0", "opacity-100")
+      }
+    }
+
+    const hide = () => {
+      indicator.classList.replace("opacity-100", "opacity-0")
+      scrollArea.removeEventListener("scroll", hide)
+    }
+
+    show()
+    scrollArea.addEventListener("scroll", hide, { once: true })
+  })
+</script>
+
+<script>
+  import { markLessonVisited } from "~/lib/progress"
+  import { db } from "~/lib/stores/editor-store"
+
+  document.addEventListener("astro:page-load", async () => {
+    const tracker = document.getElementById("lesson-tracker")
+    const trackId = tracker?.dataset.trackId ?? "visited"
+    const slug = tracker?.dataset.slug ?? window.location.pathname.slice(1)
+    if (slug) markLessonVisited(trackId, slug)
+
+    // Non-editor lessons complete on visit (no exercise to run)
+    const isNonEditor = document.querySelector("[data-panel='right']")?.classList.contains("collapsed")
+    if (isNonEditor && slug) {
+      await db.markCompleted(slug)
+      setTimeout(() => window.dispatchEvent(new CustomEvent("lesson:completed")), 0)
+    }
+  })
+</script>
 
 <script>
   const COLLAPSE_THRESHOLD = 150;
@@ -134,10 +209,10 @@ const { lesson, previousLesson, nextLesson } = Astro.props
 
       // Check if editor is disabled by looking for collapsed class on right panel
       const container = resizer.parentElement!;
-      const rightPanel = container.querySelector<HTMLElement>(
-        "[data-panel='right']",
-      )!;
-      if (rightPanel.classList.contains("collapsed")) return;
+      const rightPanel =
+        container.querySelector<HTMLElement>("[data-panel='right']") ??
+        container.closest<HTMLElement>("[data-panel='right']");
+      if (!rightPanel || rightPanel.classList.contains("collapsed")) return;
 
       e.preventDefault();
       document.body.classList.add("is-resizing");
@@ -216,8 +291,11 @@ const { lesson, previousLesson, nextLesson } = Astro.props
       document
         .querySelectorAll<HTMLElement>("[data-panel]")
         .forEach((panel) => {
-          panel.style.flex = "1 1 0%";
-          panel.classList.remove("collapsed");
+          panel.style.flex = "";
+          panel.style.minWidth = "";
+          if (!panel.hasAttribute("data-initial-collapsed")) {
+            panel.classList.remove("collapsed");
+          }
         });
     }
   });
