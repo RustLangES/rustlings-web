@@ -2,12 +2,32 @@
 import logoImage from "~/assets/images/webp/logo.webp"
 import Sidebar from "~/components/sidebar/Sidebar.astro"
 import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
-import { lessons } from "~/content-manager"
+import { lessons, type Content } from "~/content-manager"
 import IconBrandGithub from "~icons/tabler/brand-github"
 
-const sidebarItems = lessons.map((content) => ({
-	label: content.meta.title,
-	href: `/${content.meta.slug}`,
+type GroupedLesson = { parent: Content; children: Content[] }
+
+const groupMap = new Map<number, GroupedLesson>()
+
+for (const lesson of lessons) {
+	const { major, minor } = lesson.meta
+	if (minor === 0) {
+		groupMap.set(major, { parent: lesson, children: [] })
+	} else {
+		const group = groupMap.get(major)
+		if (group) group.children.push(lesson)
+	}
+}
+
+const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
+	label: `${parent.meta.major}. ${parent.meta.title}`,
+	href: `/${parent.meta.slug}`,
+	children: children.length > 0
+		? children.map((child) => ({
+				label: `${parent.meta.major}.${child.meta.minor}. ${child.meta.title}`,
+				href: `/${child.meta.slug}`,
+		  }))
+		: undefined,
 }))
 ---
 
@@ -16,7 +36,7 @@ const sidebarItems = lessons.map((content) => ({
     class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg"
   >
     <div class="flex items-center gap-4">
-      <ToggleSidebarButton sidebarId="content" label="Contenido" />
+      <ToggleSidebarButton sidebarId="content" label="Menú" />
     </div>
 
     <a
@@ -37,4 +57,6 @@ const sidebarItems = lessons.map((content) => ({
   title="Contenido"
   position="left"
   logo={logoImage}
+  backHref="/aprender"
+  backLabel="Temario"
 />
