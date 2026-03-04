@@ -8,6 +8,10 @@ import Icons from "unplugin-icons/vite"
 
 // https://astro.build/config
 export default defineConfig({
+	i18n: {
+		defaultLocale: "es",
+		locales: ["es"],
+	},
 	vite: {
 		plugins: [
 			tailwindcss(),
