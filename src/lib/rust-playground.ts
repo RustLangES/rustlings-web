@@ -24,7 +24,9 @@ class RustPlaygroundClient {
 	private stderr = ""
 	private stdout = ""
 	private latestSequenceNumber = -1
-	private onOutputCallback: ((stderr: string, stdout: string, done: boolean) => void) | null = null
+	private onOutputCallback: ((stderr: string, stdout: string) => void) | null = null
+	private onCompleteCallback: ((success: boolean) => void) | null = null
+	private scheduled = false
 
 	constructor() {
 		this.ws = new WebSocket(WS_URL)
@@ -46,20 +48,32 @@ class RustPlaygroundClient {
 		const data = JSON.parse(event.data)
 		const messageSeq = data.meta?.sequenceNumber
 
-		if (messageSeq !== undefined && messageSeq < this.latestSequenceNumber) {
-			// Ignorar mensajes de ejecuciones antiguas
-			return
-		}
+		if (messageSeq !== this.latestSequenceNumber) return
 
 		if (data.type === "output/execute/wsExecuteStderr") {
 			this.stderr += data.payload
-			this.onOutputCallback?.(this.stderr, this.stdout, false)
+			this.scheduleUpdate()
 		} else if (data.type === "output/execute/wsExecuteStdout") {
 			this.stdout += data.payload
-			this.onOutputCallback?.(this.stderr, this.stdout, false)
+			this.scheduleUpdate()
 		} else if (data.type === "output/execute/wsExecuteEnd") {
-			this.onOutputCallback?.(this.stderr, this.stdout, true)
+			this.flushUpdate()
+			this.onCompleteCallback?.(data.payload?.success ?? false)
 		}
+	}
+
+	private scheduleUpdate(): void {
+		if (this.scheduled) return
+		this.scheduled = true
+
+		requestAnimationFrame(() => {
+			this.flushUpdate()
+		})
+	}
+
+	private flushUpdate(): void {
+		this.scheduled = false
+		this.onOutputCallback?.(this.stderr, this.stdout)
 	}
 
 	private reconnect(): void {
@@ -76,12 +90,14 @@ class RustPlaygroundClient {
 
 	execute(
 		code: string,
-		onOutput: (stderr: string, stdout: string, done: boolean) => void,
+		onOutput: (stderr: string, stdout: string) => void,
+		onComplete: (success: boolean) => void,
 		config: Partial<RustPlaygroundConfig> = {},
 	): void {
 		this.stderr = ""
 		this.stdout = ""
 		this.onOutputCallback = onOutput
+		this.onCompleteCallback = onComplete
 
 		this.latestSequenceNumber = this.sequenceNumber++
 

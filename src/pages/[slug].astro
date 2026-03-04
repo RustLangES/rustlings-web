@@ -55,11 +55,11 @@ const { lesson, previousLesson, nextLesson } = Astro.props
       >
         <article
           id="content-markdown"
-          class="mb-6 text-secondary min-w-[400px]"
+          class="prose prose-invert mb-1 min-w-[400px] max-w-none prose-headings:mt-0 prose-headings:mb-2"
         >
           <lesson.Content />
-          <hr class="my-6 border-gray-700" />
-          <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} />
+          <hr class="not-prose my-6 border-gray-700" />
+          <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} hasEditor={lesson.data.editor} />
         </article>
       </div>
     </aside>
@@ -102,7 +102,7 @@ const { lesson, previousLesson, nextLesson } = Astro.props
           class="flex-1 min-h-[100px] overflow-hidden mt-2 pt-2"
           data-editor-wrapper
         >
-          <CodeEditor slug={lesson.meta.slug} />
+          <CodeEditor slug={lesson.meta.slug} initialCode={lesson.data.code} />
         </div>
 
         <!-- Horizontal Resizer -->
@@ -116,7 +116,7 @@ const { lesson, previousLesson, nextLesson } = Astro.props
         </div>
 
         <div class="h-64 shrink-0 overflow-auto" data-terminal>
-          <Terminal />
+          <Terminal expectedOutput={lesson.data.expectedOutput} />
         </div>
       </div>
     </section>

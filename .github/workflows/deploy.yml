@@ -41,19 +41,17 @@ jobs:
 
       - name: Build
         env:
-          NUXT_CLARITY_ID: ${{ secrets.CLARITY_ID }}
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
         run: npm run build
 
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
-        # env:
-          # YOUR_SECRET: ${{ secrets.YOUR_SECRET }}
-          # YOUR_OTHER_SECRET: ${{ secrets.YOUR_OTHER_SECRET }}
+        env:
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
         with:
           wranglerVersion: "4.19.1"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          # secrets: |
-          #   YOUR_SECRET
-          #   YOUR_OTHER_SECRET
+          secrets: |
+            VITE_CLARITY_PROJECT_ID

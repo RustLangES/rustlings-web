@@ -3,6 +3,7 @@
 import mdx from "@astrojs/mdx"
 import tailwindcss from "@tailwindcss/vite"
 import { defineConfig } from "astro/config"
+import { rehypeGithubAlerts } from "rehype-github-alerts"
 import Icons from "unplugin-icons/vite"
 
 // https://astro.build/config
@@ -14,6 +15,10 @@ export default defineConfig({
 				compiler: "astro",
 			}),
 		],
+	},
+
+	markdown: {
+		rehypePlugins: [rehypeGithubAlerts],
 	},
 
 	integrations: [

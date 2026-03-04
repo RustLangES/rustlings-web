@@ -4,6 +4,7 @@
 @import "@fontsource/poppins/600.css";
 @import "@fontsource/poppins/700.css";
 @import "@fontsource/poppins/800.css";
+@plugin "@tailwindcss/typography";
 
 @theme {
 	--font-family-poppins: "Poppins", sans-serif;
@@ -18,29 +19,165 @@
 	--color-note-bg: #4795cc;
 	--color-note-dark-bg: #205275;
 	--color-bg-nav: #99561426;
+
+	/* Admonition colors */
+	--color-note: #4795cc;
+	--color-note-bg: #1e3a5f;
+	--color-tip: #00d4aa;
+	--color-tip-bg: #003d36;
+	--color-important: #a855f7;
+	--color-important-bg: #3c1a5b;
+	--color-warning: #f59e0b;
+	--color-warning-bg: #451a03;
+	--color-caution: #ef4444;
+	--color-caution-bg: #4c1d1d;
 }
 
 #content-markdown {
-	h1 {
-		@apply py-2 text-2xl;
-	}
-
-	h2 {
-		color: var(--color-yellow);
-	}
-
 	strong {
 		color: var(--color-yellow);
 	}
 
-	ul {
-		list-style-type: disc;
-		padding-left: 1.5rem;
+	.markdown-alert {
+		margin: 0.75rem 0;
+		padding: 0.75rem 1rem;
+		border-radius: 0.5rem;
+		border-left: 3px solid;
+	}
 
-		li {
-			margin-bottom: 0.5rem;
+	.markdown-alert > :first-child {
+		margin-top: 0;
+	}
+
+	.markdown-alert > :last-child {
+		margin-bottom: 0;
+	}
+
+	.markdown-alert p {
+		margin-top: 0.5rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.markdown-alert-title {
+		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-bottom: 0.25rem;
+
+		svg {
+			display: none;
 		}
 	}
+
+	.markdown-alert-note {
+		background-color: var(--color-note-bg);
+		border-left-color: var(--color-note);
+	}
+
+	.markdown-alert-note .markdown-alert-title {
+		color: var(--color-note);
+	}
+
+	.markdown-alert-note .markdown-alert-title::before {
+		content: "💡";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-tip {
+		background-color: var(--color-tip-bg);
+		border-left-color: var(--color-tip);
+	}
+
+	.markdown-alert-tip .markdown-alert-title {
+		color: var(--color-tip);
+	}
+
+	.markdown-alert-tip .markdown-alert-title::before {
+		content: "💡";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-important {
+		background-color: var(--color-important-bg);
+		border-left-color: var(--color-important);
+	}
+
+	.markdown-alert-important .markdown-alert-title {
+		color: var(--color-important);
+	}
+
+	.markdown-alert-important .markdown-alert-title::before {
+		content: "❗";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-warning {
+		background-color: var(--color-warning-bg);
+		border-left-color: var(--color-warning);
+	}
+
+	.markdown-alert-warning .markdown-alert-title {
+		color: var(--color-warning);
+	}
+
+	.markdown-alert-warning .markdown-alert-title::before {
+		content: "⚠️";
+		font-size: 1.1rem;
+	}
+
+	.markdown-alert-caution {
+		background-color: var(--color-caution-bg);
+		border-left-color: var(--color-caution);
+	}
+
+	.markdown-alert-caution .markdown-alert-title {
+		color: var(--color-caution);
+	}
+
+	.markdown-alert-caution .markdown-alert-title::before {
+		content: "🚨";
+		font-size: 1.1rem;
+	}
+}
+
+.btn-control {
+	@apply flex cursor-pointer items-center gap-1 border-none bg-transparent px-2 py-1 text-secondary transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+pre {
+	background-color: var(--color-editor-bg);
+	border: 1px solid var(--color-stroke-color);
+	border-radius: 0.5rem;
+	padding: 1rem;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	overflow-x: auto;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 1rem;
+
+	th,
+	td {
+		border: 1px solid var(--color-stroke-color);
+		padding: 0.5rem;
+		text-align: left;
+	}
+
+	th {
+		background-color: var(--color-light-bg);
+	}
+}
+
+p code {
+	background-color: var(--color-editor-bg);
+	padding: 0.2rem 0.4rem;
+	border-radius: 0.25rem;
+	font-family: "Fira Code", monospace;
+	font-size: 0.95rem;
 }
 
 * {
@@ -60,4 +197,17 @@
 
 *::-webkit-scrollbar-thumb:hover {
 	background-color: var(--color-editor-bg);
+}
+
+#console {
+	scrollbar-width: thin;
+	scrollbar-color: var(--color-stroke-color) transparent;
+}
+
+#console::-webkit-scrollbar-thumb {
+	background-color: var(--color-stroke-color);
+}
+
+#console::-webkit-scrollbar-thumb:hover {
+	background-color: var(--color-yellow);
 }

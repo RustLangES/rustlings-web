@@ -2,6 +2,7 @@
 import { ClientRouter } from "astro:transitions"
 import "~/styles/global.css"
 import favicon from "~/assets/images/webp/favicon.webp"
+import CookieBanner from "~/components/CookieBanner.astro"
 
 const {
 	title = "RustLings Web",
@@ -19,7 +20,10 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <ClientRouter />
   </head>
-  <body class="h-screen flex flex-col bg-primary text-secondary font-family-poppins">
+  <body
+    class="h-screen flex flex-col bg-primary text-secondary font-family-poppins"
+  >
     <slot />
+    <CookieBanner />
   </body>
 </html>

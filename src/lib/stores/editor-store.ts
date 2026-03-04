@@ -44,7 +44,20 @@ class RustlingsDB {
 
 	private async set(store: string, key: string, value: unknown): Promise<void> {
 		const db = await this.initDB()
-		db.transaction(store, "readwrite").objectStore(store).put(value, key)
+		return new Promise((resolve, reject) => {
+			const request = db.transaction(store, "readwrite").objectStore(store).put(value, key)
+			request.onsuccess = () => resolve()
+			request.onerror = () => reject(request.error)
+		})
+	}
+
+	private async delete(store: string, key: string): Promise<void> {
+		const db = await this.initDB()
+		return new Promise((resolve, reject) => {
+			const request = db.transaction(store, "readwrite").objectStore(store).delete(key)
+			request.onsuccess = () => resolve()
+			request.onerror = () => reject(request.error)
+		})
 	}
 
 	async saveCode(slug: string, val: string) {
@@ -53,6 +66,10 @@ class RustlingsDB {
 
 	async getCode(slug: string): Promise<string | null> {
 		return this.get<string>(this.STORE_CODE, slug)
+	}
+
+	async reset(slug: string) {
+		await Promise.all([this.delete(this.STORE_CODE, slug), this.delete(this.STORE_PROGRESS, slug)])
 	}
 
 	async markCompleted(slug: string) {

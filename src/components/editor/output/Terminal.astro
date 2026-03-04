@@ -1,186 +1,199 @@
 ---
 import IconLoader2 from "~icons/tabler/loader-2"
 import IconPlayerPlay from "~icons/tabler/player-play"
+import IconRestore from "~icons/tabler/restore"
 import IconTerminal from "~icons/tabler/terminal"
+
+interface Props {
+	expectedOutput?: string
+}
+
+const { expectedOutput } = Astro.props
 ---
 
 <terminal-output
-  class="h-full flex flex-col bg-dark-fg/60 border-t border-stroke-color text-sm font-mono rounded-b-2xl"
-  role="region"
-  aria-label="Terminal output"
+	class="group h-full flex flex-col bg-dark-fg/60 border-t border-stroke-color text-sm font-mono rounded-b-2xl"
+	data-expected={expectedOutput?.trim()}
 >
-  <header
-    class="flex items-center justify-between border-b border-stroke-color bg-light-bg px-3 h-8"
-  >
-    <div class="flex items-center gap-2">
-      <IconTerminal font-size={18} aria-hidden="true" />
-      <h2 class="text-secondary font-medium text-sm">Output</h2>
-    </div>
-    <button
-      type="button"
-      aria-label="Run code"
-      class="flex items-center gap-1 px-2 py-1 text-xs text-secondary hover:text-green-500 transition-colors bg-transparent border-none cursor-pointer"
-    >
-      <IconPlayerPlay font-size={14} class="play-icon" aria-hidden="true" />
-      <IconLoader2
-        font-size={14}
-        class="loader-icon hidden animate-spin"
-        aria-hidden="true"
-      />
-      <span class="button-text">Ejecutar</span>
-    </button>
-  </header>
-  <div
-    class="flex-1 overflow-auto p-3 text-secondary outline-none"
-    role="log"
-    aria-live="polite"
-    aria-atomic="false"
-    tabindex="0"
-  >
-    <div class="command-line text-gray-400 text-sm" role="status">
-      <span class="text-green-400">$</span>
-      <span class="text-gray-300">cargo run</span>
-    </div>
-  </div>
+	<header class="flex h-8 items-center gap-3 border-b border-stroke-color bg-light-bg px-3">
+		<div class="flex items-center gap-2 text-secondary">
+			<IconTerminal font-size={18} />
+			<span class="font-medium">Output</span>
+		</div>
+
+		<div class="hidden flex-1 items-center rounded border border-gray-600 bg-dark-fg/40 px-2 py-0.5 group-data-running:flex">
+			<span class="mr-2 text-green-400">›</span>
+			<input
+				id="stdin-input"
+				type="text"
+				class="w-full bg-transparent text-xs text-gray-300 outline-none"
+				aria-label="Standard input"
+			/>
+		</div>
+
+		<div class="flex-1 group-data-running:hidden"></div>
+
+		<div class="flex gap-2 text-xs">
+			<button
+				id="btn-reset"
+				class="btn-control hover:text-yellow"
+				type="button"
+				aria-label="Reset code"
+			>
+				<IconRestore font-size={14} />
+				<span>Reiniciar</span>
+			</button>
+
+			<button
+				id="btn-run"
+				class="btn-control hover:text-green-500"
+				type="button"
+				aria-label="Run code"
+			>
+				<IconPlayerPlay class="group-data-running:hidden" font-size={14} />
+				<IconLoader2 class="hidden animate-spin group-data-running:block" font-size={14} />
+				<span class="group-data-running:hidden">Ejecutar</span>
+				<span class="hidden group-data-running:inline">Ejecutando...</span>
+			</button>
+		</div>
+	</header>
+
+	<div id="console" class="flex-1 overflow-auto p-3" tabindex="0">
+		<div class="mb-2 text-gray-400">
+			<span class="text-green-400">$</span>
+			<span class="text-yellow font-medium">cargo</span>
+			<span>run</span>
+		</div>
+		<pre id="stderr" class="whitespace-pre text-sm empty:hidden"></pre>
+		<hr id="separator" class="my-2 border-t border-gray-700 has-[~#stdout:empty]:hidden has-[+#stdout:empty]:hidden" />
+		<pre id="stdout" class="whitespace-pre text-sm text-gray-300 empty:hidden"></pre>
+	</div>
 </terminal-output>
 
 <script>
-  import { rustPlayground } from "~/lib/rust-playground";
-  import { editorCode } from "~/lib/stores/editor-store";
-  import { getStderrHTML } from "~/components/editor/output/renderer";
+import { rustPlayground } from "~/lib/rust-playground";
+import { db, editorCode } from "~/lib/stores/editor-store";
+import { getStderrHTML } from "~/components/editor/output/renderer";
 
-  class RustOutput extends HTMLElement {
-    private output!: HTMLElement;
-    private stderrSection!: HTMLElement;
-    private stdoutSection!: HTMLElement;
-    private separator!: HTMLElement;
-    private inputLine: HTMLElement | null = null;
-    private input: HTMLInputElement | null = null;
-    private lastStderr = "";
-    private stdoutBuffer = "";
-    private pendingRender = false;
+class TerminalOutput extends HTMLElement {
+	private ui = {
+		stdin: document.getElementById("stdin-input") as HTMLInputElement,
+		console: document.getElementById("console") as HTMLDivElement,
+		stderr: document.getElementById("stderr") as HTMLPreElement,
+		stdout: document.getElementById("stdout") as HTMLPreElement,
+		btnRun: document.getElementById("btn-run") as HTMLButtonElement,
+		btnReset: document.getElementById("btn-reset") as HTMLButtonElement,
+	};
 
-    connectedCallback() {
-      this.output = this.querySelector("[role='log']")!;
-      this.querySelector("button")!.addEventListener("click", () => this.run());
-    }
+	private state = {
+		lastStderr: "",
+		output: "",
+	};
 
-    private sendInput() {
-      if (!this.input?.value) return;
-      rustPlayground.sendStdin(`${this.input.value}\n`);
-      this.input.value = "";
-      this.output.scrollTop = this.output.scrollHeight;
-    }
+	connectedCallback() {
+		this.ui.btnRun.addEventListener("click", this.execute);
+		this.ui.btnReset.addEventListener("click", this.reset);
+		this.ui.stdin.addEventListener("keydown", this.handleStdin);
+	}
 
-    private run() {
-      this.toggleRunning(true);
-      this.reset();
-      this.toggleInputLine(true);
-      this.output.focus();
+	private isScrolledToBottom(): boolean {
+		const { scrollTop, scrollHeight, clientHeight } = this.ui.console;
+		return scrollHeight - scrollTop - clientHeight < 5;
+	}
 
-      rustPlayground.execute(editorCode.get(), (stderr, stdout, done) => {
-        if (stderr !== this.lastStderr) {
-          this.lastStderr = stderr;
-          this.stderrSection.innerHTML = getStderrHTML(stderr);
-        }
+	private handleStdin = (e: KeyboardEvent) => {
+		if (e.key !== "Enter") return;
 
-        if (stdout) {
-          this.stdoutBuffer = stdout;
-          this.scheduleRender();
-        }
+		e.preventDefault();
+		const value = this.ui.stdin.value.trim();
 
-        this.separator.hidden = !stderr || !stdout;
+		if (value) {
+			rustPlayground.sendStdin(`${value}\n`);
+			this.ui.stdin.value = "";
+			this.scrollToBottom();
+		}
+	}
 
-        if (done) {
-          this.toggleRunning(false);
-          this.toggleInputLine(false);
-          this.flushRender();
-        }
-      });
-    }
+	private execute = () => {
+		this.setRunning(true);
+		this.clear();
+		this.ui.stdin.focus();
 
-    private toggleInputLine(show: boolean) {
-      this.inputLine?.remove();
-      this.inputLine = null;
-      this.input = null;
+		rustPlayground.execute(editorCode.get(), this.handleOutput, this.handleComplete);
+	}
 
-      if (show) {
-        this.inputLine = document.createElement("div");
-        this.inputLine.className =
-          "text-gray-300 text-sm flex items-center bg-dark-fg/40 -mx-3 px-3 py-1 border-l-2 border-gray-600";
+	private handleOutput = (stderr: string, stdout: string) => {
+		const wasAtBottom = this.isScrolledToBottom();
 
-        this.input = document.createElement("input");
-        this.input.type = "text";
-        this.input.className =
-          "flex-1 bg-transparent outline-none text-gray-300 font-mono text-sm";
-        this.input.placeholder = "";
-        this.input.addEventListener("keydown", (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            this.sendInput();
-          }
-        });
+		if (stderr && stderr !== this.state.lastStderr) {
+			this.state.lastStderr = stderr;
+			this.ui.stderr.innerHTML = getStderrHTML(stderr);
+		}
 
-        this.inputLine.innerHTML = `<span class="text-green-400 mr-1">›</span>`;
-        this.inputLine.appendChild(this.input);
-        this.output.appendChild(this.inputLine);
-        this.input.focus();
-      }
-    }
+		if (stdout) {
+			this.state.output = stdout;
+			this.ui.stdout.textContent = stdout;
+		}
 
-    private scheduleRender() {
-      if (this.pendingRender) return;
+		if (wasAtBottom) {
+			this.scrollToBottom();
+		}
+	}
 
-      this.pendingRender = true;
-      requestAnimationFrame(() => this.flushRender());
-    }
+	private handleComplete = async (success: boolean) => {
+		this.setRunning(false);
 
-    private flushRender() {
-      this.pendingRender = false;
-      const atBottom =
-        this.output.scrollHeight -
-          this.output.scrollTop -
-          this.output.clientHeight <
-        5;
+		const slug = document.querySelector<HTMLElement>("[data-slug]")?.dataset.slug;
+		const expected = this.dataset.expected?.trim();
+		const actual = this.state.output.trim();
+		const outputMatches = !expected || expected === actual;
 
-      this.stdoutSection.textContent = this.stdoutBuffer;
+		if (success && outputMatches && slug) {
+			await db.markCompleted(slug);
+			window.dispatchEvent(new CustomEvent("lesson:completed"));
+		}
 
-      if (atBottom) this.output.scrollTop = this.output.scrollHeight;
-    }
+		if (success && expected && !outputMatches) {
+			this.showMismatch(expected, actual);
+		}
+	}
 
-    private toggleRunning(running: boolean) {
-      this.querySelector(".play-icon")!.classList.toggle("hidden", running);
-      this.querySelector(".loader-icon")!.classList.toggle("hidden", !running);
-      this.querySelector(".button-text")!.textContent = running
-        ? "Ejecutando..."
-        : "Ejecutar";
-    }
+	private showMismatch(expected: string, actual: string) {
+		const mismatchDiv = document.createElement('div');
+		mismatchDiv.innerHTML = `<hr class="border-t border-gray-700 my-2"><div><b><span class="text-red-400">error</span>: La salida no coincide con lo esperado</b></div><div>  Esperaba: <span class="text-green-400">${expected}</span></div>`;
 
-    private reset() {
-      const commandLine = this.output.querySelector(".command-line")!;
-      this.output.textContent = "";
-      this.output.appendChild(commandLine);
+		this.ui.stderr.innerHTML = getStderrHTML(this.state.lastStderr);
+		this.ui.stderr.appendChild(mismatchDiv);
+		this.scrollToBottom();
+	}
 
-      this.stderrSection = document.createElement("pre");
-      this.stderrSection.className = "text-gray-400 text-sm whitespace-pre";
+	private reset = async () => {
+		const editor = document.querySelector("[data-slug]") as HTMLElement;
+		if (!editor) return;
 
-      this.separator = document.createElement("hr");
-      this.separator.className = "border-t border-gray-700 my-2";
-      this.separator.hidden = true;
+		const { slug, initialCode } = editor.dataset;
+		if (!slug || !initialCode) return;
 
-      this.stdoutSection = document.createElement("pre");
-      this.stdoutSection.className = "text-gray-300 text-sm whitespace-pre";
+		await db.reset(slug);
+		editorCode.set(initialCode);
+		window.dispatchEvent(new CustomEvent("editor:reset", { detail: { code: initialCode } }));
+	}
 
-      this.output.append(
-        this.stderrSection,
-        this.separator,
-        this.stdoutSection,
-      );
-      this.lastStderr = "";
-      this.stdoutBuffer = "";
-      this.pendingRender = false;
-    }
-  }
+	private setRunning(running: boolean) {
+		this.toggleAttribute("data-running", running);
+	}
 
-  customElements.define("terminal-output", RustOutput);
+	private clear() {
+		this.ui.stderr.textContent = "";
+		this.ui.stdout.textContent = "";
+		this.state.lastStderr = "";
+		this.state.output = "";
+	}
+
+	private scrollToBottom() {
+		this.ui.console.scrollTop = this.ui.console.scrollHeight;
+	}
+}
+
+customElements.define("terminal-output", TerminalOutput);
 </script>
