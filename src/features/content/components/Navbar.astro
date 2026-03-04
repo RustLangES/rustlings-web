@@ -6,7 +6,9 @@ import { type Content, getLessonsByLang } from "~/content-manager"
 import { getLangFromUrl } from "~/i18n/utils"
 import IconBrandGithub from "~icons/tabler/brand-github"
 
-interface Props { lang?: string }
+interface Props {
+	lang?: string
+}
 const { lang: langProp } = Astro.props
 const lang = langProp ?? getLangFromUrl(Astro.url)
 const lessons = getLessonsByLang(lang)
