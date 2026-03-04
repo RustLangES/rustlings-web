@@ -1,11 +1,12 @@
 ---
 import { Image } from "astro:assets"
 import IconX from "~icons/tabler/x"
-
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 export interface SidebarItem {
 	label: string
 	href?: string
 	icon?: string
+	children?: SidebarItem[]
 }
 
 interface Props {
@@ -14,9 +15,11 @@ interface Props {
 	position?: "left" | "right"
 	id?: string
 	logo?: ImageMetadata
+	backHref?: string
+	backLabel?: string
 }
 
-const { title = "Menú", items = [], position = "left", id = "sidebar", logo } = Astro.props
+const { title = "Menú", items = [], position = "left", id = "sidebar", logo, backHref, backLabel = "Volver" } = Astro.props
 ---
 
 <div
@@ -68,6 +71,15 @@ const { title = "Menú", items = [], position = "left", id = "sidebar", logo } =
 	</header>
 
 	<nav class="flex-1 px-4 pt-4 pb-4 overflow-y-auto" aria-label={`Navegación de ${title.toLowerCase()}`}>
+		{backHref && (
+			<a
+				href={backHref}
+				class="flex items-center gap-2 px-3 py-2 mb-3 text-sm text-secondary/60 hover:text-yellow border border-stroke-color/40 hover:border-yellow/30 rounded-md transition-all duration-200"
+			>
+			    <IconLeft font-size={20} />
+				{backLabel}
+			</a>
+		)}
 		<ul class="space-y-1">
 			{items.map((item) => (
 				<li>
@@ -77,13 +89,78 @@ const { title = "Menú", items = [], position = "left", id = "sidebar", logo } =
 						class="group flex items-center gap-3 px-3 py-2.5 rounded-md text-secondary hover:text-yellow hover:bg-yellow/10 hover:translate-x-1 transition-all duration-200 border border-transparent hover:border-yellow/20"
 					>
 						{item.icon && <span class="text-lg" aria-hidden="true">{item.icon}</span>}
-						<span class="font-medium text-sm">{item.label}</span>
+						<span class="font-medium text-sm flex-1">{item.label}</span>
+						<span data-visited-check class="hidden text-xs text-yellow/70">✓</span>
 					</a>
+					{item.children && item.children.length > 0 && (
+						<ul class="mt-0.5 ml-3 pl-3 border-l border-stroke-color/40 space-y-0.5">
+							{item.children.map((child) => (
+								<li>
+									<a
+										href={child.href}
+										data-sidebar-link={id}
+										class="group flex items-center gap-2 px-2 py-1.5 rounded-md text-secondary/70 hover:text-yellow hover:bg-yellow/10 hover:translate-x-1 transition-all duration-200 border border-transparent hover:border-yellow/20 text-xs"
+									>
+										<span class="flex-1">{child.label}</span>
+										<span data-visited-check class="hidden text-yellow/70">✓</span>
+									</a>
+								</li>
+							))}
+						</ul>
+					)}
 				</li>
 			))}
 		</ul>
 	</nav>
 </aside>
+
+<script>
+  import { db } from "~/lib/stores/editor-store"
+
+  async function updateLock() {
+    const links = [
+      ...document.querySelectorAll<HTMLAnchorElement>("[data-sidebar-link]"),
+    ]
+    if (!links.length) return
+
+    let locked = false
+
+    for (const link of links) {
+      const href = link.getAttribute("href") ?? ""
+      const slug = href.replace(/^\//, "")
+      const isActive = href === window.location.pathname
+
+      if (locked && !isActive) {
+        lockLink(link)
+      } else {
+        unlockLink(link)
+        if (slug) {
+          const done = await db.isCompleted(slug)
+          if (!done) locked = true
+        }
+      }
+    }
+  }
+
+  function lockLink(link: HTMLAnchorElement) {
+    link.classList.add("opacity-40", "pointer-events-none")
+    if (!link.querySelector("[data-lock]")) {
+      const icon = document.createElement("span")
+      icon.dataset.lock = ""
+      icon.textContent = "🔒"
+      icon.className = "text-xs"
+      link.appendChild(icon)
+    }
+  }
+
+  function unlockLink(link: HTMLAnchorElement) {
+    link.classList.remove("opacity-40", "pointer-events-none")
+    link.querySelector("[data-lock]")?.remove()
+  }
+
+  document.addEventListener("astro:page-load", updateLock)
+  window.addEventListener("lesson:completed", updateLock)
+</script>
 
 <script define:vars={{ id }}>
 	function initSidebar() {
@@ -118,6 +195,46 @@ const { title = "Menú", items = [], position = "left", id = "sidebar", logo } =
 		overlay.addEventListener('click', close)
 		links.forEach(link => link.addEventListener('click', close))
 		document.addEventListener('keydown', handleEscape)
+
+		const getVisitedSlugs = () => {
+			try {
+				const progress = JSON.parse(localStorage.getItem('rustlings_progress') ?? '{}')
+				return Object.values(progress).flat()
+			} catch { return [] }
+		}
+
+		const highlightActive = () => {
+			const current = window.location.pathname
+			const visited = getVisitedSlugs()
+
+			links.forEach(link => {
+				const href = link.getAttribute('href') ?? ''
+				const slug = href.replace(/^\//, '')
+				const isActive = href === current
+
+				link.classList.toggle('text-yellow', isActive)
+				link.classList.toggle('bg-yellow/10', isActive)
+				link.classList.toggle('border-yellow/20', isActive)
+				link.classList.toggle('border-transparent', !isActive)
+
+				const check = link.querySelector('[data-visited-check]')
+				if (!check) return
+
+				const childList = link.parentElement?.querySelector('ul')
+				let isVisited
+				if (childList) {
+					const childSlugs = [...childList.querySelectorAll(`a[data-sidebar-link="${id}"]`)]
+						.map(a => (a.getAttribute('href') ?? '').replace(/^\//, ''))
+					isVisited = childSlugs.length > 0 && childSlugs.every(s => visited.includes(s))
+				} else {
+					isVisited = visited.includes(slug)
+				}
+
+				check.classList.toggle('hidden', !isVisited)
+			})
+		}
+
+		highlightActive()
 
 		window[`${id}Sidebar`] = { open, close, toggle }
 
