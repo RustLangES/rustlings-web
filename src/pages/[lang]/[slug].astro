@@ -2,7 +2,7 @@
 import CodeEditor from "~/components/editor/CodeEditor.astro"
 import Terminal from "~/components/editor/output/Terminal.astro"
 import { tracks } from "~/const/tracks"
-import { lessons } from "~/content-manager"
+import { getLessonsByLang, supportedLangs } from "~/content-manager"
 import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
 import Layout from "~/layouts/Layout.astro"
@@ -11,17 +11,21 @@ import IconCode from "~icons/tabler/code"
 import IconGripVertical from "~icons/tabler/grip-vertical"
 
 export function getStaticPaths() {
-	return lessons.map((lesson, index) => ({
-		params: { slug: lesson.meta.slug },
-		props: {
-			lesson,
-			previousLesson: lessons[index - 1],
-			nextLesson: lessons[index + 1],
-		},
-	}))
+	return supportedLangs.flatMap((lang) => {
+		const lessons = getLessonsByLang(lang)
+		return lessons.map((lesson, index) => ({
+			params: { lang, slug: lesson.meta.slug },
+			props: {
+				lesson,
+				lang,
+				previousLesson: lessons[index - 1],
+				nextLesson: lessons[index + 1],
+			},
+		}))
+	})
 }
 
-const { lesson, previousLesson, nextLesson } = Astro.props
+const { lesson, lang, previousLesson, nextLesson } = Astro.props
 const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 ---
 
@@ -36,7 +40,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 </style>
 
 <Layout>
-  <Navbar />
+  <Navbar lang={lang} />
   <main
     class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 lg:min-h-0 lg:overflow-hidden"
     data-container
@@ -83,7 +87,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
           </div>
         </div>
         <div class="border-t border-gray-700 shrink-0">
-          <NavButtons previous={previousLesson?.meta} next={nextLesson?.meta} />
+          <NavButtons lang={lang} previous={previousLesson?.meta} next={nextLesson?.meta} />
         </div>
       </div>
     </aside>
@@ -186,7 +190,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
   document.addEventListener("astro:page-load", async () => {
     const tracker = document.getElementById("lesson-tracker")
     const trackId = tracker?.dataset.trackId ?? "visited"
-    const slug = tracker?.dataset.slug ?? window.location.pathname.slice(1)
+    const slug = tracker?.dataset.slug ?? window.location.pathname.split("/").pop()
     if (slug) markLessonVisited(trackId, slug)
 
     // Non-editor lessons complete on visit (no exercise to run)
