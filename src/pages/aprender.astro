@@ -2,9 +2,13 @@
 import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import { tracks } from "~/const/tracks"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Layout
@@ -43,7 +47,7 @@ import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
                 <div class="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
                   <span class="text-secondary/50 font-bold text-xl">{track.title}</span>
                   <span class="text-xs bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-full">
-                    {track.badge}
+                    {t(track.badge)}
                   </span>
                   <span class="text-xs bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-full">
                     Próximamente
@@ -56,11 +60,13 @@ import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
               <span class="text-secondary/20 text-2xl shrink-0">🔒</span>
             </div>
           ) : (
-            <a
-              href={track.href}
+            <div
               data-track-id={track.id}
               data-track-total={track.lessons}
-              class="group relative flex flex-col sm:flex-row gap-6 items-center bg-light-bg border border-stroke-color rounded-2xl p-6 hover:border-yellow transition-all duration-200"
+              data-track-title={track.title}
+              data-track-href={`/${lang}${track.href}`}
+              data-track-slugs={JSON.stringify(track.slugs)}
+              class="group relative flex flex-col sm:flex-row gap-6 items-center bg-light-bg border border-stroke-color rounded-2xl p-6 hover:border-yellow transition-all duration-200 cursor-pointer"
             >
               <div class="shrink-0 w-20 h-20 flex items-center justify-center rounded-2xl bg-editor-bg border border-stroke-color">
                 <Image src={logoImage} alt="Rustlings" class="w-12 h-12" />
@@ -72,7 +78,7 @@ import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
                     {track.title}
                   </span>
                   <span class="text-xs bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-full">
-                    {track.badge}
+                    {t(track.badge)}
                   </span>
                 </div>
                 <p class="text-secondary/60 text-sm leading-relaxed">{track.description}</p>
@@ -86,6 +92,12 @@ import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
                   <div class="w-full h-1.5 bg-stroke-color/30 rounded-full overflow-hidden">
                     <div data-progress-bar class="h-full bg-yellow rounded-full transition-all duration-500" style="width:0%"></div>
                   </div>
+                  <button
+                    data-cert-btn
+                    class="hidden items-center gap-1.5 text-xs font-semibold text-black bg-yellow px-3 py-1.5 rounded-lg hover:bg-yellow/80 transition-all cursor-pointer w-fit mt-1"
+                  >
+                    🏆 Ver Certificado
+                  </button>
                 </div>
 
                 <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} lecciones</span>
@@ -94,40 +106,68 @@ import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
               <span class="text-secondary/30 group-hover:text-yellow group-hover:translate-x-1 transition-all text-2xl shrink-0">
                 <IconRight font-size={20} />
               </span>
-            </a>
+            </div>
           )
         ))}
       </div>
     </div>
 
   </main>
+
 </Layout>
 
 <script>
+  import { db } from "~/lib/stores/editor-store"
   import { getTrackProgress } from "~/lib/progress"
 
-  document.querySelectorAll<HTMLElement>("[data-track-id]").forEach(card => {
-    const trackId = card.dataset.trackId!
-    const total = Number(card.dataset.trackTotal)
-    const visited = getTrackProgress(trackId)
+  document.addEventListener("astro:page-load", async () => {
+    const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
 
-    if (visited.length === 0) return
+    for (const card of cards) {
+      const trackId = card.dataset.trackId!
+      const total = Number(card.dataset.trackTotal)
+      const slugs: string[] = JSON.parse(card.dataset.trackSlugs ?? "[]")
+      const visited = getTrackProgress(trackId)
 
-    const pct = Math.round((visited.length / total) * 100)
+      if (visited.length > 0) {
+        const pct = Math.round((visited.length / total) * 100)
+        const container = card.querySelector<HTMLElement>("[data-progress-container]")
+        const label = card.querySelector<HTMLElement>("[data-progress-label]")
+        const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
+        const bar = card.querySelector<HTMLElement>("[data-progress-bar]")
+        const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
 
-    const container = card.querySelector<HTMLElement>("[data-progress-container]")
-    const label = card.querySelector<HTMLElement>("[data-progress-label]")
-    const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
-    const bar = card.querySelector<HTMLElement>("[data-progress-bar]")
-    const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
+        if (container && label && pctEl && bar) {
+          label.textContent = `${visited.length} de ${total} lecciones`
+          pctEl.textContent = `${pct}%`
+          bar.style.width = `${pct}%`
+          container.classList.remove("hidden")
+          container.classList.add("flex")
+          if (lessonsLabel) lessonsLabel.classList.add("hidden")
+        }
+      }
 
-    if (container && label && pctEl && bar) {
-      label.textContent = `${visited.length} de ${total} lecciones`
-      pctEl.textContent = `${pct}%`
-      bar.style.width = `${pct}%`
-      container.classList.remove("hidden")
-      container.classList.add("flex")
-      if (lessonsLabel) lessonsLabel.classList.add("hidden")
+      // Show cert button if all lessons completed
+      if (slugs.length > 0) {
+        const completions = await Promise.all(slugs.map((s) => db.isCompleted(s)))
+        if (completions.every(Boolean)) {
+          const certBtn = card.querySelector<HTMLElement>("[data-cert-btn]")
+          certBtn?.classList.remove("hidden")
+          certBtn?.classList.add("flex")
+        }
+      }
+
+      // Card click → navigate (unless cert button)
+      card.addEventListener("click", (e) => {
+        if ((e.target as HTMLElement).closest("[data-cert-btn]")) return
+        window.location.href = card.dataset.trackHref!
+      })
+
+      // Cert button → navigate to certificate page
+      card.querySelector<HTMLElement>("[data-cert-btn]")?.addEventListener("click", (e) => {
+        e.stopPropagation()
+        window.location.href = `/certificado/${trackId}`
+      })
     }
   })
 </script>
