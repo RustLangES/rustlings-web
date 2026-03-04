@@ -135,7 +135,7 @@ const {
 
     for (const link of links) {
       const href = link.getAttribute("href") ?? ""
-      const slug = href.replace(/^\//, "")
+      const slug = href.split("/").pop() ?? ""
       const isActive = href === window.location.pathname
 
       if (locked && !isActive) {
@@ -217,7 +217,7 @@ const {
 
 			links.forEach(link => {
 				const href = link.getAttribute('href') ?? ''
-				const slug = href.replace(/^\//, '')
+				const slug = href.split('/').pop() ?? ''
 				const isActive = href === current
 
 				link.classList.toggle('text-yellow', isActive)
@@ -232,7 +232,7 @@ const {
 				let isVisited
 				if (childList) {
 					const childSlugs = [...childList.querySelectorAll(`a[data-sidebar-link="${id}"]`)]
-						.map(a => (a.getAttribute('href') ?? '').replace(/^\//, ''))
+						.map(a => (a.getAttribute('href') ?? '').split('/').pop() ?? '')
 					isVisited = childSlugs.length > 0 && childSlugs.every(s => visited.includes(s))
 				} else {
 					isVisited = visited.includes(slug)
