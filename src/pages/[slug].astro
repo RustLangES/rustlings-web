@@ -1,14 +1,14 @@
 ---
-import { lessons } from "~/content-manager"
-import { tracks } from "~/const/tracks"
 import CodeEditor from "~/components/editor/CodeEditor.astro"
+import Terminal from "~/components/editor/output/Terminal.astro"
+import { tracks } from "~/const/tracks"
+import { lessons } from "~/content-manager"
+import NavButtons from "~/features/content/components/NavButtons.astro"
+import Navbar from "~/features/content/components/Navbar.astro"
+import Layout from "~/layouts/Layout.astro"
 import IconBook from "~icons/tabler/book"
 import IconCode from "~icons/tabler/code"
 import IconGripVertical from "~icons/tabler/grip-vertical"
-import Layout from "~/layouts/Layout.astro"
-import Navbar from "~/features/content/components/Navbar.astro"
-import NavButtons from "~/features/content/components/NavButtons.astro"
-import Terminal from "~/components/editor/output/Terminal.astro"
 
 export function getStaticPaths() {
 	return lessons.map((lesson, index) => ({
@@ -22,7 +22,7 @@ export function getStaticPaths() {
 }
 
 const { lesson, previousLesson, nextLesson } = Astro.props
-const currentTrack = tracks.find(t => t.slugs.includes(lesson.meta.slug))
+const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 ---
 
 <style>

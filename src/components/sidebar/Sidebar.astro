@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets"
-import IconX from "~icons/tabler/x"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+import IconX from "~icons/tabler/x"
 export interface SidebarItem {
 	label: string
 	href?: string
@@ -19,7 +19,15 @@ interface Props {
 	backLabel?: string
 }
 
-const { title = "Menú", items = [], position = "left", id = "sidebar", logo, backHref, backLabel = "Volver" } = Astro.props
+const {
+	title = "Menú",
+	items = [],
+	position = "left",
+	id = "sidebar",
+	logo,
+	backHref,
+	backLabel = "Volver",
+} = Astro.props
 ---
 
 <div

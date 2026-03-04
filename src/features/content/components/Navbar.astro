@@ -2,7 +2,7 @@
 import logoImage from "~/assets/images/webp/logo.webp"
 import Sidebar from "~/components/sidebar/Sidebar.astro"
 import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
-import { lessons, type Content } from "~/content-manager"
+import { type Content, lessons } from "~/content-manager"
 import IconBrandGithub from "~icons/tabler/brand-github"
 
 type GroupedLesson = { parent: Content; children: Content[] }
@@ -22,12 +22,13 @@ for (const lesson of lessons) {
 const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
 	label: `${parent.meta.major}. ${parent.meta.title}`,
 	href: `/${parent.meta.slug}`,
-	children: children.length > 0
-		? children.map((child) => ({
-				label: `${parent.meta.major}.${child.meta.minor}. ${child.meta.title}`,
-				href: `/${child.meta.slug}`,
-		  }))
-		: undefined,
+	children:
+		children.length > 0
+			? children.map((child) => ({
+					label: `${parent.meta.major}.${child.meta.minor}. ${child.meta.title}`,
+					href: `/${child.meta.slug}`,
+				}))
+			: undefined,
 }))
 ---
 
