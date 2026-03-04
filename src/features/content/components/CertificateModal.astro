@@ -1,0 +1,194 @@
+---
+interface Props {
+	trackId: string
+	trackTitle: string
+	trackSlugs: string[]
+}
+
+const { trackId, trackTitle, trackSlugs } = Astro.props
+---
+
+<div
+  id="certificate-modal"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm"
+  data-track-id={trackId}
+  data-track-title={trackTitle}
+  data-track-slugs={JSON.stringify(trackSlugs)}
+>
+  <div class="relative flex flex-col items-center gap-5 p-6 max-w-3xl w-full mx-4">
+    <canvas
+      id="certificate-canvas"
+      width="900"
+      height="600"
+      class="w-full rounded-xl shadow-2xl border border-stroke-color"
+    ></canvas>
+    <div class="flex gap-3">
+      <button
+        id="download-certificate"
+        class="flex items-center gap-2 rounded-lg bg-yellow px-6 py-2.5 font-semibold text-black transition hover:opacity-80 cursor-pointer"
+      >
+        Descargar PNG
+      </button>
+      <button
+        id="close-certificate"
+        class="rounded-lg border border-neutral-600 px-6 py-2.5 text-neutral-300 transition hover:bg-neutral-700 cursor-pointer"
+      >
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { db } from "~/lib/stores/editor-store"
+
+  function drawCertificate(canvas: HTMLCanvasElement, trackTitle: string) {
+    const ctx = canvas.getContext("2d")!
+    const W = canvas.width
+    const H = canvas.height
+
+    const YELLOW = "#ffd776"
+    const YELLOW_DIM = "#ffd77640"
+    const YELLOW_MID = "#ffd77699"
+    const BG = "#191918"
+    const BG2 = "#272726"
+    const STROKE = "#4f4e48"
+
+    // Background gradient
+    const grad = ctx.createLinearGradient(0, 0, W, H)
+    grad.addColorStop(0, BG)
+    grad.addColorStop(1, BG2)
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, W, H)
+
+    // Outer border
+    ctx.strokeStyle = YELLOW
+    ctx.lineWidth = 2
+    ctx.strokeRect(18, 18, W - 36, H - 36)
+
+    // Inner border
+    ctx.strokeStyle = YELLOW_DIM
+    ctx.lineWidth = 1
+    ctx.strokeRect(28, 28, W - 56, H - 56)
+
+    // Corner dots
+    ctx.fillStyle = YELLOW
+    const corners: [number, number][] = [
+      [48, 48],
+      [W - 48, 48],
+      [48, H - 48],
+      [W - 48, H - 48],
+    ]
+    for (const [x, y] of corners) {
+      ctx.beginPath()
+      ctx.arc(x, y, 4, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    // Top decorative line
+    ctx.strokeStyle = YELLOW_MID
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(W / 2 - 140, 88)
+    ctx.lineTo(W / 2 + 140, 88)
+    ctx.stroke()
+
+    // Logo - Rustlings
+    ctx.textAlign = "center"
+    ctx.fillStyle = YELLOW
+    ctx.font = "700 22px 'Poppins', sans-serif"
+    ctx.fillText("RustLang en Español", W / 2, 76)
+
+    // "CERTIFICADO DE FINALIZACIÓN"
+    ctx.fillStyle = "#fcfcfc"
+    ctx.font = "700 36px 'Poppins', sans-serif"
+    ctx.fillText("CERTIFICADO DE FINALIZACIÓN", W / 2, 175)
+
+    // Subtitle
+    ctx.fillStyle = "#a0a09a"
+    ctx.font = "400 16px 'Poppins', sans-serif"
+    ctx.fillText("Este certificado acredita que completaste exitosamente el curso:", W / 2, 225)
+
+    // Separator
+    const sepY = 248
+    ctx.strokeStyle = YELLOW_DIM
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(W / 2 - 200, sepY)
+    ctx.lineTo(W / 2 + 200, sepY)
+    ctx.stroke()
+
+    // Track title
+    ctx.fillStyle = YELLOW
+    ctx.font = "700 52px 'Poppins', sans-serif"
+    ctx.fillText(trackTitle, W / 2, 330)
+
+    // Platform
+    ctx.fillStyle = "#e0e0d8"
+    ctx.font = "400 18px 'Poppins', sans-serif"
+    ctx.fillText("en Rustlings Web", W / 2, 370)
+
+    // Bottom separator
+    const botSepY = 430
+    ctx.strokeStyle = YELLOW_DIM
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(W / 2 - 280, botSepY)
+    ctx.lineTo(W / 2 + 280, botSepY)
+    ctx.stroke()
+
+    // Date
+    const date = new Date().toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+    ctx.fillStyle = "#70706a"
+    ctx.font = "400 14px 'Poppins', sans-serif"
+    ctx.fillText(date, W / 2, 460)
+
+    // URL
+    ctx.fillStyle = STROKE
+    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.fillText("rustlings.dev", W / 2, 490)
+  }
+
+  async function initCertificateModal() {
+    const modal = document.getElementById("certificate-modal")
+    if (!modal) return
+
+    const trackId = modal.dataset.trackId!
+    const trackTitle = modal.dataset.trackTitle!
+    const trackSlugs: string[] = JSON.parse(modal.dataset.trackSlugs!)
+
+    const show = async () => {
+      const results = await Promise.all(trackSlugs.map((s) => db.isCompleted(s)))
+      if (!results.every(Boolean)) return
+
+      modal.classList.replace("hidden", "flex")
+      const canvas = document.getElementById("certificate-canvas") as HTMLCanvasElement
+      await document.fonts.ready
+      drawCertificate(canvas, trackTitle)
+    }
+
+    window.addEventListener("lesson:completed", show)
+
+    document.getElementById("close-certificate")?.addEventListener("click", () => {
+      modal.classList.replace("flex", "hidden")
+    })
+
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.replace("flex", "hidden")
+    })
+
+    document.getElementById("download-certificate")?.addEventListener("click", () => {
+      const canvas = document.getElementById("certificate-canvas") as HTMLCanvasElement
+      const link = document.createElement("a")
+      link.download = `certificado-${trackId}.png`
+      link.href = canvas.toDataURL("image/png")
+      link.click()
+    })
+  }
+
+  document.addEventListener("astro:page-load", initCertificateModal)
+</script>
