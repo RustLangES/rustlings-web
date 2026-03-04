@@ -3,11 +3,12 @@ import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
 
 interface Props {
+	lang: string
 	previous?: { slug: string; title: string }
 	next?: { slug: string; title: string }
 }
 
-const { previous, next } = Astro.props
+const { lang, previous, next } = Astro.props
 const isNextDisabled = true
 
 const btnBaseClass =
@@ -17,7 +18,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
 
 <nav class="not-prose mt-auto flex w-full items-center justify-between pb-2" aria-label="Navegación de lecciones">
   <a
-    href={previous ? `/${previous.slug}` : undefined}
+    href={previous ? `/${lang}/${previous.slug}` : undefined}
     aria-label={previous ? `Anterior: ${previous.title}` : undefined}
     aria-disabled={!previous}
     class={btnBaseClass}
@@ -34,7 +35,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
   </a>
   <a
     id="next-lesson-btn"
-    href={next ? `/${next.slug}` : undefined}
+    href={next ? `/${lang}/${next.slug}` : undefined}
     aria-label={next ? `Siguiente: ${next.title}` : undefined}
     aria-disabled={isNextDisabled}
     class={btnBaseClass}

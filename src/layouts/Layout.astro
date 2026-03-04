@@ -3,15 +3,18 @@ import { ClientRouter } from "astro:transitions"
 import "~/styles/global.css"
 import favicon from "~/assets/images/webp/favicon.webp"
 import CookieBanner from "~/components/CookieBanner.astro"
+import { getLangFromUrl } from "~/i18n/utils"
 
 const {
 	title = "RustLings Web",
 	description = "Aprende Rust mediante ejercicios interactivos y desafíos. ¡Todo explicado aquí!",
 } = Astro.props
+
+const lang = getLangFromUrl(Astro.url)
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <title>{title}</title>
