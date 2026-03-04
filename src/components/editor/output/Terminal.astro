@@ -6,14 +6,17 @@ import IconTerminal from "~icons/tabler/terminal"
 
 interface Props {
 	expectedOutput?: string
+	testCode?: string
 }
 
-const { expectedOutput } = Astro.props
+const { expectedOutput, testCode } = Astro.props
+const isTestMode = !!testCode
 ---
 
 <terminal-output
 	class="group h-full flex flex-col bg-dark-fg/60 border-t border-stroke-color text-sm font-mono rounded-b-2xl"
 	data-expected={expectedOutput?.trim()}
+	data-test-code={testCode}
 >
 	<header class="flex h-8 items-center gap-3 border-b border-stroke-color bg-light-bg px-3">
 		<div class="flex items-center gap-2 text-secondary">
@@ -62,7 +65,7 @@ const { expectedOutput } = Astro.props
 		<div class="mb-2 text-gray-400">
 			<span class="text-green-400">$</span>
 			<span class="text-yellow font-medium">cargo</span>
-			<span>run</span>
+			<span>{isTestMode ? "test" : "run"}</span>
 		</div>
 		<pre id="stderr" class="whitespace-pre text-sm empty:hidden"></pre>
 		<hr id="separator" class="my-2 border-t border-gray-700 has-[~#stdout:empty]:hidden has-[+#stdout:empty]:hidden" />
@@ -119,7 +122,13 @@ class TerminalOutput extends HTMLElement {
 		this.clear();
 		this.ui.stdin.focus();
 
-		rustPlayground.execute(editorCode.get(), this.handleOutput, this.handleComplete);
+		const testCode = this.dataset.testCode;
+		if (testCode) {
+			const fullCode = editorCode.get() + "\n" + testCode;
+			rustPlayground.execute(fullCode, this.handleOutput, this.handleComplete, { tests: true });
+		} else {
+			rustPlayground.execute(editorCode.get(), this.handleOutput, this.handleComplete);
+		}
 	}
 
 	private handleOutput = (stderr: string, stdout: string) => {
@@ -132,7 +141,9 @@ class TerminalOutput extends HTMLElement {
 
 		if (stdout) {
 			this.state.output = stdout;
-			this.ui.stdout.textContent = stdout;
+			this.ui.stdout.innerHTML = this.dataset.testCode
+				? this.formatTestOutput(stdout)
+				: stdout;
 		}
 
 		if (wasAtBottom) {
@@ -140,10 +151,39 @@ class TerminalOutput extends HTMLElement {
 		}
 	}
 
+	private formatTestOutput(output: string): string {
+		return output
+			.split("\n")
+			.map(line => {
+				if (line.includes("... ok")) {
+					return `<span class="text-green-400">${line}</span>`
+				}
+				if (line.includes("... FAILED") || line.includes("FAILED")) {
+					return `<span class="text-red-400">${line}</span>`
+				}
+				if (line.startsWith("test result:")) {
+					const passed = line.includes("FAILED")
+					return `<span class="${passed ? "text-red-400" : "text-green-400"} font-bold">${line}</span>`
+				}
+				return `<span class="text-gray-400">${line}</span>`
+			})
+			.join("\n")
+	}
+
 	private handleComplete = async (success: boolean) => {
 		this.setRunning(false);
 
+		const isTestMode = !!this.dataset.testCode;
 		const slug = document.querySelector<HTMLElement>("[data-slug]")?.dataset.slug;
+
+		if (isTestMode) {
+			if (success && slug) {
+				await db.markCompleted(slug);
+				window.dispatchEvent(new CustomEvent("lesson:completed"));
+			}
+			return;
+		}
+
 		const expected = this.dataset.expected?.trim();
 		const actual = this.state.output.trim();
 		const outputMatches = !expected || expected === actual;
@@ -158,7 +198,7 @@ class TerminalOutput extends HTMLElement {
 		}
 	}
 
-	private showMismatch(expected: string, actual: string) {
+	private showMismatch(expected: string, _actual: string) {
 		const mismatchDiv = document.createElement('div');
 		mismatchDiv.innerHTML = `<hr class="border-t border-gray-700 my-2"><div><b><span class="text-red-400">error</span>: La salida no coincide con lo esperado</b></div><div>  Esperaba: <span class="text-green-400">${expected}</span></div>`;
 
