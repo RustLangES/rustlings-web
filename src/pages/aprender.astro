@@ -1,0 +1,133 @@
+---
+import { Image } from "astro:assets"
+import logoImage from "~/assets/images/webp/logo.webp"
+import Layout from "~/layouts/Layout.astro"
+import { tracks } from "~/const/tracks"
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
+---
+
+<Layout
+  title="¿Qué quieres aprender? — Rustlings Web"
+  description="Elige el tema que deseas aprender en Rustlings Web."
+>
+  <header class="p-2 w-full">
+    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
+      <a
+        href="/"
+        class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+      >
+        <IconLeft font-size={20} />
+        Inicio
+      </a>
+    </nav>
+  </header>
+
+  <main class="flex-1 flex flex-col px-6 py-12">
+
+    <div class="flex flex-col items-center text-center mb-12">
+      <h1 class="text-2xl md:text-3xl font-bold text-secondary">¿Qué quieres aprender?</h1>
+      <p class="text-secondary/50 text-sm">Elige un camino para comenzar tu aventura</p>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div class="w-full max-w-2xl flex flex-col gap-4">
+        {tracks.map(track => (
+          track.disabled ? (
+            <div class="relative flex flex-col sm:flex-row gap-6 items-center bg-light-bg/40 border border-stroke-color/40 rounded-2xl p-6 cursor-not-allowed opacity-50 select-none">
+              <div class="shrink-0 w-20 h-20 flex items-center justify-center rounded-2xl bg-editor-bg border border-stroke-color/40">
+                <Image src={logoImage} alt="Rustlings" class="w-12 h-12 grayscale" />
+              </div>
+
+              <div class="flex flex-col gap-2 flex-1 text-center sm:text-left">
+                <div class="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
+                  <span class="text-secondary/50 font-bold text-xl">{track.title}</span>
+                  <span class="text-xs bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-full">
+                    {track.badge}
+                  </span>
+                  <span class="text-xs bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-full">
+                    Próximamente
+                  </span>
+                </div>
+                <p class="text-secondary/40 text-sm leading-relaxed">{track.description}</p>
+                <span class="text-secondary/30 text-xs">{track.lessons} lecciones</span>
+              </div>
+
+              <span class="text-secondary/20 text-2xl shrink-0">🔒</span>
+            </div>
+          ) : (
+            <a
+              href={track.href}
+              data-track-id={track.id}
+              data-track-total={track.lessons}
+              class="group relative flex flex-col sm:flex-row gap-6 items-center bg-light-bg border border-stroke-color rounded-2xl p-6 hover:border-yellow transition-all duration-200"
+            >
+              <div class="shrink-0 w-20 h-20 flex items-center justify-center rounded-2xl bg-editor-bg border border-stroke-color">
+                <Image src={logoImage} alt="Rustlings" class="w-12 h-12" />
+              </div>
+
+              <div class="flex flex-col gap-2 flex-1 text-center sm:text-left">
+                <div class="flex items-center justify-center sm:justify-start gap-3">
+                  <span class="text-secondary font-bold text-xl group-hover:text-yellow transition-colors">
+                    {track.title}
+                  </span>
+                  <span class="text-xs bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-full">
+                    {track.badge}
+                  </span>
+                </div>
+                <p class="text-secondary/60 text-sm leading-relaxed">{track.description}</p>
+
+                <!-- Progress bar (hidden until JS populates it) -->
+                <div data-progress-container class="hidden flex-col gap-1 mt-1">
+                  <div class="flex justify-between items-center">
+                    <span data-progress-label class="text-xs text-secondary/50"></span>
+                    <span data-progress-pct class="text-xs text-yellow font-medium"></span>
+                  </div>
+                  <div class="w-full h-1.5 bg-stroke-color/30 rounded-full overflow-hidden">
+                    <div data-progress-bar class="h-full bg-yellow rounded-full transition-all duration-500" style="width:0%"></div>
+                  </div>
+                </div>
+
+                <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} lecciones</span>
+              </div>
+
+              <span class="text-secondary/30 group-hover:text-yellow group-hover:translate-x-1 transition-all text-2xl shrink-0">
+                <IconRight font-size={20} />
+              </span>
+            </a>
+          )
+        ))}
+      </div>
+    </div>
+
+  </main>
+</Layout>
+
+<script>
+  import { getTrackProgress } from "~/lib/progress"
+
+  document.querySelectorAll<HTMLElement>("[data-track-id]").forEach(card => {
+    const trackId = card.dataset.trackId!
+    const total = Number(card.dataset.trackTotal)
+    const visited = getTrackProgress(trackId)
+
+    if (visited.length === 0) return
+
+    const pct = Math.round((visited.length / total) * 100)
+
+    const container = card.querySelector<HTMLElement>("[data-progress-container]")
+    const label = card.querySelector<HTMLElement>("[data-progress-label]")
+    const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
+    const bar = card.querySelector<HTMLElement>("[data-progress-bar]")
+    const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
+
+    if (container && label && pctEl && bar) {
+      label.textContent = `${visited.length} de ${total} lecciones`
+      pctEl.textContent = `${pct}%`
+      bar.style.width = `${pct}%`
+      container.classList.remove("hidden")
+      container.classList.add("flex")
+      if (lessonsLabel) lessonsLabel.classList.add("hidden")
+    }
+  })
+</script>
