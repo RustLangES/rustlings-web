@@ -56,13 +56,20 @@ function extractMetadata(filepath: string) {
 	}
 }
 
-const files = import.meta.glob<RawContent>("./content/*.{md,mdx}", { eager: true })
+export const supportedLangs = ["es"] as const
+export type SupportedLang = (typeof supportedLangs)[number]
 
-export const lessons: Content[] = Object.entries(files)
-	.map(([filepath, { Content, getHeadings, frontmatter }]) => ({
-		Content,
-		getHeadings,
-		data: frontmatter,
-		meta: extractMetadata(filepath),
-	}))
-	.sort((a, b) => a.meta.id - b.meta.id)
+const allFiles = import.meta.glob<RawContent>("./content/fundamentos-de-rust/*/*.{md,mdx}", { eager: true })
+
+export function getLessonsByLang(lang: string): Content[] {
+	const prefix = `./content/fundamentos-de-rust/${lang}/`
+	return Object.entries(allFiles)
+		.filter(([filepath]) => filepath.startsWith(prefix))
+		.map(([filepath, { Content, getHeadings, frontmatter }]) => ({
+			Content,
+			getHeadings,
+			data: frontmatter,
+			meta: extractMetadata(filepath),
+		}))
+		.sort((a, b) => a.meta.id - b.meta.id)
+}
