@@ -3,48 +3,112 @@ import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import Section from "~/components/sections/Section.astro"
 import JamGithub from "~icons/jam/github"
+import IconBolt from "~icons/tabler/bolt"
+import IconBook from "~icons/tabler/book"
+import IconTrophy from "~icons/tabler/trophy"
+import IconWorldCheck from "~icons/tabler/world-check"
 ---
 
 <Section
   id="hero"
-  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6"
+  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden"
 >
+  <!-- Radial glow background -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(ellipse 70% 50% at 50% 20%, rgba(255,215,118,0.07) 0%, transparent 70%)"
+    aria-hidden="true"
+  ></div>
+
+  <!-- GitHub link -->
   <a
     href="https://github.com/RustLangES/rustlings-web"
     target="_blank"
     rel="noopener noreferrer"
-    class="absolute top-4 right-6 text-secondary hover:text-yellow transition-transform duration-300 hover:scale-110"
+    class="absolute top-4 right-6 text-secondary/40 hover:text-yellow transition-all duration-300 hover:scale-110"
     aria-label="Repositorio de RustLings en GitHub"
   >
-    <JamGithub font-size={32} />
+    <JamGithub font-size={30} />
   </a>
 
+  <!-- Open source badge -->
+  <div class="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow/20 bg-yellow/5 text-yellow text-sm font-medium">
+    <span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>
+    100% Gratuito · Open Source
+  </div>
+
+  <!-- Logo -->
   <Image
-    class="w-56 md:w-64 logo mb-8"
+    class="w-40 md:w-48 logo mb-8"
     src={logoImage}
     alt="Rustlings logo"
-    width={256}
-    height={256}
+    width={192}
+    height={192}
     fetchpriority="high"
     loading="eager"
   />
 
-  <div class="my-10">
-    <h1 class="font-semibold text-5xl md:text-6xl mb-4">RustLings Web</h1>
-    <p class="text-xl opacity-90">Aprender Rust nunca fue tan fácil</p>
+  <!-- Headline -->
+  <div class="max-w-3xl mb-8">
+    <h1 class="font-extrabold text-5xl md:text-7xl leading-tight tracking-tight mb-5">
+      Aprende <span class="text-yellow">Rust</span><br class="hidden md:block" /> en Español
+    </h1>
+    <p class="text-secondary/55 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">
+      Lecciones interactivas, ejercicios prácticos y un editor integrado. Sin instalar nada, directo desde el navegador.
+    </p>
   </div>
 
-  <a
-    href="/aprender"
-    class="mt-6 px-8 py-2 border rounded-lg border-stroke-color hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
-  >
-    Aprender
-  </a>
+  <!-- CTAs -->
+  <div class="flex flex-col sm:flex-row gap-3 items-center">
+    <a
+      href="/aprender"
+      class="px-8 py-3 rounded-lg bg-yellow text-primary font-bold text-base hover:bg-yellow/85 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/15"
+    >
+      Empezar ahora
+    </a>
+    <a
+      href="https://github.com/RustLangES/rustlings-web"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center gap-2 px-8 py-3 rounded-lg border border-stroke-color text-secondary/60 font-medium text-base hover:border-yellow/40 hover:text-yellow hover:-translate-y-0.5 transition-all duration-200"
+    >
+      <JamGithub font-size={18} />
+      Ver código
+    </a>
+  </div>
+
+  <!-- Feature pills -->
+  <div class="mt-14 flex flex-wrap justify-center gap-3">
+    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
+      <IconBook font-size={14} class="text-yellow shrink-0" />
+      39 lecciones
+    </div>
+    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
+      <IconBolt font-size={14} class="text-yellow shrink-0" />
+      Editor integrado
+    </div>
+    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
+      <IconWorldCheck font-size={14} class="text-yellow shrink-0" />
+      Todo en Español
+    </div>
+    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
+      <IconTrophy font-size={14} class="text-yellow shrink-0" />
+      Certificados
+    </div>
+  </div>
 </Section>
 
 <style>
   .logo {
-    -webkit-filter: drop-shadow(0 -6mm 100mm var(--color-yellow));
-    filter: drop-shadow(0 -6mm 90mm var(--color-yellow));
+    -webkit-filter: drop-shadow(0 -6mm 80mm var(--color-yellow));
+    filter: drop-shadow(0 -6mm 70mm var(--color-yellow));
+  }
+
+  @keyframes scroll-down {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+  .animate-scroll-down {
+    animation: scroll-down 1.5s ease-in-out infinite;
   }
 </style>
