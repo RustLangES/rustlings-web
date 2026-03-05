@@ -289,7 +289,9 @@ p code {
 
 .driver-popover {
 	border: 1px solid var(--color-stroke-color);
-	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(255, 215, 118, 0.1);
+	box-shadow:
+		0 20px 60px rgba(0, 0, 0, 0.8),
+		0 4px 16px rgba(255, 215, 118, 0.1);
 	font-family: var(--font-family-poppins), sans-serif;
 	max-width: 380px;
 	backdrop-filter: blur(8px);
