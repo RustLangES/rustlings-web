@@ -74,11 +74,12 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
       {user ? (
         <div class="flex items-center gap-1">
           <a
+            id="nav-profile-link"
             href="/perfil"
-            class="hidden sm:flex items-center gap-1.5 px-2 py-1 text-xs text-secondary/60 rounded-md hover:text-yellow transition-colors"
+            class="flex items-center gap-1.5 px-2 py-1 text-xs text-secondary/60 rounded-md hover:text-yellow transition-colors"
           >
-            <IconUser font-size={14} />
-            {user.username ?? user.email}
+            <IconUser font-size={18} />
+            <span class="hidden sm:inline">{user.username ?? user.email}</span>
           </a>
           <a
             href="/api/auth/logout"
@@ -95,7 +96,7 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
           class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/50 rounded-md hover:text-yellow transition-colors"
           title="Iniciar sesión"
         >
-          <IconUser font-size={14} />
+          <IconUser font-size={18} />
         </a>
       )}
     </div>
