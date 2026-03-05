@@ -9,6 +9,8 @@ import IconBook from "~icons/tabler/book"
 import IconTrophy from "~icons/tabler/trophy"
 import IconUser from "~icons/tabler/user"
 import IconWorldCheck from "~icons/tabler/world-check"
+
+const user = Astro.locals.user
 ---
 
 <Section
@@ -31,15 +33,25 @@ import IconWorldCheck from "~icons/tabler/world-check"
     aria-hidden="true"
   ></div>
 
-  <!-- Login link -->
-  <a
-    href="/login"
-    class="absolute top-6 right-6 flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-    aria-label="Iniciar sesión"
-  >
-    <IconUser font-size={16} />
-    <span class="hidden sm:inline">Iniciar sesión</span>
-  </a>
+  <!-- Auth link -->
+  {user ? (
+    <a
+      href="/perfil"
+      class="absolute top-6 right-6 flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+    >
+      <IconUser font-size={16} />
+      <span class="hidden sm:inline">{user.username ?? user.email}</span>
+    </a>
+  ) : (
+    <a
+      href="/login"
+      class="absolute top-6 right-6 flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+      aria-label="Iniciar sesión"
+    >
+      <IconUser font-size={16} />
+      <span class="hidden sm:inline">Iniciar sesión</span>
+    </a>
+  )}
 
   <!-- Content wrapper -->
   <div class="relative z-10 flex flex-col items-center max-w-4xl">
