@@ -6,9 +6,12 @@ import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
+import IconLogout from "~icons/tabler/logout"
+import IconUser from "~icons/tabler/user"
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
+const user = Astro.locals.user
 ---
 
 <Layout
@@ -24,6 +27,35 @@ const t = useTranslations(lang)
         <IconLeft font-size={20} />
         Inicio
       </a>
+
+      {user ? (
+        <div class="flex items-center gap-2">
+          <a
+            href="/perfil"
+            class="flex items-center gap-2 px-3 py-1.5 text-sm text-secondary/70 border border-transparent rounded-lg hover:border-yellow/40 hover:text-secondary transition-all"
+          >
+            <IconUser font-size={16} />
+            <span class="hidden sm:inline">{user.username ?? user.email}</span>
+          </a>
+          <a
+            href="/api/auth/logout"
+            data-astro-reload
+            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/50 border border-transparent rounded-lg hover:border-red-500/40 hover:text-red-400 transition-all duration-300"
+            title="Cerrar sesión"
+          >
+            <IconLogout font-size={16} />
+            <span class="hidden sm:inline">Salir</span>
+          </a>
+        </div>
+      ) : (
+        <a
+          href="/login"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+        >
+          <IconUser font-size={16} />
+          Iniciar sesión
+        </a>
+      )}
     </nav>
   </header>
 
@@ -92,12 +124,6 @@ const t = useTranslations(lang)
                   <div class="w-full h-1.5 bg-stroke-color/30 rounded-full overflow-hidden">
                     <div data-progress-bar class="h-full bg-yellow rounded-full transition-all duration-500" style="width:0%"></div>
                   </div>
-                  <button
-                    data-cert-btn
-                    class="hidden items-center gap-1.5 text-xs font-semibold text-black bg-yellow px-3 py-1.5 rounded-lg hover:bg-yellow/80 transition-all cursor-pointer w-fit mt-1"
-                  >
-                    🏆 Ver Certificado
-                  </button>
                 </div>
 
                 <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} lecciones</span>
@@ -121,16 +147,28 @@ const t = useTranslations(lang)
   import { getTrackProgress } from "~/lib/progress"
 
   document.addEventListener("astro:page-load", async () => {
+    // Sync server progress into local IndexedDB (no-op if not logged in)
+    await db.syncFromServer()
+
     const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
 
     for (const card of cards) {
       const trackId = card.dataset.trackId!
       const total = Number(card.dataset.trackTotal)
       const slugs: string[] = JSON.parse(card.dataset.trackSlugs ?? "[]")
-      const visited = getTrackProgress(trackId)
 
-      if (visited.length > 0) {
-        const pct = Math.round((visited.length / total) * 100)
+      // Use server-synced IndexedDB completions as source of truth
+      const completions = slugs.length > 0
+        ? await Promise.all(slugs.map((s) => db.isCompleted(s)))
+        : []
+      const completedCount = completions.filter(Boolean).length
+
+      // Fall back to visited count if no completions yet
+      const visited = getTrackProgress(trackId)
+      const displayCount = completedCount > 0 ? completedCount : visited.length
+
+      if (displayCount > 0) {
+        const pct = Math.round((displayCount / total) * 100)
         const container = card.querySelector<HTMLElement>("[data-progress-container]")
         const label = card.querySelector<HTMLElement>("[data-progress-label]")
         const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
@@ -138,7 +176,7 @@ const t = useTranslations(lang)
         const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
 
         if (container && label && pctEl && bar) {
-          label.textContent = `${visited.length} de ${total} lecciones`
+          label.textContent = `${displayCount} de ${total} lecciones`
           pctEl.textContent = `${pct}%`
           bar.style.width = `${pct}%`
           container.classList.remove("hidden")
@@ -147,26 +185,9 @@ const t = useTranslations(lang)
         }
       }
 
-      // Show cert button if all lessons completed
-      if (slugs.length > 0) {
-        const completions = await Promise.all(slugs.map((s) => db.isCompleted(s)))
-        if (completions.every(Boolean)) {
-          const certBtn = card.querySelector<HTMLElement>("[data-cert-btn]")
-          certBtn?.classList.remove("hidden")
-          certBtn?.classList.add("flex")
-        }
-      }
-
-      // Card click → navigate (unless cert button)
-      card.addEventListener("click", (e) => {
-        if ((e.target as HTMLElement).closest("[data-cert-btn]")) return
+      // Card click → navigate
+      card.addEventListener("click", () => {
         window.location.href = card.dataset.trackHref!
-      })
-
-      // Cert button → navigate to certificate page
-      card.querySelector<HTMLElement>("[data-cert-btn]")?.addEventListener("click", (e) => {
-        e.stopPropagation()
-        window.location.href = `/certificado/${trackId}`
       })
     }
   })

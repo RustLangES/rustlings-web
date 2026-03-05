@@ -72,12 +72,35 @@ class RustlingsDB {
 		await Promise.all([this.delete(this.STORE_CODE, slug), this.delete(this.STORE_PROGRESS, slug)])
 	}
 
-	async markCompleted(slug: string) {
+	async markCompleted(slug: string, courseId?: string) {
 		await this.set(this.STORE_PROGRESS, slug, true)
+		if (courseId) {
+			fetch("/api/progress/complete", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ courseId, slug }),
+			}).catch(() => {})
+		}
 	}
 
 	async isCompleted(slug: string): Promise<boolean> {
 		return (await this.get<boolean>(this.STORE_PROGRESS, slug)) || false
+	}
+
+	/** Load server-side completions into IndexedDB (for logged-in users) */
+	async syncFromServer(): Promise<void> {
+		try {
+			const res = await fetch("/api/progress")
+			if (!res.ok) return
+			const { progress } = (await res.json()) as { progress: Record<string, string[]> }
+			for (const slugs of Object.values(progress)) {
+				for (const slug of slugs) {
+					await this.set(this.STORE_PROGRESS, slug, true)
+				}
+			}
+		} catch {
+			// ignore — user may be offline or not logged in
+		}
 	}
 }
 

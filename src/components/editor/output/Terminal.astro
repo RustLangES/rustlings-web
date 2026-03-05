@@ -175,10 +175,11 @@ class TerminalOutput extends HTMLElement {
 
 		const isTestMode = !!this.dataset.testCode;
 		const slug = document.querySelector<HTMLElement>("[data-slug]")?.dataset.slug;
+		const courseId = document.querySelector<HTMLElement>("[data-track-id]")?.dataset.trackId;
 
 		if (isTestMode) {
 			if (success && slug) {
-				await db.markCompleted(slug);
+				await db.markCompleted(slug, courseId);
 				window.dispatchEvent(new CustomEvent("lesson:completed"));
 			}
 			return;
@@ -189,7 +190,7 @@ class TerminalOutput extends HTMLElement {
 		const outputMatches = !expected || expected === actual;
 
 		if (success && outputMatches && slug) {
-			await db.markCompleted(slug);
+			await db.markCompleted(slug, courseId);
 			window.dispatchEvent(new CustomEvent("lesson:completed"));
 		}
 

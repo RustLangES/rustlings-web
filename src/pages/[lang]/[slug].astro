@@ -10,6 +10,8 @@ import IconBook from "~icons/tabler/book"
 import IconCode from "~icons/tabler/code"
 import IconGripVertical from "~icons/tabler/grip-vertical"
 
+export const prerender = true
+
 export function getStaticPaths() {
 	return supportedLangs.flatMap((lang) => {
 		const lessons = getLessonsByLang(lang)
@@ -196,7 +198,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
     // Non-editor lessons complete on visit (no exercise to run)
     const isNonEditor = document.querySelector("[data-panel='right']")?.classList.contains("collapsed")
     if (isNonEditor && slug) {
-      await db.markCompleted(slug)
+      await db.markCompleted(slug, trackId)
       setTimeout(() => window.dispatchEvent(new CustomEvent("lesson:completed")), 0)
     }
   })
