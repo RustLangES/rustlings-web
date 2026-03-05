@@ -25,16 +25,13 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 		.first<{ full_name_locked: number }>()
 
 	if (row?.full_name_locked) {
-		return new Response(
-			JSON.stringify({ error: "El nombre ya fue modificado y no puede cambiarse nuevamente" }),
-			{ status: 403 },
-		)
+		return new Response(JSON.stringify({ error: "El nombre ya fue modificado y no puede cambiarse nuevamente" }), {
+			status: 403,
+		})
 	}
 
 	const now = new Date().toISOString()
-	await DB.prepare(
-		"UPDATE users SET full_name = ?, full_name_locked = 1, updated_at = ? WHERE id = ?",
-	)
+	await DB.prepare("UPDATE users SET full_name = ?, full_name_locked = 1, updated_at = ? WHERE id = ?")
 		.bind(fullName || null, now, user.id)
 		.run()
 
