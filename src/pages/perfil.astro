@@ -5,8 +5,11 @@ import { getUserProgress } from "~/lib/progress-db"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconCertificate from "~icons/tabler/certificate"
 import IconDownload from "~icons/tabler/download"
+import IconEdit from "~icons/tabler/edit"
+import IconInfoCircle from "~icons/tabler/info-circle"
 import IconLink from "~icons/tabler/link"
 import IconLogout from "~icons/tabler/logout"
+import IconX from "~icons/tabler/x"
 
 if (!Astro.locals.user) {
 	return Astro.redirect("/login")
@@ -16,7 +19,9 @@ const user = Astro.locals.user
 const { DB } = Astro.locals.runtime.env
 
 const [fullNameRow, certsResult, progress] = await Promise.all([
-	DB.prepare("SELECT full_name FROM users WHERE id = ?").bind(user.id).first<{ full_name: string | null }>(),
+	DB.prepare("SELECT full_name, full_name_locked FROM users WHERE id = ?")
+		.bind(user.id)
+		.first<{ full_name: string | null; full_name_locked: number }>(),
 	DB.prepare(
 		"SELECT id, course_id, name_used, issued_at FROM user_certificates WHERE user_id = ? ORDER BY issued_at DESC",
 	)
@@ -26,6 +31,7 @@ const [fullNameRow, certsResult, progress] = await Promise.all([
 ])
 
 const fullName = fullNameRow?.full_name ?? ""
+const nameLocked = !!fullNameRow?.full_name_locked
 const certificates = certsResult.results
 
 const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
@@ -57,9 +63,27 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
 
       <!-- User info card -->
       <section class="bg-light-bg border border-stroke-color rounded-2xl p-6 flex flex-col gap-5">
-        <div class="flex flex-col gap-0.5">
-          <h1 class="text-lg font-bold text-secondary">Mi perfil</h1>
-          <p class="text-xs text-secondary/40">{user.email}</p>
+        <div class="flex items-start justify-between">
+          <div class="flex flex-col gap-0.5">
+            <h1 class="text-lg font-bold text-secondary">Mi perfil</h1>
+            <p class="text-xs text-secondary/40">{user.email}</p>
+          </div>
+          {nameLocked ? (
+            <span class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/30 border border-stroke-color/40 rounded-lg cursor-default select-none" title="El nombre ya fue modificado y no puede cambiarse nuevamente">
+              <IconEdit font-size={14} />
+              Bloqueado
+            </span>
+          ) : (
+            <button
+              id="edit-profile"
+              type="button"
+              class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
+            >
+              <IconEdit font-size={14} class="edit-icon" />
+              <IconX font-size={14} class="cancel-icon hidden" />
+              <span class="edit-label">Editar</span>
+            </button>
+          )}
         </div>
 
         <div class="flex flex-col gap-4">
@@ -75,14 +99,27 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="full-name">Nombre completo</label>
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-secondary/60 font-medium" for="full-name">Nombre completo</label>
+              <div class="relative group">
+                <IconInfoCircle font-size={14} class="text-secondary/40 hover:text-secondary/60 transition-colors cursor-help" />
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-primary border border-stroke-color rounded-lg shadow-lg text-xs text-secondary/80 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 z-10 w-72">
+                  <div class="text-center">
+                    Este cambio solo se puede realizar 1 vez por cuenta y es el nombre que se tomará para la generación del badge y certificado.
+                  </div>
+                  <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-stroke-color"></div>
+                </div>
+              </div>
+            </div>
             <input
               id="full-name"
               type="text"
               value={fullName}
               maxlength="80"
               placeholder="Tu nombre completo"
-              class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
+              disabled
+              class="bg-primary border border-stroke-color/50 rounded-lg px-4 py-2.5 text-sm text-secondary/40 cursor-not-allowed transition-colors disabled:cursor-not-allowed disabled:text-secondary/40 enabled:text-secondary enabled:cursor-text enabled:border-stroke-color focus:outline-none focus:border-yellow/50"
+              data-locked={nameLocked ? "true" : undefined}
             />
           </div>
 
@@ -92,7 +129,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
           <button
             id="save-profile"
             type="button"
-            class="self-start px-5 py-2 bg-yellow text-primary text-sm font-bold rounded-lg hover:opacity-90 transition-opacity"
+            class="hidden self-start px-5 py-2 bg-yellow text-primary text-sm font-bold rounded-lg hover:opacity-90 transition-opacity"
           >
             Guardar cambios
           </button>
@@ -200,14 +237,48 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
 
 <script>
   document.addEventListener("astro:page-load", () => {
-    document.getElementById("save-profile")?.addEventListener("click", async () => {
-      const btn = document.getElementById("save-profile") as HTMLButtonElement
-      const input = document.getElementById("full-name") as HTMLInputElement
-      const errorEl = document.getElementById("profile-error")!
-      const successEl = document.getElementById("profile-success")!
+    const editBtn = document.getElementById("edit-profile") as HTMLButtonElement
+    const saveBtn = document.getElementById("save-profile") as HTMLButtonElement
+    const input = document.getElementById("full-name") as HTMLInputElement
+    const errorEl = document.getElementById("profile-error")!
+    const successEl = document.getElementById("profile-success")!
+    const editIcon = editBtn?.querySelector(".edit-icon")
+    const cancelIcon = editBtn?.querySelector(".cancel-icon")
+    const editLabel = editBtn?.querySelector(".edit-label")
 
-      btn.disabled = true
-      btn.textContent = "Guardando..."
+    let isEditing = false
+
+    // Toggle edit mode
+    editBtn?.addEventListener("click", () => {
+      isEditing = !isEditing
+      
+      if (isEditing) {
+        // Enter edit mode
+        input.disabled = false
+        input.focus()
+        saveBtn.classList.remove("hidden")
+        editIcon?.classList.add("hidden")
+        cancelIcon?.classList.remove("hidden")
+        if (editLabel) editLabel.textContent = "Cancelar"
+        errorEl.classList.add("hidden")
+        successEl.classList.add("hidden")
+      } else {
+        // Exit edit mode (cancel)
+        input.disabled = true
+        input.value = input.defaultValue // Reset to original value
+        saveBtn.classList.add("hidden")
+        editIcon?.classList.remove("hidden")
+        cancelIcon?.classList.add("hidden")
+        if (editLabel) editLabel.textContent = "Editar"
+        errorEl.classList.add("hidden")
+        successEl.classList.add("hidden")
+      }
+    })
+
+    // Save profile
+    saveBtn?.addEventListener("click", async () => {
+      saveBtn.disabled = true
+      saveBtn.textContent = "Guardando..."
       errorEl.classList.add("hidden")
       successEl.classList.add("hidden")
 
@@ -217,10 +288,19 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         body: JSON.stringify({ fullName: input.value }),
       })
 
-      btn.disabled = false
-      btn.textContent = "Guardar cambios"
+      saveBtn.disabled = false
+      saveBtn.textContent = "Guardar cambios"
 
       if (res.ok) {
+        // Success: exit edit mode and update default value
+        input.defaultValue = input.value
+        isEditing = false
+        input.disabled = true
+        saveBtn.classList.add("hidden")
+        editIcon?.classList.remove("hidden")
+        cancelIcon?.classList.add("hidden")
+        if (editLabel) editLabel.textContent = "Editar"
+        
         successEl.classList.remove("hidden")
         setTimeout(() => successEl.classList.add("hidden"), 3000)
       } else {

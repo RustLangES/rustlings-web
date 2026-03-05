@@ -6,6 +6,7 @@ export interface UserRow {
 	email: string
 	password: string | null
 	full_name: string | null
+	full_name_locked: number
 	created_at: string
 	updated_at: string
 }
