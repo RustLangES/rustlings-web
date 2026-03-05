@@ -7,8 +7,11 @@ import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
 import Layout from "~/layouts/Layout.astro"
 import IconBook from "~icons/tabler/book"
+import IconChevronLeft from "~icons/tabler/chevron-left"
+import IconChevronRight from "~icons/tabler/chevron-right"
 import IconCode from "~icons/tabler/code"
 import IconGripVertical from "~icons/tabler/grip-vertical"
+import IconTerminal from "~icons/tabler/terminal-2"
 
 export const prerender = true
 
@@ -33,10 +36,94 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 
 <style>
   @media (max-width: 1023px) {
+    /* Reset inline styles set by desktop resizer */
     [data-panel] {
       flex: none !important;
       width: 100% !important;
       min-width: 0 !important;
+    }
+
+    /* All panels hidden by default on mobile */
+    [data-panel="left"],
+    [data-panel="right"] {
+      display: none;
+    }
+
+    /* ── Content tab ── */
+    [data-container][data-tab="content"] [data-panel="left"] {
+      display: flex;
+      flex: 1 1 0% !important;
+      min-height: 0;
+    }
+    [data-container][data-tab="content"] [data-panel-content] {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-container][data-tab="content"] [data-scroll-wrapper] {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-container][data-tab="content"] [data-scroll-area] {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    /* ── Editor tab ── */
+    [data-container][data-tab="editor"] [data-panel="right"] {
+      display: flex;
+      flex: 1 1 0% !important;
+      min-height: 0;
+    }
+    [data-container][data-tab="editor"] [data-panel-content] {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    [data-container][data-tab="editor"] [data-editor-wrapper] {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    [data-container][data-tab="editor"] [data-terminal],
+    [data-container][data-tab="editor"] [data-direction="horizontal"] {
+      display: none;
+    }
+
+    /* ── Terminal tab ── */
+    [data-container][data-tab="terminal"] [data-panel="right"] {
+      display: flex;
+      flex: 1 1 0% !important;
+      min-height: 0;
+    }
+    [data-container][data-tab="terminal"] [data-panel-content] {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    [data-container][data-tab="terminal"] [data-editor-wrapper],
+    [data-container][data-tab="terminal"] [data-direction="horizontal"] {
+      display: none;
+    }
+    [data-container][data-tab="terminal"] [data-terminal] {
+      flex: 1 1 0%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    [data-container][data-tab="terminal"] [data-terminal] terminal-output {
+      flex: 1 1 0%;
+      min-height: 0;
     }
   }
 </style>
@@ -44,12 +131,13 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 <Layout>
   <Navbar lang={lang} />
   <main
-    class="flex flex-col lg:flex-row gap-2 lg:gap-0 px-2 pb-2 flex-1 lg:min-h-0 lg:overflow-hidden"
+    class="flex flex-col lg:flex-row lg:gap-0 px-2 pb-2 flex-1 min-h-0 overflow-hidden"
     data-container
+    data-tab="content"
   >
     <!-- Content Panel -->
     <aside
-      class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden"
+      class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-md overflow-hidden"
       style={lesson.data.editor === false
         ? "flex: 1 1 0%; min-width: 50px;"
         : "flex: 1 1 0%; min-width: 50px;"}
@@ -71,7 +159,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
         class="flex flex-col flex-1 m-2 lg:min-h-0 in-[.collapsed]:opacity-0 in-[.collapsed]:pointer-events-none"
         data-panel-content
       >
-        <div class="relative lg:flex-1 lg:min-h-0">
+        <div class="relative lg:flex-1 lg:min-h-0" data-scroll-wrapper>
           <div class="p-2 overflow-y-auto lg:h-full" data-scroll-area>
             <article
               id="content-markdown"
@@ -88,7 +176,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
             <span class="text-xs text-secondary/60 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">↓ Hay más contenido abajo</span>
           </div>
         </div>
-        <div class="border-t border-gray-700 shrink-0">
+        <div class="hidden lg:block border-t border-gray-700 shrink-0">
           <NavButtons lang={lang} previous={previousLesson?.meta} next={nextLesson?.meta} />
         </div>
       </div>
@@ -106,7 +194,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 
     <!-- Editor Panel -->
     <section
-      class={`relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-2xl overflow-hidden ${lesson.data.editor === false ? "collapsed max-lg:hidden" : ""}`}
+      class={`relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-md overflow-hidden ${lesson.data.editor === false ? "collapsed max-lg:hidden" : ""}`}
       style={lesson.data.editor === false
         ? "flex: 0 0 50px; min-width: 50px;"
         : "flex: 1 1 0%; min-width: 50px;"}
@@ -152,6 +240,42 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       </div>
     </section>
   </main>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav
+    id="mobile-bottom-nav"
+    class="lg:hidden shrink-0 flex items-center mx-2 mb-2 border border-stroke-color bg-light-bg rounded-md overflow-hidden"
+  >
+    <a
+      href={previousLesson ? `/${lang}/${previousLesson.meta.slug}` : undefined}
+      aria-disabled={!previousLesson}
+      class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors ${!previousLesson ? "text-secondary/20 pointer-events-none" : "text-secondary/40 cursor-pointer hover:text-secondary"}`}
+    >
+      <IconChevronLeft font-size={20} />
+      <span class="text-[10px] font-medium">Anterior</span>
+    </a>
+    <button id="tab-content" class="flex-1 flex flex-col items-center gap-1 py-2.5 text-yellow transition-colors cursor-pointer touch-manipulation">
+      <IconBook font-size={20} />
+      <span class="text-[10px] font-medium">Contenido</span>
+    </button>
+    <button id="tab-editor" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors cursor-pointer touch-manipulation ${lesson.data.editor === false ? "text-secondary/20 opacity-30" : "text-secondary/40"}`}>
+      <IconCode font-size={20} />
+      <span class="text-[10px] font-medium">Código</span>
+    </button>
+    <button id="tab-terminal" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors cursor-pointer touch-manipulation ${lesson.data.editor === false ? "text-secondary/20 opacity-30" : "text-secondary/40"}`}>
+      <IconTerminal font-size={20} />
+      <span class="text-[10px] font-medium">Terminal</span>
+    </button>
+    <a
+      id="mobile-next-btn"
+      href={nextLesson ? `/${lang}/${nextLesson.meta.slug}` : undefined}
+      aria-disabled={!nextLesson || lesson.data.editor !== false}
+      class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors aria-disabled:text-secondary/20 aria-disabled:opacity-50 ${nextLesson ? "text-secondary/40 cursor-pointer hover:text-secondary" : ""}`}
+    >
+      <IconChevronRight font-size={20} />
+      <span class="text-[10px] font-medium">Siguiente</span>
+    </a>
+  </nav>
 </Layout>
 
 {currentTrack && (
@@ -201,6 +325,42 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       await db.markCompleted(slug, trackId)
       setTimeout(() => window.dispatchEvent(new CustomEvent("lesson:completed")), 0)
     }
+  })
+</script>
+
+<script>
+  import { db } from "~/lib/stores/editor-store"
+  import { toastr } from "~/utils/toasts"
+
+  document.addEventListener("astro:page-load", async () => {
+    const btn = document.getElementById("mobile-next-btn") as HTMLAnchorElement | null
+    if (!btn || !btn.href) return
+
+    btn.addEventListener("click", (e) => {
+      if (btn.ariaDisabled === "true") {
+        e.preventDefault()
+        toastr.info(
+          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+          "Ejecuta el código",
+        )
+      }
+    })
+
+    if (btn.ariaDisabled !== "true") return
+
+    const slug =
+      document.querySelector<HTMLElement>("[data-slug]")?.dataset.slug ??
+      window.location.pathname.split("/").pop()
+    if (!slug) return
+
+    const update = async () => {
+      const completed = await db.isCompleted(slug)
+      btn.ariaDisabled = String(!completed)
+    }
+
+    await update()
+    window.addEventListener("lesson:completed", update)
+    window.addEventListener("editor:reset", update)
   })
 </script>
 
@@ -305,4 +465,39 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
         });
     }
   });
+</script>
+
+<script>
+  function initMobileNav() {
+    const nav = document.getElementById("mobile-bottom-nav")
+    if (!nav) return
+
+    const btnContent = document.getElementById("tab-content") as HTMLButtonElement
+    const btnEditor = document.getElementById("tab-editor") as HTMLButtonElement
+    const btnTerminal = document.getElementById("tab-terminal") as HTMLButtonElement
+    const container = document.querySelector<HTMLElement>("[data-container]")!
+    const allBtns = [btnContent, btnEditor, btnTerminal]
+
+    function setActive(btn: HTMLButtonElement) {
+      allBtns.forEach((b) => {
+        if (!b) return
+        b.classList.toggle("text-yellow", b === btn)
+        b.classList.remove("text-secondary/40")
+        if (b !== btn && !b.disabled) b.classList.add("text-secondary/40")
+      })
+    }
+
+    function showTab(tab: "content" | "editor" | "terminal", btn: HTMLButtonElement) {
+      container.dataset.tab = tab
+      setActive(btn)
+    }
+
+    btnContent?.addEventListener("click", () => showTab("content", btnContent))
+    btnEditor?.addEventListener("click", () => showTab("editor", btnEditor))
+    btnTerminal?.addEventListener("click", () => showTab("terminal", btnTerminal))
+
+    showTab("content", btnContent)
+  }
+
+  document.addEventListener("astro:page-load", initMobileNav)
 </script>
