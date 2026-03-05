@@ -7,7 +7,9 @@ export const GET: APIRoute = async ({ locals }) => {
 	}
 
 	const { DB } = locals.runtime.env
-	const row = await DB.prepare("SELECT full_name FROM users WHERE id = ?").bind(user.id).first<{ full_name: string | null }>()
+	const row = await DB.prepare("SELECT full_name FROM users WHERE id = ?")
+		.bind(user.id)
+		.first<{ full_name: string | null }>()
 
 	return new Response(
 		JSON.stringify({

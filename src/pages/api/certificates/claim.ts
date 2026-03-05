@@ -33,9 +33,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 		.run()
 
 	// Return the actual cert ID (may differ from `id` if there was a conflict)
-	const row = await DB.prepare(
-		"SELECT id, issued_at FROM user_certificates WHERE user_id = ? AND course_id = ?",
-	)
+	const row = await DB.prepare("SELECT id, issued_at FROM user_certificates WHERE user_id = ? AND course_id = ?")
 		.bind(user.id, courseId)
 		.first<{ id: string; issued_at: string }>()
 

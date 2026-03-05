@@ -15,10 +15,7 @@ export interface CourseProgress {
 }
 
 /** Returns all completed lesson slugs for a user, grouped by courseId */
-export async function getUserProgress(
-	db: D1Database,
-	userId: string,
-): Promise<Record<string, string[]>> {
+export async function getUserProgress(db: D1Database, userId: string): Promise<Record<string, string[]>> {
 	const rows = await db
 		.prepare(
 			`SELECT cs.slug, cs.course_id
@@ -95,15 +92,6 @@ export async function markSectionCompleted(
          completed_at = excluded.completed_at,
          updated_at = excluded.updated_at`,
 		)
-		.bind(
-			progressId,
-			userId,
-			courseId,
-			isComplete ? 1 : 0,
-			pct,
-			now,
-			isComplete ? now : null,
-			now,
-		)
+		.bind(progressId, userId, courseId, isComplete ? 1 : 0, pct, now, isComplete ? now : null, now)
 		.run()
 }

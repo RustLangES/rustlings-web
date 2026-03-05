@@ -15,9 +15,7 @@ interface CertRow {
 	issued_at: string
 }
 
-const cert = await DB.prepare(
-	"SELECT id, course_id, name_used, issued_at FROM user_certificates WHERE id = ?",
-)
+const cert = await DB.prepare("SELECT id, course_id, name_used, issued_at FROM user_certificates WHERE id = ?")
 	.bind(certId)
 	.first<CertRow>()
 
