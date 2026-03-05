@@ -235,8 +235,21 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
   </main>
 </Layout>
 
-<script>
+<script define:vars={{ 
+  userData: {
+    id: user.id,
+    email: user.email,
+    username: user.username,
+    full_name: fullName
+  },
+  nameLocked
+}}>
+  import { initAuthStore, authActions } from "~/lib/stores/auth-store"
+  
   document.addEventListener("astro:page-load", () => {
+    // Initialize auth store with current user data
+    initAuthStore(userData, nameLocked)
+    
     const editBtn = document.getElementById("edit-profile") as HTMLButtonElement
     const saveBtn = document.getElementById("save-profile") as HTMLButtonElement
     const input = document.getElementById("full-name") as HTMLInputElement
@@ -300,6 +313,9 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         editIcon?.classList.remove("hidden")
         cancelIcon?.classList.add("hidden")
         if (editLabel) editLabel.textContent = "Editar"
+        
+        // Update auth store with new name
+        authActions.updateFullName(input.value)
         
         successEl.classList.remove("hidden")
         setTimeout(() => successEl.classList.add("hidden"), 3000)
