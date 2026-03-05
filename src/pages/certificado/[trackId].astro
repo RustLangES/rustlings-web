@@ -4,6 +4,8 @@ import { tracks } from "~/const/tracks"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 
+export const prerender = true
+
 export function getStaticPaths() {
 	return tracks
 		.filter((t) => !t.disabled && t.slugs.length > 0)
@@ -30,122 +32,29 @@ const { track } = Astro.props
   <main class="flex-1 flex flex-col items-center px-4 py-8 gap-6">
     <div class="flex flex-col items-center gap-1 text-center">
       <h1 class="text-2xl font-bold text-secondary">Tu Certificado</h1>
-      <p class="text-secondary/40 text-sm">Ingresa tu nombre para personalizar el certificado</p>
+      <p class="text-secondary/40 text-sm" id="cert-subtitle">Cargando...</p>
     </div>
 
-    <!-- Name input — placeholder until login integration -->
+    <!-- Name display for logged-in users -->
+    <div id="cert-name-display" class="hidden flex-col items-center gap-1">
+      <p class="text-xl font-bold text-secondary" id="cert-name-text"></p>
+      <a href="/perfil" class="text-xs text-secondary/40 hover:text-yellow transition-colors">Editar nombre en perfil →</a>
+    </div>
+
+    <!-- Name input for anonymous users -->
     <input
       id="cert-name"
       type="text"
       placeholder="Tu nombre completo"
       maxlength="60"
       data-track-title={track.title}
-      class="w-full max-w-sm px-4 py-2.5 rounded-lg bg-light-bg border border-stroke-color text-secondary placeholder:text-secondary/30 focus:outline-none focus:border-yellow transition-colors text-center font-medium"
+      data-track-id={track.id}
+      class="hidden w-full max-w-sm px-4 py-2.5 rounded-lg bg-light-bg border border-stroke-color text-secondary placeholder:text-secondary/30 focus:outline-none focus:border-yellow transition-colors text-center font-medium"
     />
 
-    <!-- 2-col on desktop: donation | certificate -->
-    <div class="w-full max-w-5xl flex flex-col lg:flex-row gap-6 items-start">
+    {/* Donation box removed — re-enable when needed */}
 
-      <!-- Left: Donation box -->
-      <div class="w-full lg:flex-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg p-6 flex flex-col sm:flex-row lg:flex-col gap-6">
-        <div class="flex flex-col gap-3 flex-1 text-sm leading-relaxed text-secondary/80">
-          <p>
-            Solo tú puedes ver este mensaje.
-            <strong class="text-secondary">Felicidades por completar esta certificación — no fue fácil, y eso vale mucho.</strong>
-          </p>
-          <p>
-            Rustlings Web es un proyecto completamente gratuito para la comunidad hispanohablante de Rust.
-            Cada lección, cada ejercicio y cada mejora de la plataforma es construida con tiempo y dedicación
-            por personas que creen que el conocimiento debe ser accesible para todos, sin importar el idioma.
-          </p>
-          <p>
-            Tu apoyo nos motiva a seguir añadiendo nuevos temas, mejorar los ejercicios existentes
-            y expandir la plataforma para que más personas en el mundo de habla hispana
-            puedan dar sus primeros pasos en Rust — o ir mucho más allá.
-          </p>
-          <p class="text-secondary/50">
-            Cada contribución, por pequeña que sea, nos ayuda a mantener las luces encendidas
-            y los servidores corriendo. Gracias por ser parte de esta comunidad. 🦀
-          </p>
-        </div>
-
-        <div class="flex flex-col gap-3 shrink-0 sm:w-56 lg:w-full">
-          <div class="grid grid-cols-2 border border-stroke-color rounded-lg overflow-hidden">
-            <button
-              id="toggle-monthly"
-              class="py-1.5 text-xs font-semibold bg-[#222222] text-white transition-colors"
-            >
-              Mensual
-            </button>
-            <button
-              id="toggle-once"
-              class="py-1.5 text-xs font-semibold text-secondary/60 hover:bg-light-bg transition-colors"
-            >
-              Única vez
-            </button>
-          </div>
-
-          <p class="text-secondary/60 text-xs font-medium uppercase tracking-wide">
-            Confirma tu donación<span id="frequency-label"> / mes</span>:
-          </p>
-
-          <div class="grid grid-cols-4 border border-stroke-color rounded-lg overflow-hidden">
-            {[1, 5, 10, 20].map((amount) => (
-              <button
-                data-amount={amount}
-                class:list={[
-                  "donation-amount py-2 text-sm font-semibold transition-colors border-r border-stroke-color last:border-r-0",
-                  amount === 10
-                    ? "bg-[#FF6E1F] text-white"
-                    : "text-secondary/60 hover:bg-light-bg",
-                ]}
-              >
-                ${amount}
-              </button>
-            ))}
-          </div>
-
-          <p class="text-secondary/50 text-xs leading-relaxed">
-            Tu donación de <span id="donation-selected-amount" class="text-secondary font-semibold">$10</span>
-            <span id="hint-frequency"> al mes</span> ayuda a mantener Rustlings Web gratuito para todos.
-          </p>
-
-          <a
-            id="donate-btn"
-            href="https://github.com/sponsors/rustlang-es"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-full text-center rounded-lg bg-[#FF6E1F] py-2.5 font-semibold text-white hover:opacity-80 transition"
-          >
-            Donar $10 / mes
-          </a>
-        </div>
-      </div>
-
-      <!-- Right: Certificate -->
-      <div class="w-full lg:flex-1 flex flex-col items-center gap-4">
-        <!-- Shape variant selector -->
-        <div class="flex gap-2">
-          <button
-            data-shape="hexagon"
-            class="shape-btn flex flex-col items-center gap-1.5 px-5 py-3 rounded-xl border-2 border-[#FF6E1F] bg-[#FF6E1F]/10 text-secondary transition-all cursor-pointer"
-          >
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <polygon points="14,2 25,8 25,20 14,26 3,20 3,8" stroke="#FF6E1F" stroke-width="2" fill="rgba(255,110,31,0.15)"/>
-            </svg>
-            <span class="text-xs font-semibold">Hexágono</span>
-          </button>
-          <button
-            data-shape="triangle"
-            class="shape-btn flex flex-col items-center gap-1.5 px-5 py-3 rounded-xl border-2 border-stroke-color text-secondary/50 transition-all cursor-pointer hover:border-[#FF6E1F]/50"
-          >
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <polygon points="14,2 26,26 2,26" stroke="#FF6E1F" stroke-width="2" fill="rgba(255,110,31,0.15)"/>
-            </svg>
-            <span class="text-xs font-semibold">Triángulo</span>
-          </button>
-        </div>
-
+    <div class="w-full max-w-md flex flex-col items-center gap-4">
         <div class="w-full max-w-md">
           <canvas
             id="certificate-canvas"
@@ -162,16 +71,43 @@ const { track } = Astro.props
         >
           Descargar PNG
         </button>
-      </div>
 
+        <!-- Share buttons (shown after cert is claimed) -->
+        <div id="share-buttons" class="hidden flex-col items-center gap-3 w-full pt-2 border-t border-stroke-color/30">
+          <p class="text-xs text-secondary/40">Comparte tu logro</p>
+          <div class="flex gap-3 w-full">
+            <a
+              id="linkedin-btn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+              </svg>
+              LinkedIn
+            </a>
+            <a
+              id="x-btn"
+              href="#"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-white hover:text-white transition-all"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+              </svg>
+              Postear en X
+            </a>
+          </div>
+        </div>
     </div>
   </main>
 </Layout>
 
 <script>
 
-
-  type Shape = "hexagon" | "triangle"
 
   function hexPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
     ctx.beginPath()
@@ -184,22 +120,7 @@ const { track } = Astro.props
     ctx.closePath()
   }
 
-  function triPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
-    ctx.beginPath()
-    for (let i = 0; i < 3; i++) {
-      const angle = (Math.PI * 2 / 3) * i - Math.PI / 2
-      i === 0
-        ? ctx.moveTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle))
-        : ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle))
-    }
-    ctx.closePath()
-  }
-
-  function shapePath(ctx: CanvasRenderingContext2D, shape: Shape, cx: number, cy: number, r: number) {
-    shape === "hexagon" ? hexPath(ctx, cx, cy, r) : triPath(ctx, cx, cy, r)
-  }
-
-  async function drawCertificate(canvas: HTMLCanvasElement, trackTitle: string, name: string, shape: Shape = "hexagon", logoUrl = "") {
+  async function drawCertificate(canvas: HTMLCanvasElement, trackTitle: string, name: string, logoUrl = "") {
     const ctx = canvas.getContext("2d")!
     const W = canvas.width
     const H = canvas.height
@@ -209,27 +130,20 @@ const { track } = Astro.props
     const ORANGE = "#FF6E1F"
     const LIGHT_GRAY = "#94a3b8"
 
-    // Transparent background
     ctx.clearRect(0, 0, W, H)
 
     const R = 272
-    const contentCy = cy
-
-    // Per-shape layout offsets (triangle is narrower, so compress vertical spacing)
-    const tri = shape === "triangle"
-    const off = tri
-      ? { icon: -130, title: -8, cert: 20, dots: 38, name: 64, date: 90, url: 118 }
-      : { icon: -148, title: -18, cert: 18, dots: 40, name: 82, date: 112, url: 170 }
+    const off = { icon: -148, title: -18, cert: 18, dots: 40, name: 82, date: 112, url: 170 }
 
     // Outer glow layers
     for (let i = 3; i >= 1; i--) {
-      shapePath(ctx, shape, cx, cy, R + i * 6)
+      hexPath(ctx, cx, cy, R + i * 6)
       ctx.fillStyle = `rgba(255, 110, 31, ${0.06 * i})`
       ctx.fill()
     }
 
     // Background (dark gradient)
-    shapePath(ctx, shape, cx, cy, R)
+    hexPath(ctx, cx, cy, R)
     ctx.save()
     ctx.clip()
     const grad = ctx.createLinearGradient(cx, cy - R, cx, cy + R)
@@ -240,28 +154,28 @@ const { track } = Astro.props
     ctx.restore()
 
     // Orange outer border
-    shapePath(ctx, shape, cx, cy, R)
+    hexPath(ctx, cx, cy, R)
     ctx.strokeStyle = ORANGE
     ctx.lineWidth = 3
     ctx.stroke()
 
     // Subtle inner border
-    shapePath(ctx, shape, cx, cy, R - 10)
+    hexPath(ctx, cx, cy, R - 10)
     ctx.strokeStyle = "rgba(255, 110, 31, 0.25)"
     ctx.lineWidth = 1
     ctx.stroke()
 
     ctx.textAlign = "center"
 
-    // Top icon - SVG logo
-    const iconY = contentCy + off.icon
+    // Logo
+    const iconY = cy + off.icon
     const logoImg = new Image()
     await new Promise<void>((resolve) => {
       logoImg.onload = () => resolve()
       logoImg.onerror = () => resolve()
       logoImg.src = logoUrl
     })
-    const logoW = 100
+    const logoW = 140
     const logoH = Math.round(logoW * (500.97 / 814.04))
     ctx.drawImage(logoImg, cx - logoW / 2, iconY - logoH / 2, logoW, logoH)
 
@@ -269,38 +183,37 @@ const { track } = Astro.props
     ctx.fillStyle = ORANGE
     ctx.font = "600 13px 'Poppins', sans-serif"
     ctx.letterSpacing = "2px"
-    ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 68)
+    ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 72)
     ctx.letterSpacing = "0px"
 
     // Thin divider
-    const divW = tri ? 70 : 90
     ctx.strokeStyle = "rgba(255,110,31,0.35)"
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(cx - divW, iconY + 82)
-    ctx.lineTo(cx + divW, iconY + 82)
+    ctx.moveTo(cx - 90, iconY + 86)
+    ctx.lineTo(cx + 90, iconY + 86)
     ctx.stroke()
 
     // Track title
     ctx.fillStyle = "#ffffff"
     ctx.font = "700 40px 'Poppins', sans-serif"
-    const maxW = tri ? R * 1.1 : R * 1.4
+    const maxW = R * 1.4
     if (ctx.measureText(trackTitle).width > maxW) {
       const scaled = Math.floor(40 * (maxW / ctx.measureText(trackTitle).width))
       ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
     }
-    ctx.fillText(trackTitle, cx, contentCy + off.title)
+    ctx.fillText(trackTitle, cx, cy + off.title)
 
     // "Certificación"
     ctx.fillStyle = ORANGE
     ctx.font = "600 17px 'Poppins', sans-serif"
-    ctx.fillText("Certificación", cx, contentCy + off.cert)
+    ctx.fillText("Certificación", cx, cy + off.cert)
 
     // Divider dots
     ctx.fillStyle = "rgba(255,110,31,0.4)"
     for (let i = -1; i <= 1; i++) {
       ctx.beginPath()
-      ctx.arc(cx + i * 14, contentCy + off.dots, 2.5, 0, Math.PI * 2)
+      ctx.arc(cx + i * 14, cy + off.dots, 2.5, 0, Math.PI * 2)
       ctx.fill()
     }
 
@@ -308,12 +221,12 @@ const { track } = Astro.props
     const displayName = name.trim() || "Tu Nombre"
     ctx.fillStyle = "#e2e8f0"
     ctx.font = "700 26px 'Poppins', sans-serif"
-    const maxNameW = tri ? R * 1.6 : R * 1.5
+    const maxNameW = R * 1.5
     if (ctx.measureText(displayName).width > maxNameW) {
       const scaled = Math.floor(26 * (maxNameW / ctx.measureText(displayName).width))
       ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
     }
-    ctx.fillText(displayName, cx, contentCy + off.name)
+    ctx.fillText(displayName, cx, cy + off.name)
 
     // Date
     const date = new Date().toLocaleDateString("es-MX", {
@@ -323,100 +236,116 @@ const { track } = Astro.props
     })
     ctx.fillStyle = LIGHT_GRAY
     ctx.font = "400 13px 'Poppins', sans-serif"
-    ctx.fillText(date, cx, contentCy + off.date)
+    ctx.fillText(date, cx, cy + off.date)
 
     // Bottom URL
     ctx.fillStyle = "rgba(148,163,184,0.5)"
     ctx.font = "400 11px 'Poppins', sans-serif"
-    ctx.fillText("rustlings.rustlang-es.org", cx, contentCy + off.url)
+    ctx.fillText("rustlings.rustlang-es.org", cx, cy + off.url)
   }
 
-  document.addEventListener("astro:page-load", () => {
+  document.addEventListener("astro:page-load", async () => {
     const canvas = document.getElementById("certificate-canvas") as HTMLCanvasElement
     const nameInput = document.getElementById("cert-name") as HTMLInputElement
+    const nameDisplay = document.getElementById("cert-name-display") as HTMLDivElement
+    const nameText = document.getElementById("cert-name-text") as HTMLElement
+    const subtitle = document.getElementById("cert-subtitle") as HTMLElement
     const trackTitle = nameInput.dataset.trackTitle!
+    const trackId = nameInput.dataset.trackId!
     const logoUrl = canvas.dataset.logoUrl!
 
-    let currentShape: Shape = "hexagon"
+    let certName = ""
+
+    const showShareButtons = (certId: string, issuedAt: string) => {
+      const shareDiv = document.getElementById("share-buttons")!
+      const linkedinBtn = document.getElementById("linkedin-btn") as HTMLAnchorElement
+      const xBtn = document.getElementById("x-btn") as HTMLAnchorElement
+      const certUrl = `${window.location.origin}/verificar/${certId}`
+      const issued = new Date(issuedAt)
+
+      const linkedinParams = new URLSearchParams({
+        startTask: "CERTIFICATION_NAME",
+        name: trackTitle,
+        organizationId: "100302734", // RustLang ES LinkedIn page
+        issueYear: String(issued.getFullYear()),
+        issueMonth: String(issued.getMonth() + 1),
+        certUrl,
+        certId,
+      })
+      linkedinBtn.href = `https://www.linkedin.com/profile/add?${linkedinParams}`
+
+      const xText = `¡Completé "${trackTitle}" en @RustLangES 🦀\nVer mi certificado: ${certUrl}`
+      xBtn.href = `https://x.com/intent/post?text=${encodeURIComponent(xText)}`
+
+      shareDiv.classList.remove("hidden")
+      shareDiv.classList.add("flex")
+    }
+
+    // Try to load name from user profile
+    try {
+      const res = await fetch("/api/auth/me")
+      if (res.ok) {
+        const { fullName } = await res.json() as { fullName: string | null }
+        if (fullName) {
+          certName = fullName
+          nameText.textContent = fullName
+          nameDisplay.classList.remove("hidden")
+          nameDisplay.classList.add("flex")
+          subtitle.textContent = "Tu nombre se toma de tu perfil"
+
+          // Auto-claim certificate and get certId for sharing
+          fetch("/api/certificates/claim", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ courseId: trackId, nameUsed: fullName }),
+          })
+            .then((r) => r.json())
+            .then(({ certId, issuedAt }: { certId?: string; issuedAt?: string }) => {
+              if (certId && issuedAt) showShareButtons(certId, issuedAt)
+            })
+            .catch(() => {})
+        } else {
+          // Logged in but no full_name set
+          nameDisplay.classList.remove("hidden")
+          nameDisplay.classList.add("flex")
+          nameText.textContent = "Sin nombre configurado"
+          subtitle.textContent = "Configura tu nombre en tu perfil"
+        }
+      } else {
+        // Not logged in — show input
+        nameInput.classList.remove("hidden")
+        subtitle.textContent = "Ingresa tu nombre para personalizar el certificado"
+      }
+    } catch {
+      nameInput.classList.remove("hidden")
+      subtitle.textContent = "Ingresa tu nombre para personalizar el certificado"
+    }
+
+    const getName = () => certName || nameInput.value
 
     const redraw = () =>
-      document.fonts.ready.then(() => drawCertificate(canvas, trackTitle, nameInput.value, currentShape, logoUrl))
+      document.fonts.ready.then(() => drawCertificate(canvas, trackTitle, getName(), logoUrl))
 
     redraw()
     nameInput.addEventListener("input", redraw)
 
-    // Shape variant selector
-    document.querySelectorAll<HTMLButtonElement>(".shape-btn").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        currentShape = btn.dataset.shape as Shape
-        document.querySelectorAll<HTMLButtonElement>(".shape-btn").forEach((b) => {
-          const active = b === btn
-          b.classList.toggle("border-[#FF6E1F]", active)
-          b.classList.toggle("bg-[#FF6E1F]/10", active)
-          b.classList.toggle("text-secondary", active)
-          b.classList.toggle("border-stroke-color", !active)
-          b.classList.toggle("text-secondary/50", !active)
-        })
-        redraw()
-      })
-    })
-
-    let selectedAmount = 10
-    let isMonthly = true
-
-    const donateBtn = document.getElementById("donate-btn") as HTMLAnchorElement
-    const selectedAmountEl = document.getElementById("donation-selected-amount")
-    const frequencyLabel = document.getElementById("frequency-label")
-    const hintFrequency = document.getElementById("hint-frequency")
-    const toggleMonthly = document.getElementById("toggle-monthly")!
-    const toggleOnce = document.getElementById("toggle-once")!
-
-    const updateDonateBtn = () => {
-      const suffix = isMonthly ? " / mes" : " única vez"
-      if (selectedAmountEl) selectedAmountEl.textContent = `$${selectedAmount}`
-      if (frequencyLabel) frequencyLabel.textContent = isMonthly ? " / mes" : ""
-      if (hintFrequency) hintFrequency.textContent = isMonthly ? " al mes" : ""
-      if (donateBtn) {
-        donateBtn.textContent = `Donar $${selectedAmount}${suffix}`
-        donateBtn.href = `https://github.com/sponsors/rustlang-es?amount=${selectedAmount}`
-      }
-    }
-
-    toggleMonthly.addEventListener("click", () => {
-      isMonthly = true
-      toggleMonthly.classList.replace("text-secondary/60", "text-white")
-      toggleMonthly.classList.add("bg-[#222222]")
-      toggleOnce.classList.remove("bg-[#222222]")
-      toggleOnce.classList.replace("text-white", "text-secondary/60")
-      updateDonateBtn()
-    })
-
-    toggleOnce.addEventListener("click", () => {
-      isMonthly = false
-      toggleOnce.classList.replace("text-secondary/60", "text-white")
-      toggleOnce.classList.add("bg-[#222222]")
-      toggleMonthly.classList.remove("bg-[#222222]")
-      toggleMonthly.classList.replace("text-white", "text-secondary/60")
-      updateDonateBtn()
-    })
-
-    document.querySelectorAll<HTMLButtonElement>(".donation-amount").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        selectedAmount = Number(btn.dataset.amount)
-        document.querySelectorAll<HTMLButtonElement>(".donation-amount").forEach((b) => {
-          b.classList.toggle("bg-[#FF6E1F]", b === btn)
-          b.classList.toggle("text-white", b === btn)
-          b.classList.toggle("text-secondary/60", b !== btn)
-        })
-        updateDonateBtn()
-      })
-    })
+    /* Donation logic removed — re-enable when needed */
 
     document.getElementById("download-btn")?.addEventListener("click", () => {
       const link = document.createElement("a")
       link.download = `certificado-${trackTitle.toLowerCase().replace(/\s+/g, "-")}.png`
       link.href = canvas.toDataURL("image/png")
       link.click()
+
+      // Record certificate in DB for anonymous users (logged-in users already auto-claimed on load)
+      const name = getName().trim()
+      if (name && !certName) {
+        fetch("/api/certificates/claim", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ courseId: trackId, nameUsed: name }),
+        }).catch(() => {})
+      }
     })
   })
 </script>
