@@ -73,6 +73,16 @@ class RustlingsDB {
 		await Promise.all([this.delete(this.STORE_CODE, slug), this.delete(this.STORE_PROGRESS, slug)])
 	}
 
+	/** Records that the user visited this lesson (fire-and-forget for logged-in users) */
+	visitLesson(slug: string, courseId: string) {
+		this.lastLesson[courseId] = { slug, title: slug }
+		fetch("/api/progress/visit", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ courseId, slug }),
+		}).catch(() => {})
+	}
+
 	async markCompleted(slug: string, courseId?: string) {
 		await this.set(this.STORE_PROGRESS, slug, true)
 		if (courseId) {
