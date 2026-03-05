@@ -96,6 +96,7 @@ const user = Astro.locals.user
               data-track-total={track.lessons}
               data-track-title={track.title}
               data-track-href={`/${lang}${track.href}`}
+              data-track-lang={lang}
               data-track-slugs={JSON.stringify(track.slugs)}
               class="group relative flex gap-3 sm:gap-6 items-start bg-light-bg border border-stroke-color rounded-2xl p-4 sm:p-6 hover:border-yellow transition-all duration-200 cursor-pointer"
             >
@@ -125,6 +126,7 @@ const user = Astro.locals.user
                 </div>
 
                 <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} lecciones</span>
+                <span data-resume-label class="hidden text-xs text-yellow/70 font-medium"></span>
               </div>
 
               <span class="text-secondary/30 group-hover:text-yellow group-hover:translate-x-1 transition-all shrink-0 self-end mb-0.5">
@@ -145,7 +147,7 @@ const user = Astro.locals.user
   import { getTrackProgress } from "~/lib/progress"
 
   document.addEventListener("astro:page-load", async () => {
-    // Sync server progress into local IndexedDB (no-op if not logged in)
+    // Sync server progress + last lesson positions (no-op if not logged in)
     await db.syncFromServer()
 
     const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
@@ -153,6 +155,7 @@ const user = Astro.locals.user
     for (const card of cards) {
       const trackId = card.dataset.trackId!
       const total = Number(card.dataset.trackTotal)
+      const lang = card.dataset.trackLang ?? "es"
       const slugs: string[] = JSON.parse(card.dataset.trackSlugs ?? "[]")
 
       // Use server-synced IndexedDB completions as source of truth
@@ -180,6 +183,17 @@ const user = Astro.locals.user
           container.classList.remove("hidden")
           container.classList.add("flex")
           if (lessonsLabel) lessonsLabel.classList.add("hidden")
+        }
+      }
+
+      // If server has a last lesson, update navigation target and show resume label
+      const lastLesson = db.lastLesson[trackId]
+      if (lastLesson) {
+        card.dataset.trackHref = `/${lang}/${lastLesson.slug}`
+        const resumeLabel = card.querySelector<HTMLElement>("[data-resume-label]")
+        if (resumeLabel) {
+          resumeLabel.textContent = `Continuar: ${lastLesson.title}`
+          resumeLabel.classList.remove("hidden")
         }
       }
 

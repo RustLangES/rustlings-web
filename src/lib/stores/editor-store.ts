@@ -7,6 +7,7 @@ class RustlingsDB {
 	private readonly DB_VERSION = 1
 	private readonly STORE_CODE = "snippets"
 	private readonly STORE_PROGRESS = "progress"
+	lastLesson: Record<string, { slug: string; title: string }> = {}
 
 	private initDB(): Promise<IDBDatabase> {
 		if (this.dbPromise) return this.dbPromise
@@ -104,17 +105,21 @@ class RustlingsDB {
 		])
 	}
 
-	/** Load server-side completions into IndexedDB (for logged-in users) */
+	/** Load server-side completions + last lesson positions into local state (for logged-in users) */
 	async syncFromServer(): Promise<void> {
 		try {
 			const res = await fetch("/api/progress")
 			if (!res.ok) return
-			const { progress } = (await res.json()) as { progress: Record<string, string[]> }
+			const { progress, lastLesson } = (await res.json()) as {
+				progress: Record<string, string[]>
+				lastLesson: Record<string, { slug: string; title: string }>
+			}
 			for (const slugs of Object.values(progress)) {
 				for (const slug of slugs) {
 					await this.set(this.STORE_PROGRESS, slug, true)
 				}
 			}
+			this.lastLesson = lastLesson ?? {}
 		} catch {
 			// ignore — user may be offline or not logged in
 		}

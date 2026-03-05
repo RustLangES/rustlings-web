@@ -286,6 +286,8 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
   <div
     id="lesson-tracker"
     data-track-id={currentTrack.id}
+    data-track-title={currentTrack.title}
+    data-track-slugs={JSON.stringify(currentTrack.slugs)}
     data-slug={lesson.meta.slug}
     hidden
   />
@@ -322,6 +324,11 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
     const trackId = tracker?.dataset.trackId ?? "visited"
     const slug = tracker?.dataset.slug ?? window.location.pathname.split("/").pop()
     if (slug) markLessonVisited(trackId, slug)
+
+    // Track lesson position on server (enables "login anywhere" resume)
+    if (slug && trackId !== "visited") {
+      db.visitLesson(slug, trackId)
+    }
 
     // Non-editor lessons complete on visit (no exercise to run)
     const isNonEditor = document.querySelector("[data-panel='right']")?.classList.contains("collapsed")

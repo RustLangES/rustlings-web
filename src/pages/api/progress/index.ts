@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro"
-import { getUserProgress } from "~/lib/progress-db"
+import { getLastLessons, getUserProgress } from "~/lib/progress-db"
 
 export const GET: APIRoute = async ({ locals }) => {
 	const user = locals.user
@@ -8,7 +8,10 @@ export const GET: APIRoute = async ({ locals }) => {
 	}
 
 	const { DB } = locals.runtime.env
-	const progress = await getUserProgress(DB, user.id)
+	const [progress, lastLesson] = await Promise.all([
+		getUserProgress(DB, user.id),
+		getLastLessons(DB, user.id),
+	])
 
-	return new Response(JSON.stringify({ progress }), { status: 200 })
+	return new Response(JSON.stringify({ progress, lastLesson }), { status: 200 })
 }
