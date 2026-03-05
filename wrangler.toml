@@ -1,11 +1,19 @@
 name = "rustlings"
+main = "./dist/_worker.js"
 compatibility_date = "2025-10-29"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
 
 [placement]
 mode = "smart"
 
 [observability]
 enabled = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "rustlings"
+database_id = "0c7236f1-1195-49cd-920a-d921fb5955fb"
