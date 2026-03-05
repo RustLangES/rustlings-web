@@ -1,0 +1,90 @@
+---
+import Section from "~/components/sections/Section.astro"
+import IconChevronDown from "~icons/tabler/chevron-down"
+
+const faqs = [
+  {
+    q: "¿Necesito instalar Rust para usar RustLings?",
+    a: "No. Todo corre directamente en el navegador usando Rust Playground. No necesitas instalar nada en tu máquina.",
+  },
+  {
+    q: "¿Es realmente gratis?",
+    a: "Sí, 100% gratuito y open source. No hay planes de pago, ni suscripciones, ni contenido bloqueado. Todo el código está en GitHub.",
+  },
+  {
+    q: "¿Necesito experiencia previa en programación?",
+    a: "El track de Fundamentos está pensado para personas que ya tienen nociones básicas de programación, pero no requiere experiencia previa con Rust.",
+  },
+  {
+    q: "¿Cómo se guarda mi progreso?",
+    a: "Tu progreso se guarda localmente en el navegador. Si creas una cuenta, también se sincroniza para que puedas retomarlo desde cualquier dispositivo.",
+  },
+  {
+    q: "¿Cómo obtengo el certificado?",
+    a: "Al completar todas las lecciones del track, puedes generar tu certificado desde tu perfil. Incluye tu nombre y un enlace de verificación único.",
+  },
+  {
+    q: "¿Puedo contribuir al proyecto?",
+    a: "Claro. RustLings es open source. Puedes reportar bugs, proponer mejoras o añadir lecciones desde el repositorio en GitHub.",
+  },
+]
+---
+
+<Section
+  id="faq"
+  className="relative flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
+>
+  <div class="max-w-3xl w-full">
+
+    <!-- Header -->
+    <div class="text-center mb-14">
+      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">Preguntas frecuentes</p>
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
+        ¿Tienes dudas?
+      </h2>
+      <p class="text-secondary/45 text-base max-w-md mx-auto">
+        Estas son las preguntas más comunes. Si no encuentras la tuya, pásate por Discord.
+      </p>
+    </div>
+
+    <!-- FAQ items -->
+    <div class="space-y-3">
+      {faqs.map((faq, i) => (
+        <details class="faq-item group rounded-xl border border-stroke-color bg-dark-fg overflow-hidden">
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none hover:text-yellow transition-colors duration-200 font-medium text-secondary/80 text-sm">
+            <span>{faq.q}</span>
+            <IconChevronDown
+              font-size={16}
+              class="text-secondary/30 group-open:rotate-180 transition-transform duration-200 shrink-0 group-hover:text-yellow/60"
+            />
+          </summary>
+          <div class="px-6 pb-5">
+            <p class="text-secondary/50 text-sm leading-relaxed border-t border-stroke-color/40 pt-4">
+              {faq.a}
+            </p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="mt-12 text-center">
+      <p class="text-secondary/35 text-sm mb-4">¿Aún tienes dudas?</p>
+      <a
+        href="https://discord.com/channels/778674594856960012/1292726289479893044"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[#5865F2]/30 text-[#5865F2]/80 text-sm font-medium hover:bg-[#5865F2]/10 hover:-translate-y-0.5 transition-all duration-200"
+      >
+        Pregunta en Discord →
+      </a>
+    </div>
+
+  </div>
+</Section>
+
+<style>
+  .faq-item[open] {
+    border-color: rgba(255, 215, 118, 0.2);
+  }
+</style>

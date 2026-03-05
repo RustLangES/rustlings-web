@@ -1,0 +1,497 @@
+---
+import Section from "~/components/sections/Section.astro"
+import IconArrowRight from "~icons/tabler/arrow-right"
+import IconBox from "~icons/tabler/box"
+import IconCertificate from "~icons/tabler/certificate"
+import IconGitBranch from "~icons/tabler/git-branch"
+import IconList from "~icons/tabler/list"
+import IconLoader2 from "~icons/tabler/loader-2"
+import IconLock from "~icons/tabler/lock"
+import IconPlayerPlay from "~icons/tabler/player-play"
+import IconRefresh from "~icons/tabler/refresh"
+import IconStack from "~icons/tabler/stack"
+
+const topics = [
+  { id: "ownership",  label: "Ownership",   group: "Memoria",          icon: IconLock, groupColor: "text-purple-400/70  bg-purple-400/8  border-purple-400/15" },
+  { id: "variables",  label: "Variables",   group: "Fundamentos",      icon: IconBox, groupColor: "text-blue-400/70   bg-blue-400/8    border-blue-400/15"   },
+  { id: "match",      label: "Match",       group: "Control de flujo", icon: IconGitBranch, groupColor: "text-orange-400/70 bg-orange-400/8  border-orange-400/15" },
+  { id: "structs",    label: "Structs",     group: "Tipos",            icon: IconStack, groupColor: "text-green-400/70  bg-green-400/8   border-green-400/15"  },
+  { id: "enums",      label: "Enums",       group: "Tipos",            icon: IconList, groupColor: "text-green-400/70  bg-green-400/8   border-green-400/15"  },
+  { id: "iteradores", label: "Iteradores",  group: "Avanzado",         icon: IconRefresh, groupColor: "text-rose-400/70   bg-rose-400/8    border-rose-400/15"   },
+]
+---
+
+<Section
+  id="how-it-works"
+  className="relative flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
+>
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,215,118,0.04) 0%, transparent 70%)"
+    aria-hidden="true"
+  ></div>
+
+  <div class="max-w-6xl w-full relative z-10">
+
+    <!-- Header -->
+    <div class="text-center mb-14">
+      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">Así funciona</p>
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
+        Del tema al resultado<br class="hidden md:block" /> en tres pasos
+      </h2>
+      <p class="text-secondary/45 text-base max-w-md mx-auto">
+        Pruébalo ahora mismo. Sin registrarte, sin instalar nada.
+      </p>
+    </div>
+
+    <!-- Step indicators -->
+    <div class="flex items-center justify-center gap-0 mb-10">
+      {[
+        { num: "01", label: "Elige un tema" },
+        { num: "02", label: "Escribe código" },
+        { num: "03", label: "Ve el resultado" },
+      ].map((s, i) => (
+        <>
+          <div class="step-indicator flex items-center gap-2.5 px-4 py-2 rounded-full transition-all duration-300" data-step-indicator={i + 1}>
+            <span class="step-ind-num w-6 h-6 rounded-full text-[10px] font-bold flex items-center justify-center border transition-colors duration-300">
+              {s.num}
+            </span>
+            <span class="step-ind-label text-xs font-medium transition-colors duration-300 hidden sm:block">{s.label}</span>
+          </div>
+          {i < 2 && <div class="w-8 h-px bg-stroke-color/40 shrink-0" aria-hidden="true"></div>}
+        </>
+      ))}
+    </div>
+
+    <!-- Demo container -->
+    <div class="rounded-2xl border border-stroke-color bg-dark-fg overflow-hidden">
+
+      <!-- Step 1: Topic selection -->
+      <div id="demo-step-1" class="demo-step flex-col p-6 md:p-8">
+        <!-- Header -->
+        <div class="flex items-center justify-between gap-4 mb-5">
+          <div class="flex items-center gap-2.5">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow text-primary text-[10px] font-extrabold leading-none shrink-0">1</span>
+            <div>
+              <p class="text-yellow text-[10px] font-bold tracking-widest uppercase leading-none mb-0.5">Elige un tema</p>
+              <p class="text-secondary/35 text-[11px]">Selecciona un ejercicio para ver el editor con código real</p>
+            </div>
+          </div>
+          <span class="shrink-0 text-secondary/15 text-xs font-mono hidden sm:block">6 temas</span>
+        </div>
+
+        <!-- Topic cards grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+          {topics.map((topic) => (
+            <button
+              data-topic={topic.id}
+              class="topic-btn group relative flex items-center gap-4 px-4 py-3.5 rounded-xl border border-stroke-color/50 bg-primary/40 text-left hover:border-yellow/30 hover:bg-primary/70 transition-all duration-200 cursor-pointer overflow-hidden"
+            >
+              <!-- Subtle hover glow -->
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" style="background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(255,215,118,0.05) 0%, transparent 70%)"></div>
+
+              <!-- Icon box -->
+              <span class="relative z-10 flex items-center justify-center w-9 h-9 rounded-lg bg-primary/60 border border-stroke-color/40 leading-none select-none shrink-0 group-hover:border-yellow/20 transition-colors duration-200" aria-hidden="true">
+                <topic.icon font-size={18} />
+              </span>
+
+              <!-- Labels -->
+              <div class="relative z-10 flex-1 min-w-0">
+                <p class="topic-btn-label text-sm font-bold text-secondary/75 group-hover:text-secondary transition-colors leading-tight truncate">{topic.label}</p>
+                <span class={`inline-flex items-center mt-1 px-1.5 py-0.5 rounded-md border text-[9px] font-semibold tracking-wide ${topic.groupColor}`}>
+                  {topic.group}
+                </span>
+              </div>
+
+              <!-- Arrow hint -->
+              <span class="relative z-10 text-yellow/0 group-hover:text-yellow/40 transition-all duration-200 text-sm shrink-0 translate-x-1 group-hover:translate-x-0" aria-hidden="true">→</span>
+            </button>
+          ))}
+        </div>
+
+        <!-- Footer hint -->
+        <div class="flex items-center gap-3 mt-4">
+          <div class="h-px flex-1 bg-stroke-color/20"></div>
+          <p class="text-secondary/20 text-[11px] shrink-0">haz clic en cualquier tema para continuar</p>
+          <div class="h-px flex-1 bg-stroke-color/20"></div>
+        </div>
+      </div>
+
+      <!-- Step 2: Real CodeMirror editor -->
+      <div id="demo-step-2" class="demo-step hidden flex-col">
+        <!-- Top bar -->
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-stroke-color bg-primary/40">
+          <div>
+            <p id="exercise-title" class="text-sm font-bold text-secondary/80"></p>
+            <p id="exercise-desc" class="text-secondary/40 text-xs mt-0.5"></p>
+          </div>
+          <button
+            id="back-btn"
+            class="shrink-0 text-secondary/30 text-xs hover:text-secondary/60 transition-colors px-3 py-1.5 rounded-lg border border-stroke-color/40 hover:border-stroke-color cursor-pointer"
+          >
+            ← Cambiar tema
+          </button>
+        </div>
+
+        <!-- Editor chrome -->
+        <div class="bg-editor-bg border-b border-stroke-color/50">
+          <div class="flex items-center gap-1.5 px-4 py-2 border-b border-stroke-color/30">
+            <span class="w-2.5 h-2.5 rounded-full bg-[#ff5f57]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#febc2e]"></span>
+            <span class="w-2.5 h-2.5 rounded-full bg-[#28c840]"></span>
+            <span class="ml-3 text-secondary/20 text-[11px] font-mono">main.rs</span>
+          </div>
+          <!-- CodeMirror mounts here -->
+          <div id="demo-editor" class="min-h-[200px] max-h-[340px] overflow-auto text-sm"></div>
+        </div>
+
+        <!-- Run bar -->
+        <div class="flex items-center justify-between px-5 py-3.5 bg-primary/30">
+          <p class="text-secondary/25 text-xs hidden sm:block">Puedes editar el código antes de ejecutar</p>
+          <button
+            id="demo-run-btn"
+            class="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-yellow text-primary text-sm font-bold hover:bg-yellow/90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/15 cursor-pointer ml-auto"
+          >
+            <IconPlayerPlay font-size={14} class="group-data-running:hidden" />
+            <IconLoader2 font-size={14} class="hidden group-data-running:block animate-spin" />
+            <span class="group-data-running:hidden">Ejecutar</span>
+            <span class="hidden group-data-running:inline">Ejecutando...</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Real terminal output -->
+      <div id="demo-step-3" class="demo-step hidden flex-col">
+        <!-- Top bar -->
+        <div class="flex items-center justify-between px-5 py-3.5 border-b border-stroke-color bg-primary/40">
+          <div class="flex items-center gap-2">
+            <span id="result-status-dot" class="w-2 h-2 rounded-full bg-stroke-color"></span>
+            <p id="result-status-label" class="text-sm font-bold text-secondary/50">Ejecutando...</p>
+          </div>
+          <button
+            id="back-to-editor-btn"
+            class="text-secondary/30 text-xs hover:text-secondary/60 transition-colors px-3 py-1.5 rounded-lg border border-stroke-color/40 hover:border-stroke-color cursor-pointer"
+          >
+            ← Editar código
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2">
+          <!-- Terminal output -->
+          <div class="border-b md:border-b-0 md:border-r border-stroke-color/50">
+            <div class="px-4 py-3 border-b border-stroke-color/30 bg-primary/20">
+              <p class="text-secondary/40 text-[10px] font-semibold uppercase tracking-widest font-mono">
+                <span class="text-[#28c840]">$</span> cargo run
+              </p>
+            </div>
+            <div id="demo-console" class="p-4 font-mono text-xs min-h-[180px] max-h-[300px] overflow-auto">
+              <pre id="demo-stderr" class="whitespace-pre-wrap text-[#ff5f57] empty:hidden mb-2"></pre>
+              <pre id="demo-stdout" class="whitespace-pre-wrap text-secondary/80 empty:hidden"></pre>
+              <span id="demo-cursor" class="inline-block w-2 h-3.5 bg-secondary/40 animate-pulse align-middle"></span>
+            </div>
+          </div>
+
+          <!-- Hint + CTA -->
+          <div class="p-5 flex flex-col gap-4">
+            <div id="hint-box" class="hidden px-4 py-3 rounded-xl bg-yellow/5 border border-yellow/15">
+              <p class="text-yellow/70 text-xs font-semibold mb-1">¿Qué aprendiste?</p>
+              <p id="result-hint" class="text-secondary/50 text-xs leading-relaxed"></p>
+            </div>
+
+            <div class="flex-1 rounded-xl border border-yellow/15 bg-yellow/3 p-4 flex items-center gap-3">
+              <IconCertificate font-size={24} class="text-yellow/60 shrink-0" />
+              <div>
+                <p class="text-[10px] font-semibold text-yellow/70 mb-0.5">Completa el track y obtén tu</p>
+                <p class="text-sm font-bold">Certificado de Fundamentos</p>
+              </div>
+            </div>
+
+            <a
+              href="/aprender"
+              class="group flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-yellow text-primary font-bold text-sm hover:bg-yellow/90 transition-all duration-200 shadow-lg shadow-yellow/15"
+            >
+              Continuar aprendiendo
+              <IconArrowRight font-size={13} class="group-hover:translate-x-0.5 transition-transform duration-200" />
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Section>
+
+<script>
+  import { EditorView, keymap } from "@codemirror/view"
+  import { EditorState } from "@codemirror/state"
+  import { basicSetup } from "codemirror"
+  import { indentWithTab } from "@codemirror/commands"
+  import { gruvbox } from "~/components/editor/theme"
+  import { rust } from "~/components/editor/config"
+  import { rustPlayground } from "~/lib/rust-playground"
+
+  // Plain code strings for each exercise (no HTML, CodeMirror handles highlighting)
+  const exercises = {
+    ownership: {
+      title: "Ejercicio: Ownership",
+      description: "Usa .clone() para copiar el valor sin moverlo.",
+      hint: "Cuando mueves un valor, el owner original ya no es válido. .clone() crea una copia profunda.",
+      code: `// En Rust, las variables son por defecto "moved" en lugar de copiadas. 
+// Esto significa que después de asignar s1 a s2, s1 ya no es válido. 
+// Para evitar esto, puedes usar .clone() para crear una copia de s1 que se asigna a s2, 
+// permitiendo que ambos sean válidos.
+fn main() {
+    let s1 = String::from("hola");
+    let s2 = s1.clone();
+    println!("s1={}, s2={}", s1, s2);
+}`,
+    },
+    variables: {
+      title: "Ejercicio: Variables",
+      description: "Declara una variable mutable y modifica su valor.",
+      hint: "En Rust las variables son inmutables por defecto. `mut` permite modificarlas.",
+      code: `// En Rust, las variables son inmutables por defecto. 
+// Para hacerlas mutables, usamos la palabra clave mut.
+fn main() {
+    let mut contador = 0;
+    contador += 1;
+    println!("contador = {}", contador);
+}`,
+    },
+    match: {
+      title: "Ejercicio: Match",
+      description: "Clasifica un número usando pattern matching.",
+      hint: "El patrón `_` actúa como catch-all y captura todos los casos no listados.",
+      code: `// El operador match en Rust es una forma poderosa de realizar pattern matching.
+fn main() {
+    let n = 7;
+    match n {
+        1..=5 => println!("pequeño"),
+        _     => println!("grande"),
+    }
+}`,
+    },
+    structs: {
+      title: "Ejercicio: Structs",
+      description: "Define una struct con campos x e y.",
+      hint: "Las structs agrupan datos relacionados. Accedes a los campos con notación de punto.",
+      code: `// Las structs en Rust son tipos de datos personalizados que pueden contener múltiples campos.
+struct Punto { x: f64, y: f64 }
+
+fn main() {
+    let p = Punto { x: 3.0, y: 4.0 };
+    println!("({}, {})", p.x, p.y);
+}`,
+    },
+    enums: {
+      title: "Ejercicio: Enums",
+      description: "Usa un enum con match para clasificar direcciones.",
+      hint: "Los enums en Rust son exhaustivos — el compilador verifica que cubras todos los casos.",
+      code: `// Los enums en Rust permiten definir un tipo que puede ser una de varias variantes.
+enum Direccion { Norte, Sur, Este, Oeste }
+
+fn main() {
+    let d = Direccion::Norte;
+    match d {
+        Direccion::Norte => println!("¡Al norte!"),
+        _ => println!("otra dirección"),
+    }
+}`,
+    },
+    iteradores: {
+      title: "Ejercicio: Iteradores",
+      description: "Usa map y collect para transformar un Vec.",
+      hint: "Los iteradores son lazy: solo se evalúan al llamar .collect() u otro consumidor.",
+      code: `// Los iteradores en Rust son lazy: solo se evalúan al llamar .collect() u otro consumidor.
+fn main() {
+    let nums: Vec<i32> = (1..=3)
+        .map(|x| x * 2)
+        .collect();
+    println!("{:?}", nums);
+}`,
+    },
+  }
+
+  type TopicId = keyof typeof exercises
+
+  let demoEditorView: EditorView | null = null
+  let currentTopic: TopicId | "" = ""
+
+  // ── Step indicator helpers ──────────────────────────────────────────
+
+  function setStepIndicator(active: 1 | 2 | 3) {
+    document.querySelectorAll<HTMLElement>("[data-step-indicator]").forEach((el) => {
+      const n = parseInt(el.dataset.stepIndicator ?? "0")
+      const isActive = n === active
+      const isPast = n < active
+      const numEl = el.querySelector(".step-ind-num")
+      const labelEl = el.querySelector(".step-ind-label")
+      if (numEl) {
+        numEl.classList.toggle("bg-yellow", isActive)
+        numEl.classList.toggle("text-primary", isActive)
+        numEl.classList.toggle("border-yellow", isActive)
+        numEl.classList.toggle("bg-yellow/10", isPast && !isActive)
+        numEl.classList.toggle("text-yellow", isPast && !isActive)
+        numEl.classList.toggle("border-yellow/30", isPast && !isActive)
+        numEl.classList.toggle("bg-transparent", !isActive && !isPast)
+        numEl.classList.toggle("text-secondary/30", !isActive && !isPast)
+        numEl.classList.toggle("border-stroke-color/40", !isActive && !isPast)
+      }
+      if (labelEl) {
+        labelEl.classList.toggle("text-yellow", isActive)
+        labelEl.classList.toggle("text-secondary/60", isPast && !isActive)
+        labelEl.classList.toggle("text-secondary/30", !isActive && !isPast)
+      }
+    })
+  }
+
+  // ── Show / hide steps ───────────────────────────────────────────────
+
+  function showStep(n: 1 | 2 | 3) {
+    document.querySelectorAll<HTMLElement>(".demo-step").forEach((el, i) => {
+      const isActive = i + 1 === n
+      el.classList.toggle("hidden", !isActive)
+      el.classList.toggle("flex", isActive)
+    })
+    setStepIndicator(n)
+  }
+
+  // ── CodeMirror init (lazy — called when step 2 first shows) ────────
+
+  function initOrUpdateEditor(code: string) {
+    const el = document.getElementById("demo-editor")
+    if (!el) return
+
+    if (demoEditorView) {
+      // Update existing editor content
+      const doc = demoEditorView.state.doc.toString()
+      demoEditorView.dispatch({ changes: { from: 0, to: doc.length, insert: code } })
+      return
+    }
+
+    demoEditorView = new EditorView({
+      state: EditorState.create({
+        doc: code,
+        extensions: [
+          basicSetup,
+          gruvbox,
+          rust(),
+          keymap.of([indentWithTab]),
+          EditorView.theme({
+            "&": { backgroundColor: "transparent" },
+            ".cm-scroller": { padding: "12px 0" },
+          }),
+        ],
+      }),
+      parent: el,
+    })
+  }
+
+  // ── Run code via Rust Playground ────────────────────────────────────
+
+  function runCode() {
+    if (!demoEditorView) return
+    const code = demoEditorView.state.doc.toString()
+
+    // Switch to step 3
+    showStep(3)
+
+    // Reset terminal UI
+    const stderrEl = document.getElementById("demo-stderr")
+    const stdoutEl = document.getElementById("demo-stdout")
+    const statusDot = document.getElementById("result-status-dot")
+    const statusLabel = document.getElementById("result-status-label")
+    const hintBox = document.getElementById("hint-box")
+    const cursorEl = document.getElementById("demo-cursor")
+    const runBtn = document.getElementById("demo-run-btn")
+
+    if (stderrEl) stderrEl.textContent = ""
+    if (stdoutEl) stdoutEl.textContent = ""
+    if (hintBox) hintBox.classList.add("hidden")
+    if (cursorEl) cursorEl.classList.remove("hidden")
+    if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-yellow animate-pulse"
+    if (statusLabel) { statusLabel.textContent = "Ejecutando..."; statusLabel.className = "text-sm font-bold text-yellow/70" }
+    if (runBtn) runBtn.setAttribute("data-running", "")
+
+    rustPlayground.execute(
+      code,
+      (_stderr, stdout) => {
+        if (stderrEl) stderrEl.textContent = _stderr
+        if (stdoutEl) stdoutEl.textContent = stdout
+      },
+      (success) => {
+        if (cursorEl) cursorEl.classList.add("hidden")
+        if (runBtn) runBtn.removeAttribute("data-running")
+
+        if (success) {
+          if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-[#28c840]"
+          if (statusLabel) { statusLabel.textContent = "Compilado con éxito"; statusLabel.className = "text-sm font-bold text-[#28c840]" }
+        } else {
+          if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-[#ff5f57]"
+          if (statusLabel) { statusLabel.textContent = "Error de compilación"; statusLabel.className = "text-sm font-bold text-[#ff5f57]" }
+        }
+
+        // Show hint
+        if (currentTopic && hintBox) {
+          const hint = document.getElementById("result-hint")
+          if (hint) hint.textContent = exercises[currentTopic].hint
+          hintBox.classList.remove("hidden")
+        }
+      },
+    )
+  }
+
+  // ── Init on page load ───────────────────────────────────────────────
+
+  function init() {
+    showStep(1)
+
+    // Topic buttons
+    document.querySelectorAll<HTMLButtonElement>("[data-topic]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const topicId = btn.dataset.topic as TopicId
+        if (!topicId || !(topicId in exercises)) return
+        currentTopic = topicId
+        const ex = exercises[topicId]
+
+        // Highlight selected
+        document.querySelectorAll<HTMLButtonElement>("[data-topic]").forEach((b) => {
+          b.classList.remove("border-yellow/40", "bg-yellow/5")
+          b.classList.add("border-stroke-color/60", "bg-primary/60")
+          b.querySelector(".topic-btn-label")?.classList.remove("text-yellow")
+        })
+        btn.classList.add("border-yellow/40", "bg-yellow/5")
+        btn.classList.remove("border-stroke-color/60", "bg-primary/60")
+        btn.querySelector(".topic-btn-label")?.classList.add("text-yellow")
+
+        // Set exercise info
+        const title = document.getElementById("exercise-title")
+        const desc = document.getElementById("exercise-desc")
+        if (title) title.textContent = ex.title
+        if (desc) desc.textContent = ex.description
+
+        // Show editor step, init CodeMirror
+        showStep(2)
+        initOrUpdateEditor(ex.code)
+      })
+    })
+
+    // Back button
+    document.getElementById("back-btn")?.addEventListener("click", () => showStep(1))
+
+    // Run button
+    document.getElementById("demo-run-btn")?.addEventListener("click", runCode)
+
+    // Back to editor
+    document.getElementById("back-to-editor-btn")?.addEventListener("click", () => showStep(2))
+  }
+
+  document.addEventListener("astro:page-load", init)
+
+  document.addEventListener("astro:before-swap", () => {
+    if (demoEditorView) {
+      demoEditorView.destroy()
+      demoEditorView = null
+    }
+  })
+</script>

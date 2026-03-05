@@ -2,12 +2,15 @@
 import Section from "~/components/sections/Section.astro"
 import FaBrandsDiscord from "~icons/fa-brands/discord"
 import FaBrandsGithub from "~icons/fa-brands/github"
+import IconBook from "~icons/tabler/book"
 import IconExternalLink from "~icons/tabler/external-link"
+import IconInfinity from "~icons/tabler/infinity"
+import IconLockOpen from "~icons/tabler/lock-open"
 ---
 
 <Section
   id="community"
-  className="flex flex-col justify-center items-center w-full py-24 px-6"
+  className="flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
 >
   <div class="max-w-6xl w-full">
 
@@ -72,12 +75,12 @@ import IconExternalLink from "~icons/tabler/external-link"
     <!-- Stats row -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {[
-        { value: "39", label: "lecciones gratuitas", icon: "📚" },
-        { value: "100%", label: "open source", icon: "🔓" },
-        { value: "∞", label: "posibilidades con Rust", icon: "🦀" },
-      ].map(({ value, label, icon }) => (
+        { value: "39", label: "lecciones gratuitas", icon: IconBook },
+        { value: "100%", label: "open source", icon: IconLockOpen },
+        { label: "posibilidades con Rust", icon: IconInfinity },
+      ].map(({ value, label, icon: Icon }) => (
         <div class="flex items-center gap-4 px-6 py-4 rounded-xl border border-stroke-color bg-dark-fg/50">
-          <span class="text-2xl" aria-hidden="true">{icon}</span>
+          <Icon class="text-yellow" font-size={24} aria-hidden="true" />
           <div>
             <p class="text-2xl font-extrabold text-yellow leading-none">{value}</p>
             <p class="text-secondary/50 text-xs mt-0.5">{label}</p>

@@ -3,6 +3,7 @@ import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import Section from "~/components/sections/Section.astro"
 import JamGithub from "~icons/jam/github"
+import IconArrowRight from "~icons/tabler/arrow-right"
 import IconBolt from "~icons/tabler/bolt"
 import IconBook from "~icons/tabler/book"
 import IconTrophy from "~icons/tabler/trophy"
@@ -14,100 +15,116 @@ import IconWorldCheck from "~icons/tabler/world-check"
   id="hero"
   className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden"
 >
-  <!-- Radial glow background -->
+  <!-- Dot grid background -->
+  <div class="dot-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+  <!-- Top radial glow -->
   <div
     class="pointer-events-none absolute inset-0"
-    style="background: radial-gradient(ellipse 70% 50% at 50% 20%, rgba(255,215,118,0.07) 0%, transparent 70%)"
+    style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(255,215,118,0.13) 0%, transparent 65%)"
+    aria-hidden="true"
+  ></div>
+  <!-- Bottom fade -->
+  <div
+    class="pointer-events-none absolute bottom-0 left-0 right-0 h-48"
+    style="background: linear-gradient(to bottom, transparent, var(--color-primary))"
     aria-hidden="true"
   ></div>
 
   <!-- Login link -->
   <a
     href="/login"
-    class="absolute top-4 right-6 text-secondary/40 hover:text-yellow transition-all duration-300 hover:scale-110"
+    class="absolute top-6 right-6 flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
     aria-label="Iniciar sesión"
   >
-    <IconUser font-size={28} />
+    <IconUser font-size={16} />
+    <span class="hidden sm:inline">Iniciar sesión</span>
   </a>
 
-  <!-- Open source badge -->
-  <div class="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow/20 bg-yellow/5 text-yellow text-sm font-medium">
-    <span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>
-    100% Gratuito · Open Source
-  </div>
+  <!-- Content wrapper -->
+  <div class="relative z-10 flex flex-col items-center max-w-4xl">
 
-  <!-- Logo -->
-  <Image
-    class="w-40 md:w-48 logo mb-8"
-    src={logoImage}
-    alt="Rustlings logo"
-    width={192}
-    height={192}
-    fetchpriority="high"
-    loading="eager"
-  />
+    <!-- Open source badge -->
+    <div class="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow/20 bg-yellow/5 text-yellow text-xs font-semibold tracking-wide uppercase">
+      <span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>
+      100% Gratuito · Open Source
+    </div>
 
-  <!-- Headline -->
-  <div class="max-w-3xl mb-8">
-    <h1 class="font-extrabold text-5xl md:text-7xl leading-tight tracking-tight mb-5">
-      Aprende <span class="text-yellow">Rust</span><br class="hidden md:block" /> en Español
+    <!-- Logo with glow -->
+    <Image
+      class="w-32 md:w-40 logo mb-10"
+      src={logoImage}
+      alt="Rustlings logo"
+      width={160}
+      height={160}
+      fetchpriority="high"
+      loading="eager"
+    />
+
+    <!-- Headline -->
+    <h1 class="font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6">
+      Rust<span class="text-yellow">lings</span>
     </h1>
-    <p class="text-secondary/55 text-lg md:text-xl max-w-lg mx-auto leading-relaxed">
-      Lecciones interactivas, ejercicios prácticos y un editor integrado. Sin instalar nada, directo desde el navegador.
+
+    <p class="text-secondary/50 text-base md:text-lg max-w-md mx-auto leading-relaxed mb-10">
+      Lecciones interactivas con editor real en el navegador.
+      Sin instalar nada. Sin excusas.
     </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-3 items-center mb-16">
+      <a
+        href="/aprender"
+        class="group flex items-center gap-2 px-8 py-3.5 rounded-xl bg-yellow text-primary font-bold text-sm hover:bg-yellow/90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/20"
+      >
+        Empezar gratis
+        <IconArrowRight font-size={15} class="group-hover:translate-x-0.5 transition-transform duration-200" />
+      </a>
+      <a
+        href="https://github.com/RustLangES/rustlings-web"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-2 px-8 py-3.5 rounded-xl border border-stroke-color text-secondary/50 font-medium text-sm hover:border-yellow/40 hover:text-yellow hover:-translate-y-0.5 transition-all duration-200"
+      >
+        <JamGithub font-size={16} />
+        Ver código
+      </a>
+    </div>
+
+    <!-- Feature pills -->
+    <div class="flex flex-wrap justify-center gap-2.5">
+      {[
+        { icon: IconBook, label: "39 lecciones" },
+        { icon: IconBolt, label: "Editor integrado" },
+        { icon: IconWorldCheck, label: "Todo en Español" },
+        { icon: IconTrophy, label: "Certificados" },
+      ].map(({ icon: Icon, label }) => (
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg/80 border border-stroke-color/50 text-secondary/45 text-xs backdrop-blur-sm">
+          <Icon font-size={12} class="text-yellow shrink-0" />
+          {label}
+        </div>
+      ))}
+    </div>
   </div>
 
-  <!-- CTAs -->
-  <div class="flex flex-col sm:flex-row gap-3 items-center">
-    <a
-      href="/aprender"
-      class="px-8 py-3 rounded-lg bg-yellow text-primary font-bold text-base hover:bg-yellow/85 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/15"
-    >
-      Empezar ahora
-    </a>
-    <a
-      href="https://github.com/RustLangES/rustlings-web"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="flex items-center gap-2 px-8 py-3 rounded-lg border border-stroke-color text-secondary/60 font-medium text-base hover:border-yellow/40 hover:text-yellow hover:-translate-y-0.5 transition-all duration-200"
-    >
-      <JamGithub font-size={18} />
-      Ver código
-    </a>
-  </div>
-
-  <!-- Feature pills -->
-  <div class="mt-14 flex flex-wrap justify-center gap-3">
-    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
-      <IconBook font-size={14} class="text-yellow shrink-0" />
-      39 lecciones
-    </div>
-    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
-      <IconBolt font-size={14} class="text-yellow shrink-0" />
-      Editor integrado
-    </div>
-    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
-      <IconWorldCheck font-size={14} class="text-yellow shrink-0" />
-      Todo en Español
-    </div>
-    <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg border border-stroke-color/50 text-secondary/55 text-sm">
-      <IconTrophy font-size={14} class="text-yellow shrink-0" />
-      Certificados
-    </div>
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-secondary/20">
+    <span class="text-xs tracking-widest uppercase font-medium">scroll</span>
+    <div class="w-px h-8 bg-linear-to-b from-secondary/20 to-transparent"></div>
   </div>
 </Section>
 
 <style>
-  .logo {
-    -webkit-filter: drop-shadow(0 -6mm 80mm var(--color-yellow));
-    filter: drop-shadow(0 -6mm 70mm var(--color-yellow));
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(255, 215, 118, 0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 100%);
   }
 
-  @keyframes scroll-down {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100%); }
-  }
-  .animate-scroll-down {
-    animation: scroll-down 1.5s ease-in-out infinite;
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-yellow) 20%, rgba(255, 215, 118, 0.35) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 </style>
