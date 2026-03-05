@@ -31,3 +31,20 @@ const lang = getLangFromUrl(Astro.url)
     <CookieBanner />
   </body>
 </html>
+
+<script>
+  import { db } from "~/lib/stores/editor-store"
+
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLAnchorElement>('[href="/api/auth/logout"]').forEach((link) => {
+      link.addEventListener("click", async (e) => {
+        e.preventDefault()
+        try {
+          localStorage.removeItem("rustlings_progress")
+          await db.clearAll()
+        } catch {}
+        window.location.href = "/api/auth/logout"
+      })
+    })
+  })
+</script>

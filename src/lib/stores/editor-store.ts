@@ -87,6 +87,23 @@ class RustlingsDB {
 		return (await this.get<boolean>(this.STORE_PROGRESS, slug)) || false
 	}
 
+	/** Clear all local data (called on logout) */
+	async clearAll(): Promise<void> {
+		const db = await this.initDB()
+		await Promise.all([
+			new Promise<void>((resolve) => {
+				const req = db.transaction(this.STORE_CODE, "readwrite").objectStore(this.STORE_CODE).clear()
+				req.onsuccess = () => resolve()
+				req.onerror = () => resolve()
+			}),
+			new Promise<void>((resolve) => {
+				const req = db.transaction(this.STORE_PROGRESS, "readwrite").objectStore(this.STORE_PROGRESS).clear()
+				req.onsuccess = () => resolve()
+				req.onerror = () => resolve()
+			}),
+		])
+	}
+
 	/** Load server-side completions into IndexedDB (for logged-in users) */
 	async syncFromServer(): Promise<void> {
 		try {
