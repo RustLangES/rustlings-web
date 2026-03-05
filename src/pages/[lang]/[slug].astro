@@ -7,6 +7,7 @@ import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
 import Layout from "~/layouts/Layout.astro"
 import IconBook from "~icons/tabler/book"
+import IconChevronDown from "~icons/tabler/chevron-down"
 import IconChevronLeft from "~icons/tabler/chevron-left"
 import IconChevronRight from "~icons/tabler/chevron-right"
 import IconCode from "~icons/tabler/code"
@@ -173,7 +174,10 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
             class="pointer-events-none absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pb-3 pt-16 bg-linear-to-t from-light-bg to-transparent opacity-0 transition-opacity duration-500"
             aria-hidden="true"
           >
-            <span class="text-xs text-secondary/60 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">↓ Hay más contenido abajo</span>
+            <div class="flex items-center gap-1 text-xs text-secondary/60 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">
+              <IconChevronDown font-size={12} />
+              <span>Hay más contenido abajo</span>
+            </div>
           </div>
         </div>
         <div class="hidden lg:block border-t border-gray-700 shrink-0">

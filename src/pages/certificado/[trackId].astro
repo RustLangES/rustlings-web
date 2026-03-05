@@ -38,7 +38,10 @@ const { track } = Astro.props
     <!-- Name display for logged-in users -->
     <div id="cert-name-display" class="hidden flex-col items-center gap-1">
       <p class="text-xl font-bold text-secondary" id="cert-name-text"></p>
-      <a href="/perfil" class="text-xs text-secondary/40 hover:text-yellow transition-colors">Editar nombre en perfil →</a>
+      <a href="/perfil" class="inline-flex items-center gap-1 text-xs text-secondary/40 hover:text-yellow transition-colors">
+        Editar nombre en perfil
+        <span class="text-[10px]">→</span>
+      </a>
     </div>
 
     <!-- Name input for anonymous users -->
@@ -300,6 +303,7 @@ const { track } = Astro.props
             body: JSON.stringify({ courseId: trackId, nameUsed: fullName }),
           })
             .then((r) => r.json())
+            // @ts-ignore
             .then(({ certId, issuedAt }: { certId?: string; issuedAt?: string }) => {
               if (certId && issuedAt) showShareButtons(certId, issuedAt)
             })

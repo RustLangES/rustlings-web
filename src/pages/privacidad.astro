@@ -1,5 +1,6 @@
 ---
 import Layout from "~/layouts/Layout.astro"
+import IconChevronLeft from "~icons/tabler/chevron-left"
 ---
 
 <Layout
@@ -11,7 +12,8 @@ import Layout from "~/layouts/Layout.astro"
       href="/"
       class="inline-flex items-center gap-2 text-sm text-secondary/60 hover:text-yellow transition-colors mb-10"
     >
-      ← Volver al inicio
+      <IconChevronLeft font-size={16} />
+      Volver al inicio
     </a>
 
     <h1 class="text-3xl font-bold text-secondary mb-2">Política de Privacidad</h1>
