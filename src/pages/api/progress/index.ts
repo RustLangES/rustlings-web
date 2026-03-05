@@ -8,10 +8,7 @@ export const GET: APIRoute = async ({ locals }) => {
 	}
 
 	const { DB } = locals.runtime.env
-	const [progress, lastLesson] = await Promise.all([
-		getUserProgress(DB, user.id),
-		getLastLessons(DB, user.id),
-	])
+	const [progress, lastLesson] = await Promise.all([getUserProgress(DB, user.id), getLastLessons(DB, user.id)])
 
 	return new Response(JSON.stringify({ progress, lastLesson }), { status: 200 })
 }

@@ -20,10 +20,7 @@ export interface LastLessonInfo {
 }
 
 /** Returns the last visited lesson per course for a user */
-export async function getLastLessons(
-	db: D1Database,
-	userId: string,
-): Promise<Record<string, LastLessonInfo>> {
+export async function getLastLessons(db: D1Database, userId: string): Promise<Record<string, LastLessonInfo>> {
 	const rows = await db
 		.prepare(
 			`SELECT ucp.course_id, ucp.last_lesson_slug, cs.title
@@ -42,12 +39,7 @@ export async function getLastLessons(
 }
 
 /** Updates the last visited lesson for a user in a course */
-export async function updateLastLesson(
-	db: D1Database,
-	userId: string,
-	courseId: string,
-	slug: string,
-): Promise<void> {
+export async function updateLastLesson(db: D1Database, userId: string, courseId: string, slug: string): Promise<void> {
 	const now = new Date().toISOString()
 	const id = generateId()
 	await db
