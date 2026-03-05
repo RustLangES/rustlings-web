@@ -92,6 +92,7 @@ export async function getUserProgress(db: D1Database, userId: string): Promise<R
 
 /**
  * Marks a lesson (section) as completed for a user.
+ * Stores only the furthest section reached per (user, course).
  * Also updates the user_course_progress percentage.
  */
 export async function markSectionCompleted(
@@ -100,41 +101,43 @@ export async function markSectionCompleted(
 	courseId: string,
 	slug: string,
 ): Promise<void> {
-	const sectionId = `${courseId}-${slug}`
-
-	// Upsert section completion
 	const now = new Date().toISOString()
-	const completionId = generateId()
+	const id = generateId()
+
+	// Upsert: one row per (user, course). Advance section_slug only if new position >= current.
 	await db
 		.prepare(
-			`INSERT INTO user_section_progress (id, user_id, section_id, completed, completed_at)
-       VALUES (?, ?, ?, 1, ?)
-       ON CONFLICT (user_id, section_id) DO NOTHING`,
+			`INSERT INTO user_section_progress (id, user_id, course_id, section_slug, updated_at)
+       VALUES (?, ?, ?, ?, ?)
+       ON CONFLICT (user_id, course_id) DO UPDATE SET
+         section_slug = (
+           SELECT slug FROM course_sections
+           WHERE course_id = excluded.course_id
+             AND slug IN (excluded.section_slug, user_section_progress.section_slug)
+           ORDER BY position DESC
+           LIMIT 1
+         ),
+         updated_at = excluded.updated_at`,
 		)
-		.bind(completionId, userId, sectionId, now)
+		.bind(id, userId, courseId, slug, now)
 		.run()
 
-	// Recalculate course progress
-	const [totalRow, completedRow] = await Promise.all([
-		db
-			.prepare("SELECT COUNT(*) as cnt FROM course_sections WHERE course_id = ?")
-			.bind(courseId)
-			.first<{ cnt: number }>(),
-		db
-			.prepare(
-				`SELECT COUNT(*) as cnt
-         FROM user_section_progress usp
-         JOIN course_sections cs ON cs.id = usp.section_id
-         WHERE usp.user_id = ? AND cs.course_id = ?`,
-			)
-			.bind(userId, courseId)
-			.first<{ cnt: number }>(),
-	])
+	// Recalculate progress from position of furthest section
+	const progressRow = await db
+		.prepare(
+			`SELECT cs.position,
+              (SELECT COUNT(*) FROM course_sections WHERE course_id = ?) AS total
+       FROM user_section_progress usp
+       JOIN course_sections cs ON cs.course_id = usp.course_id AND cs.slug = usp.section_slug
+       WHERE usp.user_id = ? AND usp.course_id = ?`,
+		)
+		.bind(courseId, userId, courseId)
+		.first<{ position: number; total: number }>()
 
-	const total = totalRow?.cnt ?? 0
-	const completed = completedRow?.cnt ?? 0
-	const pct = total > 0 ? Math.round((completed / total) * 100) : 0
-	const isComplete = pct === 100
+	const position = progressRow?.position ?? 0
+	const total = progressRow?.total ?? 0
+	const pct = total > 0 ? Math.round((position / total) * 100) : 0
+	const isComplete = position === total && total > 0
 
 	const progressId = generateId()
 	await db
