@@ -13,6 +13,8 @@ const isNextDisabled = true
 
 const btnBaseClass =
 	"group flex h-14 items-center gap-2 rounded-md px-4 transition-all duration-200 hover:bg-dark-fg/40 aria-disabled:pointer-events-none aria-disabled:opacity-50"
+const nextBtnClass =
+	"group flex h-14 items-center gap-2 rounded-md px-4 transition-all duration-200 hover:bg-dark-fg/40 aria-disabled:opacity-50"
 const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 transform group-hover:text-yellow"
 ---
 
@@ -38,7 +40,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
     href={next ? `/${lang}/${next.slug}` : undefined}
     aria-label={next ? `Siguiente: ${next.title}` : undefined}
     aria-disabled={isNextDisabled}
-    class={btnBaseClass}
+    class={nextBtnClass}
   >
     <div class="flex flex-col text-right">
       <span class:list={["text-md font-medium", next ? "text-yellow" : "text-[#ccc]"]}>
@@ -54,10 +56,23 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
 
 <script>
   import { db } from "~/lib/stores/editor-store"
+  import { toastr } from "~/utils/toasts"
 
   const initNextButton = async () => {
     const btn = document.getElementById("next-lesson-btn") as HTMLAnchorElement | null
-    if (!btn || !btn.href || btn.ariaDisabled !== "true") return
+    if (!btn || !btn.href) return
+
+    btn.addEventListener("click", (e) => {
+      if (btn.ariaDisabled === "true") {
+        e.preventDefault()
+        toastr.info(
+          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+          "Ejecuta el código",
+        )
+      }
+    })
+
+    if (btn.ariaDisabled !== "true") return
 
     const slug =
       document.querySelector<HTMLElement>("[data-slug]")?.dataset.slug ??
