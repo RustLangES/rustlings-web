@@ -1,0 +1,212 @@
+---
+import logoSvgUrl from "~/assets/Rust_Lang_ES_Logo_Blanco_color.svg?url"
+import { tracks } from "~/const/tracks"
+import Layout from "~/layouts/Layout.astro"
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+import IconCertificate from "~icons/tabler/certificate"
+
+const { certId } = Astro.params
+const { DB } = Astro.locals.runtime.env
+
+interface CertRow {
+	id: string
+	course_id: string
+	name_used: string
+	issued_at: string
+}
+
+const cert = await DB.prepare(
+	"SELECT id, course_id, name_used, issued_at FROM user_certificates WHERE id = ?",
+)
+	.bind(certId)
+	.first<CertRow>()
+
+if (!cert) {
+	return new Response(null, { status: 404 })
+}
+
+const track = tracks.find((t) => t.id === cert.course_id)
+const issuedDate = new Date(cert.issued_at).toLocaleDateString("es-MX", {
+	year: "numeric",
+	month: "long",
+	day: "numeric",
+})
+---
+
+<Layout title={`Certificado de ${cert.name_used} — Rustlings Web`}>
+  <header class="p-2 w-full shrink-0">
+    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
+      <a
+        href="/"
+        class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+      >
+        <IconLeft font-size={20} />
+        Inicio
+      </a>
+    </nav>
+  </header>
+
+  <main class="flex-1 flex flex-col items-center px-4 py-10 gap-6">
+    <!-- Verification badge -->
+    <div class="flex flex-col items-center gap-2 text-center">
+      <div class="flex items-center gap-2 px-4 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
+        <IconCertificate font-size={14} class="text-green-400" />
+        <span class="text-xs font-semibold text-green-400">Certificado verificado</span>
+      </div>
+      <h1 class="text-2xl font-bold text-secondary mt-2">{cert.name_used}</h1>
+      <p class="text-secondary/50 text-sm">
+        completó <span class="text-secondary font-semibold">{track?.title ?? cert.course_id}</span>
+      </p>
+      <p class="text-secondary/30 text-xs">Expedido el {issuedDate}</p>
+    </div>
+
+    <!-- Certificate canvas -->
+    <div class="w-full max-w-md flex flex-col items-center gap-4">
+      <canvas
+        id="certificate-canvas"
+        width="600"
+        height="600"
+        class="w-full drop-shadow-2xl"
+        data-logo-url={logoSvgUrl}
+        data-name={cert.name_used}
+        data-track-title={track?.title ?? cert.course_id}
+        data-issued-at={cert.issued_at}
+      ></canvas>
+
+    </div>
+  </main>
+</Layout>
+
+<script>
+  function hexPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
+    ctx.beginPath()
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 3) * i - Math.PI / 2
+      i === 0
+        ? ctx.moveTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle))
+        : ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle))
+    }
+    ctx.closePath()
+  }
+
+  async function drawCertificate(
+    canvas: HTMLCanvasElement,
+    trackTitle: string,
+    name: string,
+    issuedAt: string,
+    logoUrl: string,
+  ) {
+    const ctx = canvas.getContext("2d")!
+    const W = canvas.width
+    const H = canvas.height
+    const cx = W / 2
+    const cy = H / 2
+    const ORANGE = "#FF6E1F"
+    const LIGHT_GRAY = "#94a3b8"
+    const R = 272
+    const off = { icon: -148, title: -18, cert: 18, dots: 40, name: 82, date: 112, url: 170 }
+
+    ctx.clearRect(0, 0, W, H)
+
+    for (let i = 3; i >= 1; i--) {
+      hexPath(ctx, cx, cy, R + i * 6)
+      ctx.fillStyle = `rgba(255, 110, 31, ${0.06 * i})`
+      ctx.fill()
+    }
+
+    hexPath(ctx, cx, cy, R)
+    ctx.save()
+    ctx.clip()
+    const grad = ctx.createLinearGradient(cx, cy - R, cx, cy + R)
+    grad.addColorStop(0, "#1e1e2e")
+    grad.addColorStop(1, "#0d0d18")
+    ctx.fillStyle = grad
+    ctx.fillRect(0, 0, W, H)
+    ctx.restore()
+
+    hexPath(ctx, cx, cy, R)
+    ctx.strokeStyle = ORANGE
+    ctx.lineWidth = 3
+    ctx.stroke()
+
+    hexPath(ctx, cx, cy, R - 10)
+    ctx.strokeStyle = "rgba(255, 110, 31, 0.25)"
+    ctx.lineWidth = 1
+    ctx.stroke()
+
+    ctx.textAlign = "center"
+
+    const logoImg = new Image()
+    await new Promise<void>((resolve) => {
+      logoImg.onload = () => resolve()
+      logoImg.onerror = () => resolve()
+      logoImg.src = logoUrl
+    })
+    const logoW = 100
+    const logoH = Math.round(logoW * (500.97 / 814.04))
+    const iconY = cy + off.icon
+    ctx.drawImage(logoImg, cx - logoW / 2, iconY - logoH / 2, logoW, logoH)
+
+    ctx.fillStyle = ORANGE
+    ctx.font = "600 13px 'Poppins', sans-serif"
+    ctx.letterSpacing = "2px"
+    ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 68)
+    ctx.letterSpacing = "0px"
+
+    ctx.strokeStyle = "rgba(255,110,31,0.35)"
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(cx - 90, iconY + 82)
+    ctx.lineTo(cx + 90, iconY + 82)
+    ctx.stroke()
+
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "700 40px 'Poppins', sans-serif"
+    const maxW = R * 1.4
+    if (ctx.measureText(trackTitle).width > maxW) {
+      const scaled = Math.floor(40 * (maxW / ctx.measureText(trackTitle).width))
+      ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
+    }
+    ctx.fillText(trackTitle, cx, cy + off.title)
+
+    ctx.fillStyle = ORANGE
+    ctx.font = "600 17px 'Poppins', sans-serif"
+    ctx.fillText("Certificación", cx, cy + off.cert)
+
+    ctx.fillStyle = "rgba(255,110,31,0.4)"
+    for (let i = -1; i <= 1; i++) {
+      ctx.beginPath()
+      ctx.arc(cx + i * 14, cy + off.dots, 2.5, 0, Math.PI * 2)
+      ctx.fill()
+    }
+
+    ctx.fillStyle = "#e2e8f0"
+    ctx.font = "700 26px 'Poppins', sans-serif"
+    const maxNameW = R * 1.5
+    if (ctx.measureText(name).width > maxNameW) {
+      const scaled = Math.floor(26 * (maxNameW / ctx.measureText(name).width))
+      ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
+    }
+    ctx.fillText(name, cx, cy + off.name)
+
+    const date = new Date(issuedAt).toLocaleDateString("es-MX", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+    ctx.fillStyle = LIGHT_GRAY
+    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.fillText(date, cx, cy + off.date)
+
+    ctx.fillStyle = "rgba(148,163,184,0.5)"
+    ctx.font = "400 11px 'Poppins', sans-serif"
+    ctx.fillText("rustlings.rustlang-es.org", cx, cy + off.url)
+  }
+
+  document.addEventListener("astro:page-load", () => {
+    const canvas = document.getElementById("certificate-canvas") as HTMLCanvasElement
+    const { logoUrl, name, trackTitle, issuedAt } = canvas.dataset as Record<string, string>
+
+    document.fonts.ready.then(() => drawCertificate(canvas, trackTitle, name, issuedAt, logoUrl))
+  })
+</script>
