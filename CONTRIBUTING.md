@@ -133,12 +133,52 @@ Si encuentras un error en el contenido en espanol u otro idioma, puedes abrir un
 
 ## Instalacion y desarrollo local
 
+### 1. Instalar dependencias
+
 ```
 npm install
+```
+
+### 2. Instalar Wrangler (CLI de Cloudflare)
+
+```
+npm install -g wrangler
+```
+
+### 3. Configurar base de datos
+
+1. Crea una base de datos D1 en Cloudflare:
+   ```
+   wrangler d1 create rustlings
+   ```
+
+2. Actualiza `wrangler.toml` con tu `database_id` y `database_name`:
+   ```toml
+   [[d1_databases]]
+   binding = "DB"
+   database_name = "tu-nombre-de-db"
+   database_id = "tu-database-id"
+   ```
+
+3. Ejecuta las migraciones:
+   ```
+   wrangler d1 migrations apply --local
+   ```
+
+### 4. Desarrollo
+
+Para desarrollo basico (sin funcionalidades de backend):
+```
 npm run dev
 ```
 
-El servidor de desarrollo estara disponible en `http://localhost:4321`.
+Para desarrollo completo con todas las funcionalidades:
+```
+npm run build
+wrangler dev
+```
+
+El servidor de desarrollo estara disponible en `http://localhost:8787` con Wrangler o `http://localhost:4321` con Astro.
 
 ---
 

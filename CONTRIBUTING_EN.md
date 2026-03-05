@@ -133,12 +133,52 @@ If you find an error in the Spanish or any other language content, you can open 
 
 ## Local installation and development
 
+### 1. Install dependencies
+
 ```
 npm install
+```
+
+### 2. Install Wrangler (Cloudflare CLI)
+
+```
+npm install -g wrangler
+```
+
+### 3. Configure database
+
+1. Create a D1 database in Cloudflare:
+   ```
+   wrangler d1 create rustlings
+   ```
+
+2. Update `wrangler.toml` with your `database_id` and `database_name`:
+   ```toml
+   [[d1_databases]]
+   binding = "DB"
+   database_name = "your-db-name"
+   database_id = "your-database-id"
+   ```
+
+3. Run migrations:
+   ```
+   wrangler d1 migrations apply --local
+   ```
+
+### 4. Development
+
+For basic development (without backend features):
+```
 npm run dev
 ```
 
-The development server will be available at `http://localhost:4321`.
+For full development with all features:
+```
+npm run build
+wrangler dev
+```
+
+The development server will be available at `http://localhost:8787` with Wrangler or `http://localhost:4321` with Astro.
 
 ---
 
