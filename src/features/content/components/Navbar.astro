@@ -5,12 +5,15 @@ import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
 import { type Content, getLessonsByLang } from "~/content-manager"
 import { getLangFromUrl } from "~/i18n/utils"
 import IconBrandGithub from "~icons/tabler/brand-github"
+import IconLogout from "~icons/tabler/logout"
+import IconUser from "~icons/tabler/user"
 
 interface Props {
 	lang?: string
 }
 const { lang: langProp } = Astro.props
 const lang = langProp ?? getLangFromUrl(Astro.url)
+const user = Astro.locals.user
 const lessons = getLessonsByLang(lang)
 
 type GroupedLesson = { parent: Content; children: Content[] }
@@ -48,15 +51,45 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
       <ToggleSidebarButton sidebarId="content" label="Menú" />
     </div>
 
-    <a
-      href="https://github.com/RustLangES/rustlings-web"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="GitHub Repository"
-      class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
-    >
-      <IconBrandGithub font-size={20} />
-    </a>
+    <div class="flex items-center gap-2">
+      <a
+        href="https://github.com/RustLangES/rustlings-web"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub Repository"
+        class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
+      >
+        <IconBrandGithub font-size={20} />
+      </a>
+
+      {user ? (
+        <div class="flex items-center gap-1">
+          <a
+            href="/perfil"
+            class="hidden sm:flex items-center gap-1.5 px-2 py-1 text-xs text-secondary/60 rounded-md hover:text-yellow transition-colors"
+          >
+            <IconUser font-size={14} />
+            {user.username ?? user.email}
+          </a>
+          <a
+            href="/api/auth/logout"
+            data-astro-reload
+            title="Cerrar sesión"
+            class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/40 rounded-md hover:text-red-400 transition-colors"
+          >
+            <IconLogout font-size={14} />
+          </a>
+        </div>
+      ) : (
+        <a
+          href="/login"
+          class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/50 rounded-md hover:text-yellow transition-colors"
+          title="Iniciar sesión"
+        >
+          <IconUser font-size={14} />
+        </a>
+      )}
+    </div>
   </nav>
 </header>
 
