@@ -17,8 +17,7 @@ const { track } = Astro.props
 
 <Layout title={`Certificado — ${track.title}`}>
   <header class="p-2 w-full shrink-0">
-    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-l
-    ">
+    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
       <a
         href="/aprender"
         class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
@@ -29,74 +28,73 @@ const { track } = Astro.props
     </nav>
   </header>
 
-  <main class="flex-1 flex flex-col items-center px-4 py-8 gap-6">
-    <div class="flex flex-col items-center gap-1 text-center">
-      <h1 class="text-2xl font-bold text-secondary">Tu Certificado</h1>
-      <p class="text-secondary/40 text-sm" id="cert-subtitle">Cargando...</p>
-    </div>
+  <main class="flex-1 flex flex-col items-center px-4 py-8">
+    <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-8 items-start">
 
-    <!-- Name display for logged-in users -->
-    <div id="cert-name-display" class="hidden flex-col items-center gap-1">
-      <p class="text-xl font-bold text-secondary" id="cert-name-text"></p>
-      <a href="/perfil" class="inline-flex items-center gap-1 text-xs text-secondary/40 hover:text-yellow transition-colors">
-        Editar nombre en perfil
-        <span class="text-[10px]">→</span>
-      </a>
-    </div>
+      <!-- LEFT: Congrats + Name + Share -->
+      <div class="w-full lg:w-72 shrink-0 flex flex-col gap-5">
 
-    <!-- Name input for anonymous users -->
-    <input
-      id="cert-name"
-      type="text"
-      placeholder="Tu nombre completo"
-      maxlength="60"
-      data-track-title={track.title}
-      data-track-id={track.id}
-      class="hidden w-full max-w-sm px-4 py-2.5 rounded-lg bg-light-bg border border-stroke-color text-secondary placeholder:text-secondary/30 focus:outline-none focus:border-yellow transition-colors text-center font-medium"
-    />
-
-    {/* Donation box removed — re-enable when needed */}
-
-    <div class="w-full max-w-md flex flex-col items-center gap-4">
-        <div class="w-full max-w-md">
-          <canvas
-            id="certificate-canvas"
-            width="600"
-            height="600"
-            class="w-full drop-shadow-2xl"
-            data-logo-url={logoSvgUrl}
-          ></canvas>
+        <div>
+          <h1 class="text-2xl font-bold text-secondary">Tu Certificado</h1>
+          <p class="text-secondary/40 text-sm mt-0.5" id="cert-subtitle">Cargando...</p>
         </div>
 
-        <button
-          id="download-btn"
-          class="flex items-center gap-2 rounded-lg bg-yellow px-8 py-3 font-semibold text-black hover:opacity-80 transition cursor-pointer"
-        >
-          Descargar PNG
-        </button>
+        <!-- Congratulations (always visible — this page is only for the owner) -->
+        <div class="rounded-2xl border border-yellow/20 bg-yellow/5 p-6 flex flex-col gap-3">
+          <p class="text-yellow font-extrabold text-base leading-tight">Lo lograste. 🦀</p>
+          <p class="text-secondary/70 text-xs leading-relaxed">
+            Sabemos que no fue fácil. Rust tiene una curva de aprendizaje real — el compilador no perdona, los conceptos exigen, y hubo momentos en que todo parecía difícil.
+          </p>
+          <p class="text-secondary/70 text-xs leading-relaxed">
+            Completaste <span class="text-secondary font-semibold">{track.title}</span> de principio a fin. Eso no lo hace cualquiera. Reconocemos ese esfuerzo, y por eso te entregamos este certificado.
+          </p>
+          <p class="text-yellow/60 text-xs font-medium mt-1">
+            Es tuyo. Ganado con trabajo real.
+          </p>
+        </div>
+
+        <!-- Name display for logged-in users -->
+        <div id="cert-name-display" class="hidden flex-col gap-1">
+          <p class="text-xs text-secondary/40 font-medium">Nombre en el certificado</p>
+          <p class="text-base font-bold text-secondary" id="cert-name-text"></p>
+          <a href="/perfil" class="inline-flex items-center gap-1 text-xs text-secondary/40 hover:text-yellow transition-colors mt-0.5">
+            Editar en perfil <span class="text-[10px]">→</span>
+          </a>
+        </div>
+
+        <!-- Name input for anonymous users -->
+        <input
+          id="cert-name"
+          type="text"
+          placeholder="Tu nombre completo"
+          maxlength="60"
+          data-track-title={track.title}
+          data-track-id={track.id}
+          class="hidden w-full px-4 py-2.5 rounded-lg bg-light-bg border border-stroke-color text-secondary placeholder:text-secondary/30 focus:outline-none focus:border-yellow transition-colors font-medium"
+        />
 
         <!-- Share buttons (shown after cert is claimed) -->
-        <div id="share-buttons" class="hidden flex-col items-center gap-3 w-full pt-2 border-t border-stroke-color/30">
+        <div id="share-buttons" class="hidden flex-col gap-3 pt-4 border-t border-stroke-color/30">
           <p class="text-xs text-secondary/40">Comparte tu logro</p>
-          <div class="flex gap-3 w-full">
+          <div class="flex flex-col gap-2">
             <a
               id="linkedin-btn"
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all"
+              class="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
-              LinkedIn
+              Agregar a LinkedIn
             </a>
             <a
               id="x-btn"
               href="#"
               target="_blank"
               rel="noopener noreferrer"
-              class="flex-1 flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-white hover:text-white transition-all"
+              class="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-white hover:text-white transition-all"
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
@@ -105,13 +103,44 @@ const { track } = Astro.props
             </a>
           </div>
         </div>
+
+      </div>
+
+      <!-- RIGHT: Toggle + Canvas + Download -->
+      <div class="flex-1 min-w-0 flex flex-col items-center gap-4 w-full">
+
+        <!-- Mode toggle -->
+        <div class="flex w-full rounded-xl border border-stroke-color overflow-hidden text-xs font-semibold">
+          <button id="toggle-cert" class="flex-1 py-2.5 transition-colors bg-yellow text-primary">
+            Certificado
+          </button>
+          <button id="toggle-badge" class="flex-1 py-2.5 transition-colors text-secondary/50 hover:text-secondary/80">
+            Badge
+          </button>
+        </div>
+
+        <canvas
+          id="certificate-canvas"
+          width="900"
+          height="636"
+          class="w-full drop-shadow-2xl rounded-sm"
+          data-logo-url={logoSvgUrl}
+        ></canvas>
+
+        <button
+          id="download-btn"
+          class="flex items-center gap-2 rounded-lg bg-yellow px-8 py-3 font-semibold text-black hover:opacity-80 transition cursor-pointer"
+        >
+          Descargar PNG
+        </button>
+
+      </div>
+
     </div>
   </main>
 </Layout>
 
 <script>
-
-
   function hexPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
     ctx.beginPath()
     for (let i = 0; i < 6; i++) {
@@ -123,29 +152,26 @@ const { track } = Astro.props
     ctx.closePath()
   }
 
-  async function drawCertificate(canvas: HTMLCanvasElement, trackTitle: string, name: string, logoUrl = "") {
+  // Badge = hexagonal design
+  async function drawBadge(canvas: HTMLCanvasElement, trackTitle: string, name: string, logoUrl = "") {
+    canvas.width = 600
+    canvas.height = 600
     const ctx = canvas.getContext("2d")!
-    const W = canvas.width
-    const H = canvas.height
-    const cx = W / 2
-    const cy = H / 2
-
+    const W = canvas.width, H = canvas.height
+    const cx = W / 2, cy = H / 2
     const ORANGE = "#FF6E1F"
     const LIGHT_GRAY = "#94a3b8"
-
-    ctx.clearRect(0, 0, W, H)
-
     const R = 272
     const off = { icon: -148, title: -18, cert: 18, dots: 40, name: 82, date: 112, url: 170 }
 
-    // Outer glow layers
+    ctx.clearRect(0, 0, W, H)
+
     for (let i = 3; i >= 1; i--) {
       hexPath(ctx, cx, cy, R + i * 6)
       ctx.fillStyle = `rgba(255, 110, 31, ${0.06 * i})`
       ctx.fill()
     }
 
-    // Background (dark gradient)
     hexPath(ctx, cx, cy, R)
     ctx.save()
     ctx.clip()
@@ -156,13 +182,11 @@ const { track } = Astro.props
     ctx.fillRect(0, 0, W, H)
     ctx.restore()
 
-    // Orange outer border
     hexPath(ctx, cx, cy, R)
     ctx.strokeStyle = ORANGE
     ctx.lineWidth = 3
     ctx.stroke()
 
-    // Subtle inner border
     hexPath(ctx, cx, cy, R - 10)
     ctx.strokeStyle = "rgba(255, 110, 31, 0.25)"
     ctx.lineWidth = 1
@@ -170,7 +194,6 @@ const { track } = Astro.props
 
     ctx.textAlign = "center"
 
-    // Logo
     const iconY = cy + off.icon
     const logoImg = new Image()
     await new Promise<void>((resolve) => {
@@ -182,14 +205,12 @@ const { track } = Astro.props
     const logoH = Math.round(logoW * (500.97 / 814.04))
     ctx.drawImage(logoImg, cx - logoW / 2, iconY - logoH / 2, logoW, logoH)
 
-    // "RUSTLANG EN ESPAÑOL"
     ctx.fillStyle = ORANGE
     ctx.font = "600 13px 'Poppins', sans-serif"
     ctx.letterSpacing = "2px"
     ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 72)
     ctx.letterSpacing = "0px"
 
-    // Thin divider
     ctx.strokeStyle = "rgba(255,110,31,0.35)"
     ctx.lineWidth = 1
     ctx.beginPath()
@@ -197,7 +218,6 @@ const { track } = Astro.props
     ctx.lineTo(cx + 90, iconY + 86)
     ctx.stroke()
 
-    // Track title
     ctx.fillStyle = "#ffffff"
     ctx.font = "700 40px 'Poppins', sans-serif"
     const maxW = R * 1.4
@@ -207,12 +227,10 @@ const { track } = Astro.props
     }
     ctx.fillText(trackTitle, cx, cy + off.title)
 
-    // "Certificación"
     ctx.fillStyle = ORANGE
     ctx.font = "600 17px 'Poppins', sans-serif"
     ctx.fillText("Certificación", cx, cy + off.cert)
 
-    // Divider dots
     ctx.fillStyle = "rgba(255,110,31,0.4)"
     for (let i = -1; i <= 1; i++) {
       ctx.beginPath()
@@ -220,7 +238,6 @@ const { track } = Astro.props
       ctx.fill()
     }
 
-    // Name
     const displayName = name.trim() || "Tu Nombre"
     ctx.fillStyle = "#e2e8f0"
     ctx.font = "700 26px 'Poppins', sans-serif"
@@ -231,20 +248,203 @@ const { track } = Astro.props
     }
     ctx.fillText(displayName, cx, cy + off.name)
 
-    // Date
-    const date = new Date().toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
+    const date = new Date().toLocaleDateString("es-MX", { year: "numeric", month: "short", day: "numeric" })
     ctx.fillStyle = LIGHT_GRAY
     ctx.font = "400 13px 'Poppins', sans-serif"
     ctx.fillText(date, cx, cy + off.date)
 
-    // Bottom URL
     ctx.fillStyle = "rgba(148,163,184,0.5)"
     ctx.font = "400 11px 'Poppins', sans-serif"
     ctx.fillText("rustlings.rustlang-es.org", cx, cy + off.url)
+  }
+
+  // Certificate = formal horizontal landscape design
+  async function drawCertificate(
+    canvas: HTMLCanvasElement,
+    trackTitle: string,
+    name: string,
+    logoUrl = "",
+    issuedAt?: string,
+    certId?: string,
+  ) {
+    canvas.width = 900
+    canvas.height = 636
+    const ctx = canvas.getContext("2d")!
+    const W = 900, H = 636
+    const ORANGE = "#FF6E1F"
+    const DARK_NAVY = "#0d1628"
+    const SIDEBAR_W = 185
+
+    ctx.clearRect(0, 0, W, H)
+
+    // White/light background
+    ctx.fillStyle = "#f8fafc"
+    ctx.fillRect(0, 0, W, H)
+
+    // Left sidebar (dark navy)
+    ctx.fillStyle = DARK_NAVY
+    ctx.fillRect(0, 0, SIDEBAR_W, H)
+
+    // Orange accent stripe on right edge of sidebar
+    ctx.fillStyle = ORANGE
+    ctx.fillRect(SIDEBAR_W - 5, 0, 5, H)
+
+    // Logo in sidebar
+    const logoImg = new Image()
+    await new Promise<void>((resolve) => {
+      logoImg.onload = () => resolve()
+      logoImg.onerror = () => resolve()
+      logoImg.src = logoUrl
+    })
+    const logoW = 110
+    const logoH = Math.round(logoW * (500.97 / 814.04))
+    ctx.drawImage(logoImg, (SIDEBAR_W - logoW) / 2, H / 2 - logoH / 2 - 16, logoW, logoH)
+
+    ctx.textAlign = "center"
+    ctx.fillStyle = "rgba(255,255,255,0.4)"
+    ctx.font = "500 9px 'Poppins', sans-serif"
+    ctx.letterSpacing = "1.5px"
+    ctx.fillText("RUSTLANG", SIDEBAR_W / 2, H / 2 + logoH / 2 + 10)
+    ctx.fillText("EN ESPAÑOL", SIDEBAR_W / 2, H / 2 + logoH / 2 + 24)
+    ctx.letterSpacing = "0px"
+
+    const cX = SIDEBAR_W + 48
+    const cRight = W - 48
+
+    // Gold seal (top right)
+    const sX = cRight - 52
+    const sY = 68
+    const sR = 50
+    const goldGrad = ctx.createRadialGradient(sX - 12, sY - 12, 5, sX, sY, sR)
+    goldGrad.addColorStop(0, "#fef08a")
+    goldGrad.addColorStop(0.4, "#eab308")
+    goldGrad.addColorStop(1, "#92400e")
+    ctx.beginPath()
+    ctx.arc(sX, sY, sR, 0, Math.PI * 2)
+    ctx.fillStyle = goldGrad
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(sX, sY, sR - 5, 0, Math.PI * 2)
+    ctx.strokeStyle = "rgba(255,255,255,0.4)"
+    ctx.lineWidth = 1.5
+    ctx.stroke()
+    ctx.textAlign = "center"
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "bold 10px sans-serif"
+    ctx.fillText("★  ★  ★", sX, sY - 18)
+    ctx.font = "bold 20px 'Poppins', sans-serif"
+    ctx.fillText(String(new Date().getFullYear()), sX, sY + 6)
+    ctx.fillStyle = "rgba(255,255,255,0.85)"
+    ctx.font = "600 7px 'Poppins', sans-serif"
+    ctx.letterSpacing = "0.5px"
+    ctx.fillText("OTORGADO EN", sX, sY + 19)
+    ctx.letterSpacing = "0px"
+    // Ribbons
+    ctx.fillStyle = "#1e3a8a"
+    ctx.beginPath()
+    ctx.moveTo(sX - 13, sY + sR); ctx.lineTo(sX - 21, sY + sR + 26); ctx.lineTo(sX - 5, sY + sR + 14)
+    ctx.closePath(); ctx.fill()
+    ctx.beginPath()
+    ctx.moveTo(sX + 13, sY + sR); ctx.lineTo(sX + 21, sY + sR + 26); ctx.lineTo(sX + 5, sY + sR + 14)
+    ctx.closePath(); ctx.fill()
+
+    // "CERTIFICADO" title
+    ctx.textAlign = "left"
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "900 58px 'Poppins', sans-serif"
+    ctx.fillText("CERTIFICADO", cX, 84)
+
+    // "DE FINALIZACIÓN"
+    ctx.fillStyle = ORANGE
+    ctx.font = "700 23px 'Poppins', sans-serif"
+    ctx.fillText("DE FINALIZACIÓN", cX, 116)
+
+    // Divider
+    ctx.strokeStyle = "rgba(0,0,0,0.08)"
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(cX, 134)
+    ctx.lineTo(sX - sR - 16, 134)
+    ctx.stroke()
+
+    // "Otorgamos con orgullo este certificado a"
+    ctx.fillStyle = "#64748b"
+    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.fillText("Otorgamos con orgullo este certificado a", cX, 172)
+
+    // Recipient name (large italic)
+    const displayName = name.trim() || "Tu Nombre"
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "italic 700 46px 'Georgia', serif"
+    const maxNameW = cRight - cX - 20
+    if (ctx.measureText(displayName).width > maxNameW) {
+      const scaled = Math.floor(46 * (maxNameW / ctx.measureText(displayName).width))
+      ctx.font = `italic 700 ${scaled}px 'Georgia', serif`
+    }
+    ctx.fillText(displayName, cX, 236)
+
+    // Underline name
+    ctx.strokeStyle = "rgba(0,0,0,0.1)"
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(cX, 252)
+    ctx.lineTo(cX + Math.min(ctx.measureText(displayName).width + 20, 340), 252)
+    ctx.stroke()
+
+    // Description
+    ctx.fillStyle = "#475569"
+    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.fillText("En reconocimiento por haber completado el curso", cX, 290)
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "600 13px 'Poppins', sans-serif"
+    const courseLabel = `"${trackTitle}" en Rustlang en Español.`
+    if (ctx.measureText(courseLabel).width > maxNameW) {
+      ctx.fillText(`"${trackTitle}"`, cX, 308)
+      ctx.fillText("en Rustlang en Español.", cX, 324)
+    } else {
+      ctx.fillText(courseLabel, cX, 308)
+    }
+
+    // Bottom divider
+    ctx.strokeStyle = "rgba(0,0,0,0.08)"
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(cX, 488)
+    ctx.lineTo(cRight, 488)
+    ctx.stroke()
+
+    // Date
+    const date = issuedAt
+      ? new Date(issuedAt).toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" })
+      : new Date().toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" })
+    ctx.textAlign = "left"
+    ctx.fillStyle = "#94a3b8"
+    ctx.font = "500 10px 'Poppins', sans-serif"
+    ctx.letterSpacing = "0.5px"
+    ctx.fillText("FECHA DE EMISIÓN:", cX, 514)
+    ctx.letterSpacing = "0px"
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "600 12px 'Poppins', sans-serif"
+    ctx.fillText(date, cX, 530)
+
+    // Cert ID
+    if (certId) {
+      ctx.textAlign = "right"
+      ctx.fillStyle = "#94a3b8"
+      ctx.font = "500 10px 'Poppins', sans-serif"
+      ctx.letterSpacing = "0.5px"
+      ctx.fillText("ID DEL CERTIFICADO:", cRight, 514)
+      ctx.letterSpacing = "0px"
+      ctx.fillStyle = DARK_NAVY
+      ctx.font = "600 11px 'Poppins', sans-serif"
+      ctx.fillText(certId.slice(0, 22), cRight, 530)
+    }
+
+    // URL
+    ctx.textAlign = "center"
+    ctx.fillStyle = "#94a3b8"
+    ctx.font = "400 11px 'Poppins', sans-serif"
+    ctx.fillText("rustlings.rustlang-es.org", (cX + cRight) / 2, 568)
   }
 
   document.addEventListener("astro:page-load", async () => {
@@ -258,8 +458,32 @@ const { track } = Astro.props
     const logoUrl = canvas.dataset.logoUrl!
 
     let certName = ""
+    let currentCertId = ""
+    let currentIssuedAt = ""
+    let mode: "cert" | "badge" = "cert"
+
+    // Toggle buttons
+    const toggleCertBtn = document.getElementById("toggle-cert") as HTMLButtonElement
+    const toggleBadgeBtn = document.getElementById("toggle-badge") as HTMLButtonElement
+
+    const setMode = (m: "cert" | "badge") => {
+      mode = m
+      const isC = m === "cert"
+      toggleCertBtn.className = `flex-1 py-2.5 transition-colors ${isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
+      toggleBadgeBtn.className = `flex-1 py-2.5 transition-colors ${!isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
+      canvas.className = isC
+        ? "w-full drop-shadow-2xl rounded-sm"
+        : "drop-shadow-2xl rounded-sm w-[500px] max-w-full mx-auto"
+      redraw()
+    }
+    toggleCertBtn.addEventListener("click", () => setMode("cert"))
+    toggleBadgeBtn.addEventListener("click", () => setMode("badge"))
 
     const showShareButtons = (certId: string, issuedAt: string) => {
+      currentCertId = certId
+      currentIssuedAt = issuedAt
+      redraw()
+
       const shareDiv = document.getElementById("share-buttons")!
       const linkedinBtn = document.getElementById("linkedin-btn") as HTMLAnchorElement
       const xBtn = document.getElementById("x-btn") as HTMLAnchorElement
@@ -269,7 +493,7 @@ const { track } = Astro.props
       const linkedinParams = new URLSearchParams({
         startTask: "CERTIFICATION_NAME",
         name: trackTitle,
-        organizationId: "100302734", // RustLang ES LinkedIn page
+        organizationId: "100302734",
         issueYear: String(issued.getFullYear()),
         issueMonth: String(issued.getMonth() + 1),
         certUrl,
@@ -296,7 +520,6 @@ const { track } = Astro.props
           nameDisplay.classList.add("flex")
           subtitle.textContent = "Tu nombre se toma de tu perfil"
 
-          // Auto-claim certificate and get certId for sharing
           fetch("/api/certificates/claim", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -309,14 +532,12 @@ const { track } = Astro.props
             })
             .catch(() => {})
         } else {
-          // Logged in but no full_name set
           nameDisplay.classList.remove("hidden")
           nameDisplay.classList.add("flex")
           nameText.textContent = "Sin nombre configurado"
           subtitle.textContent = "Configura tu nombre en tu perfil"
         }
       } else {
-        // Not logged in — show input
         nameInput.classList.remove("hidden")
         subtitle.textContent = "Ingresa tu nombre para personalizar el certificado"
       }
@@ -327,21 +548,27 @@ const { track } = Astro.props
 
     const getName = () => certName || nameInput.value
 
-    const redraw = () =>
-      document.fonts.ready.then(() => drawCertificate(canvas, trackTitle, getName(), logoUrl))
+    const redraw = () => {
+      const name = getName()
+      if (mode === "badge") {
+        document.fonts.ready.then(() => drawBadge(canvas, trackTitle, name, logoUrl))
+      } else {
+        document.fonts.ready.then(() =>
+          drawCertificate(canvas, trackTitle, name, logoUrl, currentIssuedAt || undefined, currentCertId || undefined),
+        )
+      }
+    }
 
     redraw()
     nameInput.addEventListener("input", redraw)
 
-    /* Donation logic removed — re-enable when needed */
-
     document.getElementById("download-btn")?.addEventListener("click", () => {
       const link = document.createElement("a")
-      link.download = `certificado-${trackTitle.toLowerCase().replace(/\s+/g, "-")}.png`
+      const slug = trackTitle.toLowerCase().replace(/\s+/g, "-")
+      link.download = mode === "badge" ? `badge-${slug}.png` : `certificado-${slug}.png`
       link.href = canvas.toDataURL("image/png")
       link.click()
 
-      // Record certificate in DB for anonymous users (logged-in users already auto-claimed on load)
       const name = getName().trim()
       if (name && !certName) {
         fetch("/api/certificates/claim", {
