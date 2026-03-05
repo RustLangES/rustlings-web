@@ -116,21 +116,21 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
 <script>
   import { toast } from "~/utils/toasts"
   import { initAuthStore } from "~/lib/stores/auth-store"
-  import { UserUtils } from "~/lib/stores/user-utils"
+  import { setupNavbar, onDisplayNameChange } from "~/lib/stores/user-utils"
 
   document.addEventListener("astro:page-load", () => {
     // Initialize auth store from server or fetch automatically
     initAuthStore()
     
     // Setup reactive navbar (this handles all user state changes automatically)
-    UserUtils.setupNavbar({
+    setupNavbar({
       profileLinkId: "nav-profile-link",
       loginLinkId: null, // This navbar doesn't have a login link
       logoutLinkId: null // This navbar doesn't have a logout link directly
     })
     
     // Update username in profile link dynamically by targeting the span
-    UserUtils.onDisplayNameChange((displayName) => {
+    onDisplayNameChange((displayName) => {
       const profileLink = document.getElementById("nav-profile-link")
       const usernameSpan = profileLink?.querySelector("span")
       if (usernameSpan && displayName) {
