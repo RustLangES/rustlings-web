@@ -512,3 +512,34 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 
   document.addEventListener("astro:page-load", initMobileNav)
 </script>
+
+<script>
+  import { toast } from "~/utils/toasts"
+  import { db } from "~/lib/stores/editor-store"
+
+  document.addEventListener("astro:page-load", () => {
+    window.addEventListener("lesson:completed", async () => {
+      const tracker = document.getElementById("lesson-tracker")
+      const trackId = tracker?.dataset.trackId
+      const trackTitle = tracker?.dataset.trackTitle ?? "el curso"
+      if (!trackId) return
+
+      // Only show once per track
+      const tourKey = `cert-tour-${trackId}`
+      if (localStorage.getItem(tourKey)) return
+
+      // Check if ALL lessons in this track are now completed
+      const trackSlugs: string[] = JSON.parse(tracker?.dataset.trackSlugs ?? "[]")
+      if (!trackSlugs.length) return
+      const results = await Promise.all(trackSlugs.map((s) => db.isCompleted(s)))
+      if (!results.every(Boolean)) return
+
+      localStorage.setItem(tourKey, "1")
+
+      toast.success(
+        "¡Lo lograste! 🦀", 
+        `Completaste ${trackTitle}. Encuentra tu certificado en tu perfil.`
+      )
+    })
+  })
+</script>

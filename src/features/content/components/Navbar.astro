@@ -52,6 +52,15 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
     </div>
 
     <div class="flex items-center gap-2">
+      <!-- DEBUG: remove before ship -->
+      <button
+        id="debug-tour-btn"
+        class="hidden md:flex items-center gap-1 px-2 py-1 text-xs text-orange-400 border border-orange-400/30 rounded-md hover:bg-orange-400/10 transition-colors"
+        title="[DEBUG] Lanzar tour"
+      >
+        tour
+      </button>
+
       <a
         href="https://github.com/RustLangES/rustlings-web"
         target="_blank"
@@ -102,3 +111,40 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
   backHref="/aprender"
   backLabel="Temario"
 />
+
+<script>
+  import { toast } from "~/utils/toasts"
+  import { initAuthStore } from "~/lib/stores/auth-store"
+  import { UserUtils } from "~/lib/stores/user-utils"
+
+  document.addEventListener("astro:page-load", () => {
+    // Initialize auth store from server or fetch automatically
+    initAuthStore()
+    
+    // Setup reactive navbar (this handles all user state changes automatically)
+    UserUtils.setupNavbar({
+      profileLinkId: "nav-profile-link",
+      loginLinkId: null, // This navbar doesn't have a login link
+      logoutLinkId: null // This navbar doesn't have a logout link directly
+    })
+    
+    // Update username in profile link dynamically by targeting the span
+    UserUtils.onDisplayNameChange((displayName) => {
+      const profileLink = document.getElementById("nav-profile-link")
+      const usernameSpan = profileLink?.querySelector("span")
+      if (usernameSpan && displayName) {
+        usernameSpan.textContent = displayName
+      }
+    })
+
+    document.getElementById("debug-tour-btn")?.addEventListener("click", () => {
+      const tracker = document.getElementById("lesson-tracker")
+      const trackTitle = tracker?.dataset.trackTitle ?? "Fundamentos de Rust"
+
+      toast.success(
+        "¡Lo lograste! 🦀", 
+        `Completaste ${trackTitle}. Encuentra tu certificado en tu perfil.`
+      )
+    })
+  })
+</script>
