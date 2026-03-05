@@ -10,12 +10,15 @@ const { DB } = Astro.locals.runtime.env
 
 interface CertRow {
 	id: string
+	user_id: string
 	course_id: string
 	name_used: string
 	issued_at: string
 }
 
-const cert = await DB.prepare("SELECT id, course_id, name_used, issued_at FROM user_certificates WHERE id = ?")
+const cert = await DB.prepare(
+	"SELECT id, user_id, course_id, name_used, issued_at FROM user_certificates WHERE id = ?",
+)
 	.bind(certId)
 	.first<CertRow>()
 
@@ -59,152 +62,217 @@ const issuedDate = new Date(cert.issued_at).toLocaleDateString("es-MX", {
     </div>
 
     <!-- Certificate canvas -->
-    <div class="w-full max-w-md flex flex-col items-center gap-4">
+    <div class="w-full max-w-3xl flex flex-col items-center gap-4">
       <canvas
         id="certificate-canvas"
-        width="600"
-        height="600"
-        class="w-full drop-shadow-2xl"
+        width="900"
+        height="636"
+        class="w-full drop-shadow-2xl rounded-sm"
         data-logo-url={logoSvgUrl}
         data-name={cert.name_used}
         data-track-title={track?.title ?? cert.course_id}
         data-issued-at={cert.issued_at}
+        data-cert-id={cert.id}
       ></canvas>
-
     </div>
   </main>
 </Layout>
 
 <script>
-  function hexPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
-    ctx.beginPath()
-    for (let i = 0; i < 6; i++) {
-      const angle = (Math.PI / 3) * i - Math.PI / 2
-      i === 0
-        ? ctx.moveTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle))
-        : ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle))
-    }
-    ctx.closePath()
-  }
-
   async function drawCertificate(
     canvas: HTMLCanvasElement,
     trackTitle: string,
     name: string,
-    issuedAt: string,
     logoUrl: string,
+    issuedAt?: string,
+    certId?: string,
   ) {
+    canvas.width = 900
+    canvas.height = 636
     const ctx = canvas.getContext("2d")!
-    const W = canvas.width
-    const H = canvas.height
-    const cx = W / 2
-    const cy = H / 2
+    const W = 900, H = 636
     const ORANGE = "#FF6E1F"
-    const LIGHT_GRAY = "#94a3b8"
-    const R = 272
-    const off = { icon: -148, title: -18, cert: 18, dots: 40, name: 82, date: 112, url: 170 }
+    const DARK_NAVY = "#0d1628"
+    const SIDEBAR_W = 185
 
     ctx.clearRect(0, 0, W, H)
 
-    for (let i = 3; i >= 1; i--) {
-      hexPath(ctx, cx, cy, R + i * 6)
-      ctx.fillStyle = `rgba(255, 110, 31, ${0.06 * i})`
-      ctx.fill()
-    }
-
-    hexPath(ctx, cx, cy, R)
-    ctx.save()
-    ctx.clip()
-    const grad = ctx.createLinearGradient(cx, cy - R, cx, cy + R)
-    grad.addColorStop(0, "#1e1e2e")
-    grad.addColorStop(1, "#0d0d18")
-    ctx.fillStyle = grad
+    // White/light background
+    ctx.fillStyle = "#f8fafc"
     ctx.fillRect(0, 0, W, H)
-    ctx.restore()
 
-    hexPath(ctx, cx, cy, R)
-    ctx.strokeStyle = ORANGE
-    ctx.lineWidth = 3
-    ctx.stroke()
+    // Left sidebar (dark navy)
+    ctx.fillStyle = DARK_NAVY
+    ctx.fillRect(0, 0, SIDEBAR_W, H)
 
-    hexPath(ctx, cx, cy, R - 10)
-    ctx.strokeStyle = "rgba(255, 110, 31, 0.25)"
-    ctx.lineWidth = 1
-    ctx.stroke()
+    // Orange accent stripe on right edge of sidebar
+    ctx.fillStyle = ORANGE
+    ctx.fillRect(SIDEBAR_W - 5, 0, 5, H)
 
-    ctx.textAlign = "center"
-
+    // Logo in sidebar
     const logoImg = new Image()
     await new Promise<void>((resolve) => {
       logoImg.onload = () => resolve()
       logoImg.onerror = () => resolve()
       logoImg.src = logoUrl
     })
-    const logoW = 100
+    const logoW = 110
     const logoH = Math.round(logoW * (500.97 / 814.04))
-    const iconY = cy + off.icon
-    ctx.drawImage(logoImg, cx - logoW / 2, iconY - logoH / 2, logoW, logoH)
+    ctx.drawImage(logoImg, (SIDEBAR_W - logoW) / 2, H / 2 - logoH / 2 - 16, logoW, logoH)
 
-    ctx.fillStyle = ORANGE
-    ctx.font = "600 13px 'Poppins', sans-serif"
-    ctx.letterSpacing = "2px"
-    ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 68)
+    // "RUSTLANG EN ESPAÑOL" under logo
+    ctx.textAlign = "center"
+    ctx.fillStyle = "rgba(255,255,255,0.4)"
+    ctx.font = "500 9px 'Poppins', sans-serif"
+    ctx.letterSpacing = "1.5px"
+    ctx.fillText("RUSTLANG", SIDEBAR_W / 2, H / 2 + logoH / 2 + 10)
+    ctx.fillText("EN ESPAÑOL", SIDEBAR_W / 2, H / 2 + logoH / 2 + 24)
     ctx.letterSpacing = "0px"
 
-    ctx.strokeStyle = "rgba(255,110,31,0.35)"
+    // Main content bounds
+    const cX = SIDEBAR_W + 48
+    const cRight = W - 48
+
+    // Gold seal (top right)
+    const sX = cRight - 52
+    const sY = 68
+    const sR = 50
+    const goldGrad = ctx.createRadialGradient(sX - 12, sY - 12, 5, sX, sY, sR)
+    goldGrad.addColorStop(0, "#fef08a")
+    goldGrad.addColorStop(0.4, "#eab308")
+    goldGrad.addColorStop(1, "#92400e")
+    ctx.beginPath()
+    ctx.arc(sX, sY, sR, 0, Math.PI * 2)
+    ctx.fillStyle = goldGrad
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(sX, sY, sR - 5, 0, Math.PI * 2)
+    ctx.strokeStyle = "rgba(255,255,255,0.4)"
+    ctx.lineWidth = 1.5
+    ctx.stroke()
+    ctx.textAlign = "center"
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "bold 10px sans-serif"
+    ctx.fillText("★  ★  ★", sX, sY - 18)
+    ctx.font = "bold 20px 'Poppins', sans-serif"
+    ctx.fillText(String(new Date().getFullYear()), sX, sY + 6)
+    ctx.fillStyle = "rgba(255,255,255,0.85)"
+    ctx.font = "600 7px 'Poppins', sans-serif"
+    ctx.letterSpacing = "0.5px"
+    ctx.fillText("OTORGADO EN", sX, sY + 19)
+    ctx.letterSpacing = "0px"
+    // Ribbons
+    ctx.fillStyle = "#1e3a8a"
+    ctx.beginPath()
+    ctx.moveTo(sX - 13, sY + sR); ctx.lineTo(sX - 21, sY + sR + 26); ctx.lineTo(sX - 5, sY + sR + 14)
+    ctx.closePath(); ctx.fill()
+    ctx.beginPath()
+    ctx.moveTo(sX + 13, sY + sR); ctx.lineTo(sX + 21, sY + sR + 26); ctx.lineTo(sX + 5, sY + sR + 14)
+    ctx.closePath(); ctx.fill()
+
+    // "CERTIFICADO" title
+    ctx.textAlign = "left"
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "900 58px 'Poppins', sans-serif"
+    ctx.fillText("CERTIFICADO", cX, 84)
+
+    // "DE FINALIZACIÓN"
+    ctx.fillStyle = ORANGE
+    ctx.font = "700 23px 'Poppins', sans-serif"
+    ctx.fillText("DE FINALIZACIÓN", cX, 116)
+
+    // Divider
+    ctx.strokeStyle = "rgba(0,0,0,0.08)"
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(cx - 90, iconY + 82)
-    ctx.lineTo(cx + 90, iconY + 82)
+    ctx.moveTo(cX, 134)
+    ctx.lineTo(sX - sR - 16, 134)
     ctx.stroke()
 
-    ctx.fillStyle = "#ffffff"
-    ctx.font = "700 40px 'Poppins', sans-serif"
-    const maxW = R * 1.4
-    if (ctx.measureText(trackTitle).width > maxW) {
-      const scaled = Math.floor(40 * (maxW / ctx.measureText(trackTitle).width))
-      ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
-    }
-    ctx.fillText(trackTitle, cx, cy + off.title)
-
-    ctx.fillStyle = ORANGE
-    ctx.font = "600 17px 'Poppins', sans-serif"
-    ctx.fillText("Certificación", cx, cy + off.cert)
-
-    ctx.fillStyle = "rgba(255,110,31,0.4)"
-    for (let i = -1; i <= 1; i++) {
-      ctx.beginPath()
-      ctx.arc(cx + i * 14, cy + off.dots, 2.5, 0, Math.PI * 2)
-      ctx.fill()
-    }
-
-    ctx.fillStyle = "#e2e8f0"
-    ctx.font = "700 26px 'Poppins', sans-serif"
-    const maxNameW = R * 1.5
-    if (ctx.measureText(name).width > maxNameW) {
-      const scaled = Math.floor(26 * (maxNameW / ctx.measureText(name).width))
-      ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
-    }
-    ctx.fillText(name, cx, cy + off.name)
-
-    const date = new Date(issuedAt).toLocaleDateString("es-MX", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    })
-    ctx.fillStyle = LIGHT_GRAY
+    // "Otorgamos con orgullo este certificado a"
+    ctx.fillStyle = "#64748b"
     ctx.font = "400 13px 'Poppins', sans-serif"
-    ctx.fillText(date, cx, cy + off.date)
+    ctx.fillText("Otorgamos con orgullo este certificado a", cX, 172)
 
-    ctx.fillStyle = "rgba(148,163,184,0.5)"
+    // Recipient name (large italic)
+    const displayName = name.trim() || "Tu Nombre"
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "italic 700 46px 'Georgia', serif"
+    const maxNameW = cRight - cX - 20
+    if (ctx.measureText(displayName).width > maxNameW) {
+      const scaled = Math.floor(46 * (maxNameW / ctx.measureText(displayName).width))
+      ctx.font = `italic 700 ${scaled}px 'Georgia', serif`
+    }
+    ctx.fillText(displayName, cX, 236)
+
+    // Underline name
+    ctx.strokeStyle = "rgba(0,0,0,0.1)"
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(cX, 252)
+    ctx.lineTo(cX + Math.min(ctx.measureText(displayName).width + 20, 340), 252)
+    ctx.stroke()
+
+    // Description
+    ctx.fillStyle = "#475569"
+    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.fillText("En reconocimiento por haber completado el curso", cX, 290)
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "600 13px 'Poppins', sans-serif"
+    const courseLabel = `"${trackTitle}" en Rustlang en Español.`
+    if (ctx.measureText(courseLabel).width > maxNameW) {
+      ctx.fillText(`"${trackTitle}"`, cX, 308)
+      ctx.fillText("en Rustlang en Español.", cX, 324)
+    } else {
+      ctx.fillText(courseLabel, cX, 308)
+    }
+
+    // Bottom divider
+    ctx.strokeStyle = "rgba(0,0,0,0.08)"
+    ctx.lineWidth = 1
+    ctx.beginPath()
+    ctx.moveTo(cX, 488)
+    ctx.lineTo(cRight, 488)
+    ctx.stroke()
+
+    // Date
+    const date = issuedAt
+      ? new Date(issuedAt).toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" })
+      : new Date().toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" })
+    ctx.textAlign = "left"
+    ctx.fillStyle = "#94a3b8"
+    ctx.font = "500 10px 'Poppins', sans-serif"
+    ctx.letterSpacing = "0.5px"
+    ctx.fillText("FECHA DE EMISIÓN:", cX, 514)
+    ctx.letterSpacing = "0px"
+    ctx.fillStyle = DARK_NAVY
+    ctx.font = "600 12px 'Poppins', sans-serif"
+    ctx.fillText(date, cX, 530)
+
+    // Cert ID
+    if (certId) {
+      ctx.textAlign = "right"
+      ctx.fillStyle = "#94a3b8"
+      ctx.font = "500 10px 'Poppins', sans-serif"
+      ctx.letterSpacing = "0.5px"
+      ctx.fillText("ID DEL CERTIFICADO:", cRight, 514)
+      ctx.letterSpacing = "0px"
+      ctx.fillStyle = DARK_NAVY
+      ctx.font = "600 11px 'Poppins', sans-serif"
+      ctx.fillText(certId.slice(0, 22), cRight, 530)
+    }
+
+    // URL
+    ctx.textAlign = "center"
+    ctx.fillStyle = "#94a3b8"
     ctx.font = "400 11px 'Poppins', sans-serif"
-    ctx.fillText("rustlings.rustlang-es.org", cx, cy + off.url)
+    ctx.fillText("rustlings.rustlang-es.org", (cX + cRight) / 2, 568)
   }
 
   document.addEventListener("astro:page-load", () => {
     const canvas = document.getElementById("certificate-canvas") as HTMLCanvasElement
-    const { logoUrl, name, trackTitle, issuedAt } = canvas.dataset as Record<string, string>
+    const { logoUrl, name, trackTitle, issuedAt, certId } = canvas.dataset as Record<string, string>
 
-    document.fonts.ready.then(() => drawCertificate(canvas, trackTitle, name, issuedAt, logoUrl))
+    document.fonts.ready.then(() => drawCertificate(canvas, trackTitle, name, logoUrl, issuedAt, certId))
   })
 </script>
