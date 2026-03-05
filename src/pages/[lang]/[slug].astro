@@ -341,7 +341,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 
 <script>
   import { db } from "~/lib/stores/editor-store"
-  import { toastr } from "~/utils/toasts"
+  import { toast } from "~/utils/toasts"
 
   document.addEventListener("astro:page-load", async () => {
     const btn = document.getElementById("mobile-next-btn") as HTMLAnchorElement | null
@@ -350,9 +350,9 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
     btn.addEventListener("click", (e) => {
       if (btn.ariaDisabled === "true") {
         e.preventDefault()
-        toastr.info(
-          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+        toast.info(
           "Ejecuta el código",
+          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
         )
       }
     })

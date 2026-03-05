@@ -56,7 +56,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
 
 <script>
   import { db } from "~/lib/stores/editor-store"
-  import { toastr } from "~/utils/toasts"
+  import { toast } from "~/utils/toasts"
 
   const initNextButton = async () => {
     const btn = document.getElementById("next-lesson-btn") as HTMLAnchorElement | null
@@ -65,9 +65,9 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
     btn.addEventListener("click", (e) => {
       if (btn.ariaDisabled === "true") {
         e.preventDefault()
-        toastr.info(
-          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+        toast.info(
           "Ejecuta el código",
+          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
         )
       }
     })
