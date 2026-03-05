@@ -211,3 +211,7 @@ p code {
 #console::-webkit-scrollbar-thumb:hover {
 	background-color: var(--color-yellow);
 }
+
+#toast-container > div {
+	opacity: 1;
+}
