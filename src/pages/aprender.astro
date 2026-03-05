@@ -70,26 +70,25 @@ const user = Astro.locals.user
       <div class="w-full max-w-2xl flex flex-col gap-4">
         {tracks.map(track => (
           track.disabled ? (
-            <div class="relative flex flex-col sm:flex-row gap-6 items-center bg-light-bg/40 border border-stroke-color/40 rounded-2xl p-6 cursor-not-allowed opacity-50 select-none">
-              <div class="shrink-0 w-20 h-20 flex items-center justify-center rounded-2xl bg-editor-bg border border-stroke-color/40">
-                <Image src={logoImage} alt="Rustlings" class="w-12 h-12 grayscale" />
+            <div class="relative flex gap-3 sm:gap-6 items-start bg-light-bg/40 border border-stroke-color/40 rounded-2xl p-4 sm:p-6 cursor-not-allowed opacity-50 select-none">
+              <div class="absolute top-3 right-3 flex items-center gap-1.5">
+                <span class="text-xs bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  {t(track.badge)}
+                </span>
+                <span class="text-xs bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  Próximamente
+                </span>
               </div>
 
-              <div class="flex flex-col gap-2 flex-1 text-center sm:text-left">
-                <div class="flex items-center justify-center sm:justify-start gap-3 flex-wrap">
-                  <span class="text-secondary/50 font-bold text-xl">{track.title}</span>
-                  <span class="text-xs bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-full">
-                    {t(track.badge)}
-                  </span>
-                  <span class="text-xs bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-full">
-                    Próximamente
-                  </span>
-                </div>
-                <p class="text-secondary/40 text-sm leading-relaxed">{track.description}</p>
+              <div class="shrink-0 w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl bg-editor-bg border border-stroke-color/40 mt-0.5">
+                <Image src={logoImage} alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12 grayscale" />
+              </div>
+
+              <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+                <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{track.title}</span>
+                <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{track.description}</p>
                 <span class="text-secondary/30 text-xs">{track.lessons} lecciones</span>
               </div>
-
-              <span class="text-secondary/20 text-2xl shrink-0">🔒</span>
             </div>
           ) : (
             <div
@@ -98,25 +97,24 @@ const user = Astro.locals.user
               data-track-title={track.title}
               data-track-href={`/${lang}${track.href}`}
               data-track-slugs={JSON.stringify(track.slugs)}
-              class="group relative flex flex-col sm:flex-row gap-6 items-center bg-light-bg border border-stroke-color rounded-2xl p-6 hover:border-yellow transition-all duration-200 cursor-pointer"
+              class="group relative flex gap-3 sm:gap-6 items-start bg-light-bg border border-stroke-color rounded-2xl p-4 sm:p-6 hover:border-yellow transition-all duration-200 cursor-pointer"
             >
-              <div class="shrink-0 w-20 h-20 flex items-center justify-center rounded-2xl bg-editor-bg border border-stroke-color">
-                <Image src={logoImage} alt="Rustlings" class="w-12 h-12" />
+              <span class="absolute top-3 right-3 text-xs bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+                {t(track.badge)}
+              </span>
+
+              <div class="shrink-0 w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl bg-editor-bg border border-stroke-color mt-0.5">
+                <Image src={logoImage} alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12" />
               </div>
 
-              <div class="flex flex-col gap-2 flex-1 text-center sm:text-left">
-                <div class="flex items-center justify-center sm:justify-start gap-3">
-                  <span class="text-secondary font-bold text-xl group-hover:text-yellow transition-colors">
-                    {track.title}
-                  </span>
-                  <span class="text-xs bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-full">
-                    {t(track.badge)}
-                  </span>
-                </div>
-                <p class="text-secondary/60 text-sm leading-relaxed">{track.description}</p>
+              <div class="flex flex-col gap-1.5 sm:gap-2 flex-1 min-w-0">
+                <span class="text-secondary font-bold text-base sm:text-xl group-hover:text-yellow transition-colors leading-tight pr-20">
+                  {track.title}
+                </span>
+                <p class="text-secondary/60 text-xs sm:text-sm leading-relaxed">{track.description}</p>
 
                 <!-- Progress bar (hidden until JS populates it) -->
-                <div data-progress-container class="hidden flex-col gap-1 mt-1">
+                <div data-progress-container class="hidden flex-col gap-1 mt-0.5">
                   <div class="flex justify-between items-center">
                     <span data-progress-label class="text-xs text-secondary/50"></span>
                     <span data-progress-pct class="text-xs text-yellow font-medium"></span>
@@ -129,7 +127,7 @@ const user = Astro.locals.user
                 <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} lecciones</span>
               </div>
 
-              <span class="text-secondary/30 group-hover:text-yellow group-hover:translate-x-1 transition-all text-2xl shrink-0">
+              <span class="text-secondary/30 group-hover:text-yellow group-hover:translate-x-1 transition-all shrink-0 self-end mb-0.5">
                 <IconRight font-size={20} />
               </span>
             </div>
