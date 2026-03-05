@@ -13,6 +13,7 @@
 		"prepare": "lefthook install"
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^12.6.12",
 		"@astrojs/mdx": "^4.3.8",
 		"@codemirror/autocomplete": "^6.19.1",
 		"@codemirror/lang-rust": "^6.0.2",
@@ -33,6 +34,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.2",
+		"@cloudflare/workers-types": "^4.20260301.1",
 		"@iconify/json": "^2.2.405",
 		"@tailwindcss/typography": "^0.5.19",
 		"@types/qrcode": "^1.5.6",
