@@ -1,28 +1,39 @@
 ---
 import Layout from "~/layouts/Layout.astro"
 import JamGithub from "~icons/jam/github"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "en" } }
+  ]
+}
 
 if (Astro.locals.user) {
-	return Astro.redirect("/aprender")
+	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/aprender`)
 }
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 
 const error = Astro.url.searchParams.get("error")
 const errorMessages: Record<string, string> = {
-	oauth_invalid: "Estado OAuth inválido. Intenta de nuevo.",
-	oauth_token: "Error al obtener el token de GitHub.",
-	no_email: "Tu cuenta de GitHub no tiene un email verificado.",
+	oauth_invalid: t("login.error_oauth_invalid"),
+	oauth_token: t("login.error_oauth_token"),
+	no_email: t("login.error_no_email"),
 }
 ---
 
-<Layout title="Iniciar sesión — RustLings">
+<Layout title={t("login.title")}>
   <main class="min-h-screen flex items-center justify-center px-4 bg-primary">
     <div class="w-full max-w-md">
       <!-- Logo / title -->
       <div class="text-center mb-8">
-        <a href="/" class="text-yellow font-extrabold text-3xl tracking-tight">
+        <a href={`/${lang}/`} class="text-yellow font-extrabold text-3xl tracking-tight">
           Rust<span class="text-secondary">lings</span>
         </a>
-        <p class="text-secondary/50 text-sm mt-2">Aprende Rust en Español</p>
+        <p class="text-secondary/50 text-sm mt-2">{t("login.tagline")}</p>
       </div>
 
       <!-- Card -->
@@ -30,7 +41,7 @@ const errorMessages: Record<string, string> = {
         <!-- Error banner -->
         {error && (
           <div class="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-            {errorMessages[error] ?? "Ocurrió un error. Intenta de nuevo."}
+            {errorMessages[error] ?? t("login.error_default")}
           </div>
         )}
 
@@ -40,39 +51,39 @@ const errorMessages: Record<string, string> = {
             data-tab="login"
             class="tab-btn flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200 active"
           >
-            Iniciar sesión
+            {t("login.tab_login")}
           </button>
           <button
             data-tab="register"
             class="tab-btn flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200"
           >
-            Registrarse
+            {t("login.tab_register")}
           </button>
         </div>
 
         <!-- Login form -->
         <form id="form-login" class="tab-panel flex flex-col gap-4">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="login-email">Email</label>
+            <label class="text-xs text-secondary/60 font-medium" for="login-email">{t("login.email_label")}</label>
             <input
               id="login-email"
               type="email"
               name="email"
               required
               autocomplete="email"
-              placeholder="tu@email.com"
+              placeholder={t("login.email_placeholder")}
               class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
             />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="login-password">Contraseña</label>
+            <label class="text-xs text-secondary/60 font-medium" for="login-password">{t("login.password_label")}</label>
             <input
               id="login-password"
               type="password"
               name="password"
               required
               autocomplete="current-password"
-              placeholder="••••••••"
+              placeholder={t("login.password_placeholder")}
               class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
             />
           </div>
@@ -81,45 +92,45 @@ const errorMessages: Record<string, string> = {
             type="submit"
             class="mt-1 w-full py-2.5 bg-yellow text-primary font-bold rounded-lg hover:opacity-90 transition-opacity text-sm"
           >
-            Entrar
+            {t("login.login_button")}
           </button>
         </form>
 
         <!-- Register form -->
         <form id="form-register" class="tab-panel hidden flex-col gap-4">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="register-username">Usuario</label>
+            <label class="text-xs text-secondary/60 font-medium" for="register-username">{t("login.username_label")}</label>
             <input
               id="register-username"
               type="text"
               name="username"
               required
               autocomplete="username"
-              placeholder="ferris_dev"
+              placeholder={t("login.username_placeholder")}
               class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
             />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="register-email">Email</label>
+            <label class="text-xs text-secondary/60 font-medium" for="register-email">{t("login.email_label")}</label>
             <input
               id="register-email"
               type="email"
               name="email"
               required
               autocomplete="email"
-              placeholder="tu@email.com"
+              placeholder={t("login.email_placeholder")}
               class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
             />
           </div>
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="register-password">Contraseña</label>
+            <label class="text-xs text-secondary/60 font-medium" for="register-password">{t("login.password_label")}</label>
             <input
               id="register-password"
               type="password"
               name="password"
               required
               autocomplete="new-password"
-              placeholder="Mínimo 8 caracteres"
+              placeholder={t("login.register_password_placeholder")}
               class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
             />
           </div>
@@ -128,14 +139,14 @@ const errorMessages: Record<string, string> = {
             type="submit"
             class="mt-1 w-full py-2.5 bg-yellow text-primary font-bold rounded-lg hover:opacity-90 transition-opacity text-sm"
           >
-            Crear cuenta
+            {t("login.register_button")}
           </button>
         </form>
 
         <!-- Divider -->
         <div class="flex items-center gap-3 my-6">
           <div class="flex-1 h-px bg-stroke-color"></div>
-          <span class="text-xs text-secondary/40">o continúa con</span>
+          <span class="text-xs text-secondary/40">{t("login.divider")}</span>
           <div class="flex-1 h-px bg-stroke-color"></div>
         </div>
 
@@ -146,7 +157,7 @@ const errorMessages: Record<string, string> = {
           class="flex items-center justify-center gap-3 w-full py-2.5 border border-stroke-color rounded-lg text-sm text-secondary/70 font-medium hover:border-yellow/40 hover:text-secondary transition-all duration-200"
         >
           <JamGithub font-size={18} />
-          Continuar con GitHub
+          {t("login.github_button")}
         </a>
       </div>
     </div>
@@ -163,7 +174,13 @@ const errorMessages: Record<string, string> = {
   }
 </style>
 
-<script>
+<script define:vars={{
+  loginButtonText: t("login.login_button"),
+  loginButtonLoading: t("login.login_button_loading"),
+  registerButtonText: t("login.register_button"),
+  registerButtonLoading: t("login.register_button_loading"),
+  redirectPath: `/${lang}/aprender`
+}}>
   // Tabs
   const tabs = document.querySelectorAll<HTMLButtonElement>(".tab-btn")
   const panels = document.querySelectorAll<HTMLFormElement>(".tab-panel")
@@ -193,7 +210,7 @@ const errorMessages: Record<string, string> = {
     const errorEl = document.getElementById("login-error")!
     const btn = form.querySelector("button[type=submit]") as HTMLButtonElement
     btn.disabled = true
-    btn.textContent = "Entrando..."
+    btn.textContent = loginButtonLoading
 
     const data = Object.fromEntries(new FormData(form))
     const res = await fetch("/api/auth/login", {
@@ -203,13 +220,13 @@ const errorMessages: Record<string, string> = {
     })
 
     if (res.ok) {
-      window.location.href = "/aprender"
+      window.location.href = redirectPath
     } else {
       const { error } = await res.json() as { error: string }
       errorEl.textContent = error
       errorEl.classList.remove("hidden")
       btn.disabled = false
-      btn.textContent = "Entrar"
+      btn.textContent = loginButtonText
     }
   })
 
@@ -220,7 +237,7 @@ const errorMessages: Record<string, string> = {
     const errorEl = document.getElementById("register-error")!
     const btn = form.querySelector("button[type=submit]") as HTMLButtonElement
     btn.disabled = true
-    btn.textContent = "Creando cuenta..."
+    btn.textContent = registerButtonLoading
 
     const data = Object.fromEntries(new FormData(form))
     const res = await fetch("/api/auth/register", {
@@ -230,13 +247,13 @@ const errorMessages: Record<string, string> = {
     })
 
     if (res.ok) {
-      window.location.href = "/aprender"
+      window.location.href = redirectPath
     } else {
       const { error } = await res.json() as { error: string }
       errorEl.textContent = error
       errorEl.classList.remove("hidden")
       btn.disabled = false
-      btn.textContent = "Crear cuenta"
+      btn.textContent = registerButtonText
     }
   })
 </script>

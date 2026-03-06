@@ -8,30 +8,61 @@ import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
 import IconLogout from "~icons/tabler/logout"
 import IconUser from "~icons/tabler/user"
+import { supportedLangs } from "~/content-manager"
 
-const lang = getLangFromUrl(Astro.url)
+export const prerender = true
+
+export function getStaticPaths() {
+  return supportedLangs.map((lang) => ({
+    params: { lang },
+    props: { lang },
+  }))
+}
+
+const { lang } = Astro.props
 const t = useTranslations(lang)
 const user = Astro.locals.user
 ---
 
 <Layout
-  title="¿Qué quieres aprender? — Rustlings Web"
-  description="Elige el tema que deseas aprender en Rustlings Web."
+  title={t("learn.page_title")}
+  description={t("learn.page_description")}
 >
   <header class="p-2 w-full">
     <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
       <a
-        href="/"
+        href={`/${lang}/`}
         class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
       >
         <IconLeft font-size={20} />
-        Inicio
+        {t("learn.back_home")}
       </a>
 
       {user ? (
         <div class="flex items-center gap-2">
+          <!-- Language selector -->
+          <div class="flex items-center gap-2">
+            <a
+              href="/es/aprender"
+              class={`text-xs font-medium transition-all duration-300 ${
+                lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+              }`}
+            >
+              ES
+            </a>
+            <span class="text-secondary/20">|</span>
+            <a
+              href="/en/aprender"
+              class={`text-xs font-medium transition-all duration-300 ${
+                lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+              }`}
+            >
+              EN
+            </a>
+          </div>
+
           <a
-            href="/perfil"
+            href={`/${lang}/perfil`}
             class="flex items-center gap-2 px-3 py-1.5 text-sm text-secondary/70 border border-transparent rounded-lg hover:border-yellow/40 hover:text-secondary transition-all"
           >
             <IconUser font-size={16} />
@@ -41,20 +72,43 @@ const user = Astro.locals.user
             href="/api/auth/logout"
             data-astro-reload
             class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/50 border border-transparent rounded-lg hover:border-red-500/40 hover:text-red-400 transition-all duration-300"
-            title="Cerrar sesión"
+            title={t("learn.logout")}
           >
             <IconLogout font-size={16} />
-            <span class="hidden sm:inline">Salir</span>
+            <span class="hidden sm:inline">{t("learn.logout_short")}</span>
           </a>
         </div>
       ) : (
-        <a
-          href="/login"
-          class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-        >
-          <IconUser font-size={16} />
-          Iniciar sesión
-        </a>
+        <div class="flex items-center gap-2">
+          <!-- Language selector -->
+          <div class="flex items-center gap-2">
+            <a
+              href="/es/aprender"
+              class={`text-xs font-medium transition-all duration-300 ${
+                lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+              }`}
+            >
+              ES
+            </a>
+            <span class="text-secondary/20">|</span>
+            <a
+              href="/en/aprender"
+              class={`text-xs font-medium transition-all duration-300 ${
+                lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+              }`}
+            >
+              EN
+            </a>
+          </div>
+
+          <a
+            href={`/${lang}/login`}
+            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+          >
+            <IconUser font-size={16} />
+            {t("learn.login")}
+          </a>
+        </div>
       )}
     </nav>
   </header>
@@ -62,8 +116,8 @@ const user = Astro.locals.user
   <main class="flex-1 flex flex-col px-6 py-12">
 
     <div class="flex flex-col items-center text-center mb-12">
-      <h1 class="text-2xl md:text-3xl font-bold text-secondary">¿Qué quieres aprender?</h1>
-      <p class="text-secondary/50 text-sm">Elige un camino para comenzar tu aventura</p>
+      <h1 class="text-2xl md:text-3xl font-bold text-secondary">{t("learn.main_title")}</h1>
+      <p class="text-secondary/50 text-sm">{t("learn.subtitle")}</p>
     </div>
 
     <div class="flex flex-col items-center">
@@ -76,7 +130,7 @@ const user = Astro.locals.user
                   {t(track.badge)}
                 </span>
                 <span class="text-xs bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-full whitespace-nowrap">
-                  Próximamente
+                  {t("learn.coming_soon")}
                 </span>
               </div>
 
@@ -87,7 +141,7 @@ const user = Astro.locals.user
               <div class="flex flex-col gap-1.5 flex-1 min-w-0">
                 <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{track.title}</span>
                 <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{track.description}</p>
-                <span class="text-secondary/30 text-xs">{track.lessons} lecciones</span>
+                <span class="text-secondary/30 text-xs">{track.lessons} {t("learn.lessons")}</span>
               </div>
             </div>
           ) : (
@@ -125,7 +179,7 @@ const user = Astro.locals.user
                   </div>
                 </div>
 
-                <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} lecciones</span>
+                <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} {t("learn.lessons")}</span>
                 <span data-resume-label class="hidden text-xs text-yellow/70 font-medium"></span>
               </div>
 
@@ -145,8 +199,13 @@ const user = Astro.locals.user
 <script>
   import { db } from "~/lib/stores/editor-store"
   import { getTrackProgress } from "~/lib/progress"
+  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
 
   document.addEventListener("astro:page-load", async () => {
+    // Get translations for JavaScript usage
+    const currentLang = getLangFromUrl(new URL(window.location.href))
+    const t = useTranslations(currentLang)
+
     // Sync server progress + last lesson positions (no-op if not logged in)
     await db.syncFromServer()
 
@@ -177,7 +236,7 @@ const user = Astro.locals.user
         const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
 
         if (container && label && pctEl && bar) {
-          label.textContent = `${displayCount} de ${total} lecciones`
+          label.textContent = `${displayCount} ${t("learn.progress_of")} ${total} ${t("learn.lessons")}`
           pctEl.textContent = `${pct}%`
           bar.style.width = `${pct}%`
           container.classList.remove("hidden")
@@ -192,7 +251,7 @@ const user = Astro.locals.user
         card.dataset.trackHref = `/${lang}/${lastLesson.slug}`
         const resumeLabel = card.querySelector<HTMLElement>("[data-resume-label]")
         if (resumeLabel) {
-          resumeLabel.textContent = `Continuar: ${lastLesson.title}`
+          resumeLabel.textContent = `${t("learn.continue_label")} ${lastLesson.title}`
           resumeLabel.classList.remove("hidden")
         }
       }

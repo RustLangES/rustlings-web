@@ -3,27 +3,33 @@ import logoSvgUrl from "~/assets/Rust_Lang_ES_Logo_Blanco_color.svg?url"
 import { tracks } from "~/const/tracks"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 export const prerender = true
 
 export function getStaticPaths() {
 	return tracks
 		.filter((t) => !t.disabled && t.slugs.length > 0)
-		.map((t) => ({ params: { trackId: t.id }, props: { track: t } }))
+		.flatMap((t) => [
+			{ params: { lang: "es", trackId: t.id }, props: { track: t } },
+			{ params: { lang: "en", trackId: t.id }, props: { track: t } },
+		])
 }
 
 const { track } = Astro.props
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
-<Layout title={`Certificado — ${track.title}`}>
+<Layout title={`${t("certificate.back_button")} — ${track.title}`}>
   <header class="p-2 w-full shrink-0">
     <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
       <a
-        href="/aprender"
+        href={`/${lang}/aprender`}
         class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
       >
         <IconLeft font-size={20} />
-        Volver
+        {t("certificate.back_button")}
       </a>
     </nav>
   </header>
@@ -35,30 +41,30 @@ const { track } = Astro.props
       <div class="w-full lg:w-72 shrink-0 flex flex-col gap-5">
 
         <div>
-          <h1 class="text-2xl font-bold text-secondary">Tu Certificado</h1>
-          <p class="text-secondary/40 text-sm mt-0.5" id="cert-subtitle">Cargando...</p>
+          <h1 class="text-2xl font-bold text-secondary">{t("certificate.your_certificate")}</h1>
+          <p class="text-secondary/40 text-sm mt-0.5" id="cert-subtitle">{t("certificate.loading")}</p>
         </div>
 
         <!-- Congratulations (always visible — this page is only for the owner) -->
         <div class="rounded-2xl border border-yellow/20 bg-yellow/5 p-6 flex flex-col gap-3">
-          <p class="text-yellow font-extrabold text-base leading-tight">Lo lograste. 🦀</p>
+          <p class="text-yellow font-extrabold text-base leading-tight">{t("certificate.congratulations")}</p>
           <p class="text-secondary/70 text-xs leading-relaxed">
-            Sabemos que no fue fácil. Rust tiene una curva de aprendizaje real — el compilador no perdona, los conceptos exigen, y hubo momentos en que todo parecía difícil.
+            {t("certificate.success_message_1")}
           </p>
           <p class="text-secondary/70 text-xs leading-relaxed">
-            Completaste <span class="text-secondary font-semibold">{track.title}</span> de principio a fin. Eso no lo hace cualquiera. Reconocemos ese esfuerzo, y por eso te entregamos este certificado.
+            {t("certificate.success_message_2", { trackTitle: track.title })}
           </p>
           <p class="text-yellow/60 text-xs font-medium mt-1">
-            Es tuyo. Ganado con trabajo real.
+            {t("certificate.intro_text")}
           </p>
         </div>
 
         <!-- Name display for logged-in users -->
         <div id="cert-name-display" class="hidden flex-col gap-1">
-          <p class="text-xs text-secondary/40 font-medium">Nombre en el certificado</p>
+          <p class="text-xs text-secondary/40 font-medium">{t("certificate.your_name")}</p>
           <p class="text-base font-bold text-secondary" id="cert-name-text"></p>
-          <a href="/perfil" class="inline-flex items-center gap-1 text-xs text-secondary/40 hover:text-yellow transition-colors mt-0.5">
-            Editar en perfil <span class="text-[10px]">→</span>
+          <a href={`/${lang}/perfil`} class="inline-flex items-center gap-1 text-xs text-secondary/40 hover:text-yellow transition-colors mt-0.5">
+            {t("certificate.edit_profile")} <span class="text-[10px]">→</span>
           </a>
         </div>
 
@@ -66,7 +72,7 @@ const { track } = Astro.props
         <input
           id="cert-name"
           type="text"
-          placeholder="Tu nombre completo"
+          placeholder={t("certificate.enter_name")}
           maxlength="60"
           data-track-title={track.title}
           data-track-id={track.id}
@@ -75,7 +81,7 @@ const { track } = Astro.props
 
         <!-- Share buttons (shown after cert is claimed) -->
         <div id="share-buttons" class="hidden flex-col gap-3 pt-4 border-t border-stroke-color/30">
-          <p class="text-xs text-secondary/40">Comparte tu logro</p>
+          <p class="text-xs text-secondary/40">{t("certificate.share_title")}</p>
           <div class="flex flex-col gap-2">
             <a
               id="linkedin-btn"
@@ -87,7 +93,7 @@ const { track } = Astro.props
               <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
               </svg>
-              Agregar a LinkedIn
+              {t("certificate.linkedin_add")}
             </a>
             <a
               id="x-btn"
@@ -99,7 +105,7 @@ const { track } = Astro.props
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
               </svg>
-              Postear en X
+              {t("certificate.twitter_post")}
             </a>
           </div>
         </div>
@@ -112,10 +118,10 @@ const { track } = Astro.props
         <!-- Mode toggle -->
         <div class="flex w-full rounded-xl border border-stroke-color overflow-hidden text-xs font-semibold">
           <button id="toggle-cert" class="flex-1 py-2.5 transition-colors bg-yellow text-primary">
-            Certificado
+            {t("certificate.toggle_cert")}
           </button>
           <button id="toggle-badge" class="flex-1 py-2.5 transition-colors text-secondary/50 hover:text-secondary/80">
-            Badge
+            {t("certificate.toggle_badge")}
           </button>
         </div>
 
@@ -125,13 +131,26 @@ const { track } = Astro.props
           height="636"
           class="w-full drop-shadow-2xl rounded-sm"
           data-logo-url={logoSvgUrl}
+          data-brand-line1={t("certificate.brand_name_line1")}
+          data-brand-line2={t("certificate.brand_name_line2")}
+          data-awarded-in={t("certificate.awarded_in")}
+          data-cert-title={t("certificate.certificate_title")}
+          data-cert-subtitle={t("certificate.certificate_subtitle")}
+          data-cert-intro={t("certificate.certificate_intro")}
+          data-default-name={t("certificate.default_name")}
+          data-completion-text={t("certificate.completion_text")}
+          data-completion-suffix={t("certificate.course_completion_suffix")}
+          data-issue-date-label={t("certificate.issue_date_label")}
+          data-cert-id-label={t("certificate.certificate_id_label")}
+          data-website-url={t("certificate.website_url")}
+          data-badge-certification={t("certificate.badge_certification")}
         ></canvas>
 
         <button
           id="download-btn"
           class="flex items-center gap-2 rounded-lg bg-yellow px-8 py-3 font-semibold text-black hover:opacity-80 transition cursor-pointer"
         >
-          Descargar PNG
+          {t("certificate.download_pdf")}
         </button>
 
       </div>
@@ -153,7 +172,7 @@ const { track } = Astro.props
   }
 
   // Badge = hexagonal design
-  async function drawBadge(canvas: HTMLCanvasElement, trackTitle: string, name: string, logoUrl = "") {
+  async function drawBadge(canvas: HTMLCanvasElement, trackTitle: string, name: string, logoUrl = "", badgeCertification = "Certificación", defaultName = "Tu Nombre", websiteUrl = "rustlings.rustlang-es.org") {
     canvas.width = 600
     canvas.height = 600
     const ctx = canvas.getContext("2d")!
@@ -229,7 +248,7 @@ const { track } = Astro.props
 
     ctx.fillStyle = ORANGE
     ctx.font = "600 17px 'Poppins', sans-serif"
-    ctx.fillText("Certificación", cx, cy + off.cert)
+    ctx.fillText(badgeCertification, cx, cy + off.cert)
 
     ctx.fillStyle = "rgba(255,110,31,0.4)"
     for (let i = -1; i <= 1; i++) {
@@ -238,7 +257,7 @@ const { track } = Astro.props
       ctx.fill()
     }
 
-    const displayName = name.trim() || "Tu Nombre"
+    const displayName = name.trim() || defaultName
     ctx.fillStyle = "#e2e8f0"
     ctx.font = "700 26px 'Poppins', sans-serif"
     const maxNameW = R * 1.5
@@ -255,7 +274,7 @@ const { track } = Astro.props
 
     ctx.fillStyle = "rgba(148,163,184,0.5)"
     ctx.font = "400 11px 'Poppins', sans-serif"
-    ctx.fillText("rustlings.rustlang-es.org", cx, cy + off.url)
+    ctx.fillText(websiteUrl, cx, cy + off.url)
   }
 
   // Certificate = formal horizontal landscape design
@@ -264,6 +283,20 @@ const { track } = Astro.props
     trackTitle: string,
     name: string,
     logoUrl = "",
+    translations: {
+      brandLine1: string,
+      brandLine2: string,
+      awardedIn: string,
+      certTitle: string,
+      certSubtitle: string,
+      certIntro: string,
+      defaultName: string,
+      completionText: string,
+      completionSuffix: string,
+      issueDateLabel: string,
+      certIdLabel: string,
+      websiteUrl: string
+    },
     issuedAt?: string,
     certId?: string,
   ) {
@@ -304,8 +337,8 @@ const { track } = Astro.props
     ctx.fillStyle = "rgba(255,255,255,0.4)"
     ctx.font = "500 9px 'Poppins', sans-serif"
     ctx.letterSpacing = "1.5px"
-    ctx.fillText("RUSTLANG", SIDEBAR_W / 2, H / 2 + logoH / 2 + 10)
-    ctx.fillText("EN ESPAÑOL", SIDEBAR_W / 2, H / 2 + logoH / 2 + 24)
+    ctx.fillText(translations.brandLine1, SIDEBAR_W / 2, H / 2 + logoH / 2 + 10)
+    ctx.fillText(translations.brandLine2, SIDEBAR_W / 2, H / 2 + logoH / 2 + 24)
     ctx.letterSpacing = "0px"
 
     const cX = SIDEBAR_W + 48
@@ -337,7 +370,7 @@ const { track } = Astro.props
     ctx.fillStyle = "rgba(255,255,255,0.85)"
     ctx.font = "600 7px 'Poppins', sans-serif"
     ctx.letterSpacing = "0.5px"
-    ctx.fillText("OTORGADO EN", sX, sY + 19)
+    ctx.fillText(translations.awardedIn, sX, sY + 19)
     ctx.letterSpacing = "0px"
     // Ribbons
     ctx.fillStyle = "#1e3a8a"
@@ -348,16 +381,15 @@ const { track } = Astro.props
     ctx.moveTo(sX + 13, sY + sR); ctx.lineTo(sX + 21, sY + sR + 26); ctx.lineTo(sX + 5, sY + sR + 14)
     ctx.closePath(); ctx.fill()
 
-    // "CERTIFICADO" title
+    // Certificate title and subtitle
     ctx.textAlign = "left"
     ctx.fillStyle = DARK_NAVY
     ctx.font = "900 58px 'Poppins', sans-serif"
-    ctx.fillText("CERTIFICADO", cX, 84)
+    ctx.fillText(translations.certTitle, cX, 84)
 
-    // "DE FINALIZACIÓN"
     ctx.fillStyle = ORANGE
     ctx.font = "700 23px 'Poppins', sans-serif"
-    ctx.fillText("DE FINALIZACIÓN", cX, 116)
+    ctx.fillText(translations.certSubtitle, cX, 116)
 
     // Divider
     ctx.strokeStyle = "rgba(0,0,0,0.08)"
@@ -367,13 +399,13 @@ const { track } = Astro.props
     ctx.lineTo(sX - sR - 16, 134)
     ctx.stroke()
 
-    // "Otorgamos con orgullo este certificado a"
+    // Certificate intro text
     ctx.fillStyle = "#64748b"
     ctx.font = "400 13px 'Poppins', sans-serif"
-    ctx.fillText("Otorgamos con orgullo este certificado a", cX, 172)
+    ctx.fillText(translations.certIntro, cX, 172)
 
     // Recipient name (large italic)
-    const displayName = name.trim() || "Tu Nombre"
+    const displayName = name.trim() || translations.defaultName
     ctx.fillStyle = DARK_NAVY
     ctx.font = "italic 700 46px 'Georgia', serif"
     const maxNameW = cRight - cX - 20
@@ -394,13 +426,13 @@ const { track } = Astro.props
     // Description
     ctx.fillStyle = "#475569"
     ctx.font = "400 13px 'Poppins', sans-serif"
-    ctx.fillText("En reconocimiento por haber completado el curso", cX, 290)
+    ctx.fillText(translations.completionText, cX, 290)
     ctx.fillStyle = DARK_NAVY
     ctx.font = "600 13px 'Poppins', sans-serif"
-    const courseLabel = `"${trackTitle}" en Rustlang en Español.`
+    const courseLabel = `"${trackTitle}" ${translations.completionSuffix}`
     if (ctx.measureText(courseLabel).width > maxNameW) {
       ctx.fillText(`"${trackTitle}"`, cX, 308)
-      ctx.fillText("en Rustlang en Español.", cX, 324)
+      ctx.fillText(translations.completionSuffix, cX, 324)
     } else {
       ctx.fillText(courseLabel, cX, 308)
     }
@@ -421,7 +453,7 @@ const { track } = Astro.props
     ctx.fillStyle = "#94a3b8"
     ctx.font = "500 10px 'Poppins', sans-serif"
     ctx.letterSpacing = "0.5px"
-    ctx.fillText("FECHA DE EMISIÓN:", cX, 514)
+    ctx.fillText(translations.issueDateLabel, cX, 514)
     ctx.letterSpacing = "0px"
     ctx.fillStyle = DARK_NAVY
     ctx.font = "600 12px 'Poppins', sans-serif"
@@ -433,7 +465,7 @@ const { track } = Astro.props
       ctx.fillStyle = "#94a3b8"
       ctx.font = "500 10px 'Poppins', sans-serif"
       ctx.letterSpacing = "0.5px"
-      ctx.fillText("ID DEL CERTIFICADO:", cRight, 514)
+      ctx.fillText(translations.certIdLabel, cRight, 514)
       ctx.letterSpacing = "0px"
       ctx.fillStyle = DARK_NAVY
       ctx.font = "600 11px 'Poppins', sans-serif"
@@ -444,7 +476,7 @@ const { track } = Astro.props
     ctx.textAlign = "center"
     ctx.fillStyle = "#94a3b8"
     ctx.font = "400 11px 'Poppins', sans-serif"
-    ctx.fillText("rustlings.rustlang-es.org", (cX + cRight) / 2, 568)
+    ctx.fillText(translations.websiteUrl, (cX + cRight) / 2, 568)
   }
 
   document.addEventListener("astro:page-load", async () => {
@@ -548,13 +580,26 @@ const { track } = Astro.props
 
     const getName = () => certName || nameInput.value
 
+    // Get translations from canvas data attributes
+    const { 
+      brandLine1, brandLine2, awardedIn, certTitle, certSubtitle,
+      certIntro, defaultName, completionText, completionSuffix,
+      issueDateLabel, certIdLabel, websiteUrl, badgeCertification
+    } = canvas.dataset as Record<string, string>
+
+    const translations = {
+      brandLine1, brandLine2, awardedIn, certTitle, certSubtitle,
+      certIntro, defaultName, completionText, completionSuffix,
+      issueDateLabel, certIdLabel, websiteUrl
+    }
+
     const redraw = () => {
       const name = getName()
       if (mode === "badge") {
-        document.fonts.ready.then(() => drawBadge(canvas, trackTitle, name, logoUrl))
+        document.fonts.ready.then(() => drawBadge(canvas, trackTitle, name, logoUrl, badgeCertification, defaultName, websiteUrl))
       } else {
         document.fonts.ready.then(() =>
-          drawCertificate(canvas, trackTitle, name, logoUrl, currentIssuedAt || undefined, currentCertId || undefined),
+          drawCertificate(canvas, trackTitle, name, logoUrl, translations, currentIssuedAt || undefined, currentCertId || undefined),
         )
       }
     }

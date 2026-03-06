@@ -10,10 +10,21 @@ import IconInfoCircle from "~icons/tabler/info-circle"
 import IconLink from "~icons/tabler/link"
 import IconLogout from "~icons/tabler/logout"
 import IconX from "~icons/tabler/x"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "en" } }
+  ]
+}
 
 if (!Astro.locals.user) {
-	return Astro.redirect("/login")
+	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/login`)
 }
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 
 const user = Astro.locals.user
 const { DB } = Astro.locals.runtime.env
@@ -37,15 +48,15 @@ const certificates = certsResult.results
 const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
 ---
 
-<Layout title="Mi perfil — Rustlings Web">
+<Layout title={t("profile.title")}>
   <header class="p-2 w-full shrink-0">
     <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
       <a
-        href="/aprender"
+        href={`/${lang}/aprender`}
         class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
       >
         <IconLeft font-size={20} />
-        Temario
+        {t("profile.back_temario")}
       </a>
       <a
         href="/api/auth/logout"
@@ -53,7 +64,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/50 border border-transparent rounded-lg hover:border-red-500/40 hover:text-red-400 transition-all duration-300"
       >
         <IconLogout font-size={16} />
-        Cerrar sesión
+        {t("profile.logout")}
       </a>
     </nav>
   </header>
@@ -65,13 +76,13 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
       <section class="bg-light-bg border border-stroke-color rounded-2xl p-6 flex flex-col gap-5">
         <div class="flex items-start justify-between">
           <div class="flex flex-col gap-0.5">
-            <h1 class="text-lg font-bold text-secondary">Mi perfil</h1>
+            <h1 class="text-lg font-bold text-secondary">{t("profile.my_profile")}</h1>
             <p class="text-xs text-secondary/40">{user.email}</p>
           </div>
           {nameLocked ? (
-            <span class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/30 border border-stroke-color/40 rounded-lg cursor-default select-none" title="El nombre ya fue modificado y no puede cambiarse nuevamente">
+            <span class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/30 border border-stroke-color/40 rounded-lg cursor-default select-none" title={t("profile.locked_tooltip")}>
               <IconEdit font-size={14} />
-              Bloqueado
+              {t("profile.locked_button")}
             </span>
           ) : (
             <button
@@ -81,14 +92,14 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
             >
               <IconEdit font-size={14} class="edit-icon" />
               <IconX font-size={14} class="cancel-icon hidden" />
-              <span class="edit-label">Editar</span>
+              <span class="edit-label">{t("profile.edit_button")}</span>
             </button>
           )}
         </div>
 
         <div class="flex flex-col gap-4">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="username">Usuario</label>
+            <label class="text-xs text-secondary/60 font-medium" for="username">{t("profile.username_label")}</label>
             <input
               id="username"
               type="text"
@@ -100,12 +111,12 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
 
           <div class="flex flex-col gap-1.5">
             <div class="flex items-center gap-2">
-              <label class="text-xs text-secondary/60 font-medium" for="full-name">Nombre completo</label>
+              <label class="text-xs text-secondary/60 font-medium" for="full-name">{t("profile.full_name_label")}</label>
               <div class="relative group">
                 <IconInfoCircle font-size={14} class="text-secondary/40 hover:text-secondary/60 transition-colors cursor-help" />
                 <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-primary border border-stroke-color rounded-lg shadow-lg text-xs text-secondary/80 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 z-10 w-72">
                   <div class="text-center">
-                    Este cambio solo se puede realizar 1 vez por cuenta y es el nombre que se tomará para la generación del badge y certificado.
+                    {t("profile.full_name_tooltip")}
                   </div>
                   <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-stroke-color"></div>
                 </div>
@@ -116,7 +127,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
               type="text"
               value={fullName}
               maxlength="80"
-              placeholder="Tu nombre completo"
+              placeholder={t("profile.full_name_placeholder")}
               disabled
               class="bg-primary border border-stroke-color/50 rounded-lg px-4 py-2.5 text-sm text-secondary/40 cursor-not-allowed transition-colors disabled:cursor-not-allowed disabled:text-secondary/40 enabled:text-secondary enabled:cursor-text enabled:border-stroke-color focus:outline-none focus:border-yellow/50"
               data-locked={nameLocked ? "true" : undefined}
@@ -124,14 +135,14 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
           </div>
 
           <div id="profile-error" class="hidden text-red-400 text-sm"></div>
-          <div id="profile-success" class="hidden text-green-400 text-sm">Cambios guardados.</div>
+          <div id="profile-success" class="hidden text-green-400 text-sm">{t("profile.success_message")}</div>
 
           <button
             id="save-profile"
             type="button"
             class="hidden self-start px-5 py-2 bg-yellow text-primary text-sm font-bold rounded-lg hover:opacity-90 transition-opacity"
           >
-            Guardar cambios
+            {t("profile.save_button")}
           </button>
         </div>
       </section>
@@ -140,19 +151,19 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
       <section class="flex flex-col gap-4">
         <h2 class="text-base font-bold text-secondary flex items-center gap-2">
           <IconCertificate font-size={18} class="text-yellow" />
-          Mis certificados
+          {t("profile.certificates_title")}
         </h2>
 
         {certificates.length === 0 ? (
           <div class="bg-light-bg border border-stroke-color rounded-2xl p-6 text-center">
-            <p class="text-secondary/40 text-sm">Aún no tienes certificados.</p>
-            <p class="text-secondary/30 text-xs mt-1">Completa todos los ejercicios de un curso para obtener uno.</p>
+            <p class="text-secondary/40 text-sm">{t("profile.no_certificates")}</p>
+            <p class="text-secondary/30 text-xs mt-1">{t("profile.no_certificates_desc")}</p>
           </div>
         ) : (
           <div class="flex flex-col gap-3">
             {certificates.map((cert) => {
               const track = trackMap[cert.course_id]
-              const issuedDate = new Date(cert.issued_at).toLocaleDateString("es-MX", {
+              const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", {
                 year: "numeric",
                 month: "long",
                 day: "numeric",
@@ -167,24 +178,24 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
                       {track?.title ?? cert.course_id}
                     </p>
                     <p class="text-xs text-secondary/40 mt-0.5">
-                      Expedido el {issuedDate} · A nombre de <span class="text-secondary/60">{cert.name_used}</span>
+                      {t("profile.certificate_issued")} {issuedDate} · {t("profile.certificate_name")} <span class="text-secondary/60">{cert.name_used}</span>
                     </p>
                   </div>
                   <div class="shrink-0 flex items-center gap-2">
                     <button
-                      data-copy-link={`/verificar/${cert.id}`}
+                      data-copy-link={`/${lang}/verificar/${cert.id}`}
                       class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
-                      title="Copiar enlace de verificación"
+                      title={t("profile.certificate_copy_tooltip")}
                     >
                       <IconLink font-size={14} />
-                      <span class="copy-label">Compartir</span>
+                      <span class="copy-label">{t("profile.certificate_copy")}</span>
                     </button>
                     <a
-                      href={`/certificado/${cert.course_id}`}
+                      href={`/${lang}/certificado/${cert.course_id}`}
                       class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
                     >
                       <IconDownload font-size={14} />
-                      Descargar
+                      {t("profile.certificate_download")}
                     </a>
                   </div>
                 </div>
@@ -210,20 +221,20 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
                   <div class="flex-1 h-1 bg-stroke-color/30 rounded-full overflow-hidden max-w-32">
                     <div class={`h-full rounded-full ${isComplete ? "bg-yellow" : "bg-yellow/40"}`} style={`width:${pct}%`}></div>
                   </div>
-                  <span class={`text-xs ${isComplete ? "text-yellow" : "text-secondary/30"}`}>{pct}% completado</span>
+                  <span class={`text-xs ${isComplete ? "text-yellow" : "text-secondary/30"}`}>{pct}% {t("profile.progress_completed")}</span>
                 </div>
               </div>
               {isComplete ? (
                 <a
-                  href={`/certificado/${track.id}`}
+                  href={`/${lang}/certificado/${track.id}`}
                   class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-black bg-yellow rounded-lg hover:opacity-80 transition-all"
                 >
                   <IconCertificate font-size={14} />
-                  Ver Certificado
+                  {t("profile.certificate_view")}
                 </a>
               ) : (
                 <span class="shrink-0 text-xs text-secondary/30 px-3 py-1.5 border border-stroke-color/30 rounded-lg">
-                  En progreso
+                  {t("profile.progress_in_progress")}
                 </span>
               )}
             </div>
@@ -242,7 +253,14 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
     username: user.username,
     full_name: fullName
   },
-  nameLocked
+  nameLocked,
+  translations: {
+    editButton: t("profile.edit_button"),
+    cancelButton: t("profile.cancel_button"),
+    saveButton: t("profile.save_button"),
+    saveButtonLoading: t("profile.save_button_loading"),
+    certificateCopied: t("profile.certificate_copied")
+  }
 }}>
   import { initAuthStore, authActions } from "~/lib/stores/auth-store"
   
@@ -272,7 +290,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         saveBtn.classList.remove("hidden")
         editIcon?.classList.add("hidden")
         cancelIcon?.classList.remove("hidden")
-        if (editLabel) editLabel.textContent = "Cancelar"
+        if (editLabel) editLabel.textContent = translations.cancelButton
         errorEl.classList.add("hidden")
         successEl.classList.add("hidden")
       } else {
@@ -282,7 +300,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         saveBtn.classList.add("hidden")
         editIcon?.classList.remove("hidden")
         cancelIcon?.classList.add("hidden")
-        if (editLabel) editLabel.textContent = "Editar"
+        if (editLabel) editLabel.textContent = translations.editButton
         errorEl.classList.add("hidden")
         successEl.classList.add("hidden")
       }
@@ -291,7 +309,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
     // Save profile
     saveBtn?.addEventListener("click", async () => {
       saveBtn.disabled = true
-      saveBtn.textContent = "Guardando..."
+      saveBtn.textContent = translations.saveButtonLoading
       errorEl.classList.add("hidden")
       successEl.classList.add("hidden")
 
@@ -302,7 +320,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
       })
 
       saveBtn.disabled = false
-      saveBtn.textContent = "Guardar cambios"
+      saveBtn.textContent = translations.saveButton
 
       if (res.ok) {
         // Success: exit edit mode and update default value
@@ -312,7 +330,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         saveBtn.classList.add("hidden")
         editIcon?.classList.remove("hidden")
         cancelIcon?.classList.add("hidden")
-        if (editLabel) editLabel.textContent = "Editar"
+        if (editLabel) editLabel.textContent = translations.editButton
         
         // Update auth store with new name
         authActions.updateFullName(input.value)
@@ -334,7 +352,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         await navigator.clipboard.writeText(url)
         const label = btn.querySelector(".copy-label")!
         const original = label.textContent
-        label.textContent = "¡Copiado!"
+        label.textContent = translations.certificateCopied
         btn.classList.add("border-yellow", "text-yellow")
         setTimeout(() => {
           label.textContent = original

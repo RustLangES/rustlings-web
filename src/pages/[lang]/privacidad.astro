@@ -1,0 +1,180 @@
+---
+import Layout from "~/layouts/Layout.astro"
+import IconChevronLeft from "~icons/tabler/chevron-left"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+export function getStaticPaths() {
+  return [
+    { params: { lang: "es" } },
+    { params: { lang: "en" } }
+  ]
+}
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<Layout
+  title={t("privacy.meta_title")}
+  description={t("privacy.meta_description")}
+>
+  <main class="flex-1 max-w-3xl mx-auto w-full px-6 py-16">
+    <a
+      href={`/${lang}/`}
+      class="inline-flex items-center gap-2 text-sm text-secondary/60 hover:text-yellow transition-colors mb-10"
+    >
+      <IconChevronLeft font-size={16} />
+      {t("privacy.back_home")}
+    </a>
+
+    <h1 class="text-3xl font-bold text-secondary mb-2">{t("privacy.title")}</h1>
+    <p class="text-sm text-secondary/50 mb-10">{t("privacy.last_updated")}</p>
+
+    <div class="flex flex-col gap-10 text-secondary/80 text-sm leading-relaxed">
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section1_title")}</h2>
+        <p>
+          <strong class="text-secondary">Rustlings Web</strong> {t("privacy.section1_content")}
+          <a
+            href="https://github.com/RustLangES/rustlings-web"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-yellow hover:underline"
+          >GitHub</a>.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section2_title")}</h2>
+        <p>
+          {t("privacy.section2_intro")}
+        </p>
+        <ul class="list-disc list-inside flex flex-col gap-1 pl-2">
+          <li>{t("privacy.section2_item1")}</li>
+          <li>{t("privacy.section2_item2")}</li>
+          <li>{t("privacy.section2_item3")}</li>
+          <li>{t("privacy.section2_item4")}</li>
+        </ul>
+        <p>
+          {t("privacy.section2_conclusion")}
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section3_title")}</h2>
+        <p>{t("privacy.section3_intro")}</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse mt-2">
+            <thead>
+              <tr class="bg-light-bg text-secondary/70">
+                <th class="border border-stroke-color px-3 py-2 text-left">{t("privacy.table_cookie")}</th>
+                <th class="border border-stroke-color px-3 py-2 text-left">{t("privacy.table_type")}</th>
+                <th class="border border-stroke-color px-3 py-2 text-left">{t("privacy.table_purpose")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border border-stroke-color px-3 py-2 font-mono">_clck</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.table_own")}</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.cookie_clck")}</td>
+              </tr>
+              <tr>
+                <td class="border border-stroke-color px-3 py-2 font-mono">_clsk</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.table_own")}</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.cookie_clsk")}</td>
+              </tr>
+              <tr>
+                <td class="border border-stroke-color px-3 py-2 font-mono">CLID</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.table_third_party")}</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.cookie_clid")}</td>
+              </tr>
+              <tr>
+                <td class="border border-stroke-color px-3 py-2 font-mono">MUID</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.table_third_party")}</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.cookie_muid")}</td>
+              </tr>
+              <tr>
+                <td class="border border-stroke-color px-3 py-2 font-mono">ANONCHK, MR, SM</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.table_third_party")}</td>
+                <td class="border border-stroke-color px-3 py-2">{t("privacy.cookie_others")}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          {t("privacy.section3_conclusion")}
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section4_title")}</h2>
+        <p>
+          {t("privacy.section4_content")}
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section5_title")}</h2>
+        <p>
+          {t("privacy.section5_content")}
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section6_title")}</h2>
+        <p>{t("privacy.section6_intro")}</p>
+        <ul class="list-disc list-inside flex flex-col gap-1 pl-2">
+          <li><strong class="text-secondary">{t("privacy.withdraw_consent")}</strong> {t("privacy.section6_item1")} <code class="bg-editor-bg px-1 rounded">{t("privacy.localStorage")}</code>.</li>
+          <li><strong class="text-secondary">{t("privacy.access_rights")}</strong> {t("privacy.section6_item2")}</li>
+          <li><strong class="text-secondary">{t("privacy.object_rights")}</strong> {t("privacy.section6_item3")}</li>
+        </ul>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section7_title")}</h2>
+        <p>
+          {t("privacy.section7_p1")} <code class="bg-editor-bg px-1 rounded">{t("privacy.cookiesAccepted")}</code> {t("privacy.localStorage")} <code class="bg-editor-bg px-1 rounded">{t("privacy.localStorage")}</code>. Al recargar la página, el aviso de cookies volverá a aparecer.
+        </p>
+        <p>
+          {t("privacy.section7_p2")}
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section8_title")}</h2>
+        <p>
+          {t("privacy.section8_content1")} <strong class="text-secondary">{t("privacy.microsoft_corp")}</strong>
+          {t("privacy.section8_content2")}
+          <a
+            href="https://privacy.microsoft.com/es-es/privacystatement"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-yellow hover:underline"
+          >privacy.microsoft.com</a>.
+        </p>
+      </section>
+
+      <section class="flex flex-col gap-3">
+        <h2 class="text-lg font-semibold text-secondary">{t("privacy.section9_title")}</h2>
+        <p>
+          {t("privacy.section9_content1")}
+          <a
+            href="https://discord.com/channels/778674594856960012/1292726289479893044"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-yellow hover:underline"
+          >Discord</a>
+          {t("privacy.section9_content2")}
+          <a
+            href="https://github.com/RustLangES/rustlings-web/issues"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-yellow hover:underline"
+          >GitHub</a>.
+        </p>
+      </section>
+
+    </div>
+  </main>
+</Layout>
