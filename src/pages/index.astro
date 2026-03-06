@@ -1,21 +1,5 @@
 ---
-import Footer from "~/components/footer/Footer.astro"
-import Community from "~/features/home/components/Community.astro"
-import FAQ from "~/features/home/components/FAQ.astro"
-import Features from "~/features/home/components/Features.astro"
-import Hero from "~/features/home/components/Hero.astro"
-import HowItWorks from "~/features/home/components/HowItWorks.astro"
-import LearningPath from "~/features/home/components/LearningPath.astro"
-import Playground from "~/features/home/components/Playground.astro"
-import Layout from "~/layouts/Layout.astro"
----
+import { defaultLang } from "~/i18n/ui"
 
-<Layout>
-  <Hero />
-  <Features />
-  <HowItWorks />
-  <Playground />
-  <Community />
-  <FAQ />
-  <Footer />
-</Layout>
+return Astro.redirect(`/${defaultLang}/`)
+---
