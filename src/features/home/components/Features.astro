@@ -1,5 +1,6 @@
 ---
 import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconBolt from "~icons/tabler/bolt"
 import IconBrandRust from "~icons/tabler/brand-rust"
 import IconCertificate from "~icons/tabler/certificate"
@@ -7,7 +8,6 @@ import IconDeviceLaptop from "~icons/tabler/device-laptop"
 import IconLanguage from "~icons/tabler/language"
 import IconProgress from "~icons/tabler/progress-check"
 import IconUsers from "~icons/tabler/users"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 interface Props {
 	lang?: string

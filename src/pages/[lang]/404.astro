@@ -1,17 +1,14 @@
 ---
 import { Image } from "astro:assets"
 import img404 from "~/assets/images/webp/404.png"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 export const prerender = true
 
 export function getStaticPaths() {
-  return [
-    { params: { lang: "es" } },
-    { params: { lang: "en" } }
-  ]
+	return [{ params: { lang: "es" } }, { params: { lang: "en" } }]
 }
 
 const lang = getLangFromUrl(Astro.url)

@@ -1,12 +1,12 @@
 ---
 import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import FaBrandsDiscord from "~icons/fa-brands/discord"
 import FaBrandsGithub from "~icons/fa-brands/github"
 import IconBook from "~icons/tabler/book"
 import IconExternalLink from "~icons/tabler/external-link"
 import IconInfinity from "~icons/tabler/infinity"
 import IconLockOpen from "~icons/tabler/lock-open"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 interface Props {
 	lang?: string

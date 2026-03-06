@@ -2,13 +2,13 @@
 import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import JamGithub from "~icons/jam/github"
 import IconArrowRight from "~icons/tabler/arrow-right"
 import IconBolt from "~icons/tabler/bolt"
 import IconBook from "~icons/tabler/book"
 import IconTrophy from "~icons/tabler/trophy"
 import IconUser from "~icons/tabler/user"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 interface Props {
 	lang?: string

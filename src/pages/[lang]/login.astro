@@ -1,13 +1,10 @@
 ---
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import JamGithub from "~icons/jam/github"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 export function getStaticPaths() {
-  return [
-    { params: { lang: "es" } },
-    { params: { lang: "en" } }
-  ]
+	return [{ params: { lang: "es" } }, { params: { lang: "en" } }]
 }
 
 if (Astro.locals.user) {

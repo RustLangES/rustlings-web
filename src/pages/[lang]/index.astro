@@ -1,5 +1,6 @@
 ---
 import Footer from "~/components/footer/Footer.astro"
+import { supportedLangs } from "~/content-manager"
 import Community from "~/features/home/components/Community.astro"
 import FAQ from "~/features/home/components/FAQ.astro"
 import Features from "~/features/home/components/Features.astro"
@@ -7,15 +8,14 @@ import Hero from "~/features/home/components/Hero.astro"
 import HowItWorks from "~/features/home/components/HowItWorks.astro"
 import Playground from "~/features/home/components/Playground.astro"
 import Layout from "~/layouts/Layout.astro"
-import { supportedLangs } from "~/content-manager"
 
 export const prerender = true
 
 export function getStaticPaths() {
-  return supportedLangs.map((lang) => ({
-    params: { lang },
-    props: { lang },
-  }))
+	return supportedLangs.map((lang) => ({
+		params: { lang },
+		props: { lang },
+	}))
 }
 
 const { lang } = Astro.props

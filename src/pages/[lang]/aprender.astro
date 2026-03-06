@@ -2,21 +2,21 @@
 import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import { tracks } from "~/const/tracks"
+import { supportedLangs } from "~/content-manager"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
 import IconLogout from "~icons/tabler/logout"
 import IconUser from "~icons/tabler/user"
-import { supportedLangs } from "~/content-manager"
 
 export const prerender = true
 
 export function getStaticPaths() {
-  return supportedLangs.map((lang) => ({
-    params: { lang },
-    props: { lang },
-  }))
+	return supportedLangs.map((lang) => ({
+		params: { lang },
+		props: { lang },
+	}))
 }
 
 const { lang } = Astro.props
