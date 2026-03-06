@@ -10,53 +10,100 @@ import IconLock from "~icons/tabler/lock"
 import IconPlayerPlay from "~icons/tabler/player-play"
 import IconRefresh from "~icons/tabler/refresh"
 import IconStack from "~icons/tabler/stack"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 
 const topics = [
 	{
 		id: "ownership",
 		label: "Ownership",
-		group: "Memoria",
+		group: t("how_it_works.groups.memory"),
 		icon: IconLock,
 		groupColor: "text-purple-400/70  bg-purple-400/8  border-purple-400/15",
 	},
 	{
 		id: "variables",
 		label: "Variables",
-		group: "Fundamentos",
+		group: t("how_it_works.groups.fundamentals"),
 		icon: IconBox,
 		groupColor: "text-blue-400/70   bg-blue-400/8    border-blue-400/15",
 	},
 	{
 		id: "match",
 		label: "Match",
-		group: "Control de flujo",
+		group: t("how_it_works.groups.control_flow"),
 		icon: IconGitBranch,
 		groupColor: "text-orange-400/70 bg-orange-400/8  border-orange-400/15",
 	},
 	{
 		id: "structs",
 		label: "Structs",
-		group: "Tipos",
+		group: t("how_it_works.groups.types"),
 		icon: IconStack,
 		groupColor: "text-green-400/70  bg-green-400/8   border-green-400/15",
 	},
 	{
 		id: "enums",
 		label: "Enums",
-		group: "Tipos",
+		group: t("how_it_works.groups.types"),
 		icon: IconList,
 		groupColor: "text-green-400/70  bg-green-400/8   border-green-400/15",
 	},
 	{
 		id: "iteradores",
 		label: "Iteradores",
-		group: "Avanzado",
+		group: t("how_it_works.groups.advanced"),
 		icon: IconRefresh,
 		groupColor: "text-rose-400/70   bg-rose-400/8    border-rose-400/15",
 	},
 ]
----
 
+// Prepare translations for client-side script
+const translations = {
+	running: t("how_it_works.running"),
+	compiledSuccess: t("how_it_works.compiled_success"),
+	compilationError: t("how_it_works.compilation_error"),
+	exercises: {
+		ownership: {
+			title: t("how_it_works.exercises.ownership.title"),
+			description: t("how_it_works.exercises.ownership.desc"),
+			hint: t("how_it_works.exercises.ownership.hint"),
+		},
+		variables: {
+			title: t("how_it_works.exercises.variables.title"),
+			description: t("how_it_works.exercises.variables.desc"),
+			hint: t("how_it_works.exercises.variables.hint"),
+		},
+		match: {
+			title: t("how_it_works.exercises.match.title"),
+			description: t("how_it_works.exercises.match.desc"),
+			hint: t("how_it_works.exercises.match.hint"),
+		},
+		structs: {
+			title: t("how_it_works.exercises.structs.title"),
+			description: t("how_it_works.exercises.structs.desc"),
+			hint: t("how_it_works.exercises.structs.hint"),
+		},
+		enums: {
+			title: t("how_it_works.exercises.enums.title"),
+			description: t("how_it_works.exercises.enums.desc"),
+			hint: t("how_it_works.exercises.enums.hint"),
+		},
+		iteradores: {
+			title: t("how_it_works.exercises.iterators.title"),
+			description: t("how_it_works.exercises.iterators.desc"),
+			hint: t("how_it_works.exercises.iterators.hint"),
+		},
+	}
+}
+---
 <Section
   id="how-it-works"
   className="relative flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
@@ -71,21 +118,21 @@ const topics = [
 
     <!-- Header -->
     <div class="text-center mb-14">
-      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">Así funciona</p>
+      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">{t("how_it_works.section_title")}</p>
       <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-        Del tema al resultado<br class="hidden md:block" /> en tres pasos
+        {t("how_it_works.title")}<br class="hidden md:block" /> {t("how_it_works.title_second_line")}
       </h2>
       <p class="text-secondary/45 text-base max-w-md mx-auto">
-        Pruébalo ahora mismo. Sin registrarte, sin instalar nada.
+        {t("how_it_works.subtitle")}
       </p>
     </div>
 
     <!-- Step indicators -->
     <div class="flex items-center justify-center gap-0 mb-10">
       {[
-        { num: "01", label: "Elige un tema" },
-        { num: "02", label: "Escribe código" },
-        { num: "03", label: "Ve el resultado" },
+        { num: "01", label: t("how_it_works.step1") },
+        { num: "02", label: t("how_it_works.step2") },
+        { num: "03", label: t("how_it_works.step3") },
       ].map((s, i) => (
         <>
           <div class="step-indicator flex items-center gap-2.5 px-4 py-2 rounded-full transition-all duration-300" data-step-indicator={i + 1}>
@@ -109,11 +156,11 @@ const topics = [
           <div class="flex items-center gap-2.5">
             <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-yellow text-primary text-[10px] font-extrabold leading-none shrink-0">1</span>
             <div>
-              <p class="text-yellow text-[10px] font-bold tracking-widest uppercase leading-none mb-0.5">Elige un tema</p>
-              <p class="text-secondary/35 text-[11px]">Selecciona un ejercicio para ver el editor con código real</p>
+              <p class="text-yellow text-[10px] font-bold tracking-widest uppercase leading-none mb-0.5">{t("how_it_works.step1")}</p>
+              <p class="text-secondary/35 text-[11px]">{t("how_it_works.step1_desc")}</p>
             </div>
           </div>
-          <span class="shrink-0 text-secondary/15 text-xs font-mono hidden sm:block">6 temas</span>
+          <span class="shrink-0 text-secondary/15 text-xs font-mono hidden sm:block">{t("how_it_works.topics_count")}</span>
         </div>
 
         <!-- Topic cards grid -->
@@ -148,7 +195,7 @@ const topics = [
         <!-- Footer hint -->
         <div class="flex items-center gap-3 mt-4">
           <div class="h-px flex-1 bg-stroke-color/20"></div>
-          <p class="text-secondary/20 text-[11px] shrink-0">haz clic en cualquier tema para continuar</p>
+          <p class="text-secondary/20 text-[11px] shrink-0">{t("how_it_works.click_hint")}</p>
           <div class="h-px flex-1 bg-stroke-color/20"></div>
         </div>
       </div>
@@ -165,7 +212,7 @@ const topics = [
             id="back-btn"
             class="shrink-0 text-secondary/30 text-xs hover:text-secondary/60 transition-colors px-3 py-1.5 rounded-lg border border-stroke-color/40 hover:border-stroke-color cursor-pointer"
           >
-            ← Cambiar tema
+            ← {t("how_it_works.change_topic")}
           </button>
         </div>
 
@@ -183,15 +230,15 @@ const topics = [
 
         <!-- Run bar -->
         <div class="flex items-center justify-between px-5 py-3.5 bg-primary/30">
-          <p class="text-secondary/25 text-xs hidden sm:block">Puedes editar el código antes de ejecutar</p>
+          <p class="text-secondary/25 text-xs hidden sm:block">{t("how_it_works.edit_before_run")}</p>
           <button
             id="demo-run-btn"
             class="group flex items-center gap-2 px-5 py-2.5 rounded-xl bg-yellow text-primary text-sm font-bold hover:bg-yellow/90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/15 cursor-pointer ml-auto"
           >
             <IconPlayerPlay font-size={14} class="group-data-running:hidden" />
             <IconLoader2 font-size={14} class="hidden group-data-running:block animate-spin" />
-            <span class="group-data-running:hidden">Ejecutar</span>
-            <span class="hidden group-data-running:inline">Ejecutando...</span>
+            <span class="group-data-running:hidden">{t("how_it_works.run")}</span>
+            <span class="hidden group-data-running:inline">{t("how_it_works.running")}</span>
           </button>
         </div>
       </div>
@@ -202,13 +249,13 @@ const topics = [
         <div class="flex items-center justify-between px-5 py-3.5 border-b border-stroke-color bg-primary/40">
           <div class="flex items-center gap-2">
             <span id="result-status-dot" class="w-2 h-2 rounded-full bg-stroke-color"></span>
-            <p id="result-status-label" class="text-sm font-bold text-secondary/50">Ejecutando...</p>
+            <p id="result-status-label" class="text-sm font-bold text-secondary/50">{t("how_it_works.running")}</p>
           </div>
           <button
             id="back-to-editor-btn"
             class="text-secondary/30 text-xs hover:text-secondary/60 transition-colors px-3 py-1.5 rounded-lg border border-stroke-color/40 hover:border-stroke-color cursor-pointer"
           >
-            ← Editar código
+            ← {t("how_it_works.edit_code")}
           </button>
         </div>
 
@@ -230,23 +277,23 @@ const topics = [
           <!-- Hint + CTA -->
           <div class="p-5 flex flex-col gap-4">
             <div id="hint-box" class="hidden px-4 py-3 rounded-xl bg-yellow/5 border border-yellow/15">
-              <p class="text-yellow/70 text-xs font-semibold mb-1">¿Qué aprendiste?</p>
+              <p class="text-yellow/70 text-xs font-semibold mb-1">{t("how_it_works.what_learned")}</p>
               <p id="result-hint" class="text-secondary/50 text-xs leading-relaxed"></p>
             </div>
 
             <div class="flex-1 rounded-xl border border-yellow/15 bg-yellow/3 p-4 flex items-center gap-3">
               <IconCertificate font-size={24} class="text-yellow/60 shrink-0" />
               <div>
-                <p class="text-[10px] font-semibold text-yellow/70 mb-0.5">Completa el track y obtén tu</p>
-                <p class="text-sm font-bold">Certificado de Fundamentos</p>
+                <p class="text-[10px] font-semibold text-yellow/70 mb-0.5">{t("how_it_works.complete_track")}</p>
+                <p class="text-sm font-bold">{t("how_it_works.certificate_fundamentals")}</p>
               </div>
             </div>
 
             <a
-              href="/aprender"
+              href={`/${lang}/aprender`}
               class="group flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-yellow text-primary font-bold text-sm hover:bg-yellow/90 transition-all duration-200 shadow-lg shadow-yellow/15"
             >
-              Continuar aprendiendo
+              {t("how_it_works.continue_learning")}
               <IconArrowRight font-size={13} class="group-hover:translate-x-0.5 transition-transform duration-200" />
             </a>
           </div>
@@ -257,6 +304,10 @@ const topics = [
   </div>
 </Section>
 
+<script define:vars={{ translations }}>
+  window.howItWorksTranslations = translations
+</script>
+
 <script>
   import { EditorView, keymap } from "@codemirror/view"
   import { EditorState } from "@codemirror/state"
@@ -266,12 +317,15 @@ const topics = [
   import { rust } from "~/components/editor/config"
   import { rustPlayground } from "~/lib/rust-playground"
 
+  // Get translations from global variable
+  const t = window.howItWorksTranslations
+
   // Plain code strings for each exercise (no HTML, CodeMirror handles highlighting)
   const exercises = {
     ownership: {
-      title: "Ejercicio: Ownership",
-      description: "Usa .clone() para copiar el valor sin moverlo.",
-      hint: "Cuando mueves un valor, el owner original ya no es válido. .clone() crea una copia profunda.",
+      title: t.exercises.ownership.title,
+      description: t.exercises.ownership.description,
+      hint: t.exercises.ownership.hint,
       code: `// En Rust, las variables son por defecto "moved" en lugar de copiadas. 
 // Esto significa que después de asignar s1 a s2, s1 ya no es válido. 
 // Para evitar esto, puedes usar .clone() para crear una copia de s1 que se asigna a s2, 
@@ -283,9 +337,9 @@ fn main() {
 }`,
     },
     variables: {
-      title: "Ejercicio: Variables",
-      description: "Declara una variable mutable y modifica su valor.",
-      hint: "En Rust las variables son inmutables por defecto. `mut` permite modificarlas.",
+      title: t.exercises.variables.title,
+      description: t.exercises.variables.description,
+      hint: t.exercises.variables.hint,
       code: `// En Rust, las variables son inmutables por defecto. 
 // Para hacerlas mutables, usamos la palabra clave mut.
 fn main() {
@@ -295,9 +349,9 @@ fn main() {
 }`,
     },
     match: {
-      title: "Ejercicio: Match",
-      description: "Clasifica un número usando pattern matching.",
-      hint: "El patrón `_` actúa como catch-all y captura todos los casos no listados.",
+      title: t.exercises.match.title,
+      description: t.exercises.match.description,
+      hint: t.exercises.match.hint,
       code: `// El operador match en Rust es una forma poderosa de realizar pattern matching.
 fn main() {
     let n = 7;
@@ -308,9 +362,9 @@ fn main() {
 }`,
     },
     structs: {
-      title: "Ejercicio: Structs",
-      description: "Define una struct con campos x e y.",
-      hint: "Las structs agrupan datos relacionados. Accedes a los campos con notación de punto.",
+      title: t.exercises.structs.title,
+      description: t.exercises.structs.description,
+      hint: t.exercises.structs.hint,
       code: `// Las structs en Rust son tipos de datos personalizados que pueden contener múltiples campos.
 struct Punto { x: f64, y: f64 }
 
@@ -320,9 +374,9 @@ fn main() {
 }`,
     },
     enums: {
-      title: "Ejercicio: Enums",
-      description: "Usa un enum con match para clasificar direcciones.",
-      hint: "Los enums en Rust son exhaustivos — el compilador verifica que cubras todos los casos.",
+      title: t.exercises.enums.title,
+      description: t.exercises.enums.description,
+      hint: t.exercises.enums.hint,
       code: `// Los enums en Rust permiten definir un tipo que puede ser una de varias variantes.
 enum Direccion { Norte, Sur, Este, Oeste }
 
@@ -335,9 +389,9 @@ fn main() {
 }`,
     },
     iteradores: {
-      title: "Ejercicio: Iteradores",
-      description: "Usa map y collect para transformar un Vec.",
-      hint: "Los iteradores son lazy: solo se evalúan al llamar .collect() u otro consumidor.",
+      title: t.exercises.iteradores.title,
+      description: t.exercises.iteradores.description,
+      hint: t.exercises.iteradores.hint,
       code: `// Los iteradores en Rust son lazy: solo se evalúan al llamar .collect() u otro consumidor.
 fn main() {
     let nums: Vec<i32> = (1..=3)
@@ -446,7 +500,7 @@ fn main() {
     if (hintBox) hintBox.classList.add("hidden")
     if (cursorEl) cursorEl.classList.remove("hidden")
     if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-yellow animate-pulse"
-    if (statusLabel) { statusLabel.textContent = "Ejecutando..."; statusLabel.className = "text-sm font-bold text-yellow/70" }
+    if (statusLabel) { statusLabel.textContent = t.running; statusLabel.className = "text-sm font-bold text-yellow/70" }
     if (runBtn) runBtn.setAttribute("data-running", "")
 
     rustPlayground.execute(
@@ -461,10 +515,10 @@ fn main() {
 
         if (success) {
           if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-[#28c840]"
-          if (statusLabel) { statusLabel.textContent = "Compilado con éxito"; statusLabel.className = "text-sm font-bold text-[#28c840]" }
+          if (statusLabel) { statusLabel.textContent = t.compiledSuccess; statusLabel.className = "text-sm font-bold text-[#28c840]" }
         } else {
           if (statusDot) statusDot.className = "w-2 h-2 rounded-full bg-[#ff5f57]"
-          if (statusLabel) { statusLabel.textContent = "Error de compilación"; statusLabel.className = "text-sm font-bold text-[#ff5f57]" }
+          if (statusLabel) { statusLabel.textContent = t.compilationError; statusLabel.className = "text-sm font-bold text-[#ff5f57]" }
         }
 
         // Show hint

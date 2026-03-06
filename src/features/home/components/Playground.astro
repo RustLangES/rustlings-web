@@ -3,6 +3,15 @@ import { Image } from "astro:assets"
 import ferrisImage from "~/assets/images/webp/ferris.webp"
 import Section from "~/components/sections/Section.astro"
 import IconCheck from "~icons/tabler/check"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
@@ -12,10 +21,10 @@ import IconCheck from "~icons/tabler/check"
   <div class="max-w-6xl w-full">
     <div class="text-center mb-16">
       <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-        Aprende haciendo
+        {t("playground.title")}
       </h2>
       <p class="text-secondary/50 text-lg max-w-xl mx-auto">
-        Cada lección incluye un editor real en el navegador. Escribe, ejecuta y valida tu código sin salir de la página.
+        {t("playground.subtitle")}
       </p>
     </div>
 
@@ -44,15 +53,15 @@ import IconCheck from "~icons/tabler/check"
               </tr>
               <tr>
                 <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">2</td>
-                <td class="pl-6"><span class="text-[#ff79c6]">let</span> <span class="text-secondary">curso</span> <span class="text-secondary/50">=</span> <span class="text-[#f1fa8c]">"Fundamentos de Rust"</span><span class="text-secondary/50">;</span></td>
+                <td class="pl-6"><span class="text-[#ff79c6]">let</span> <span class="text-secondary">curso</span> <span class="text-secondary/50">=</span> <span class="text-[#f1fa8c]">"{t("playground.course_name")}"</span><span class="text-secondary/50">;</span></td>
               </tr>
               <tr>
                 <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">3</td>
-                <td class="pl-6"><span class="text-secondary/30">// imprime el mensaje en consola</span></td>
+                <td class="pl-6"><span class="text-secondary/30">{t("playground.comment")}</span></td>
               </tr>
               <tr>
                 <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">4</td>
-                <td class="pl-6"><span class="text-yellow">println!</span><span class="text-secondary/50">(</span><span class="text-[#f1fa8c]">"Aprendiendo: &lbrace;&rbrace;"</span><span class="text-secondary/50">, curso);</span></td>
+                <td class="pl-6"><span class="text-yellow">println!</span><span class="text-secondary/50">(</span><span class="text-[#f1fa8c]">"{t("playground.learning_format")}"</span><span class="text-secondary/50">, curso);</span></td>
               </tr>
               <tr>
                 <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">5</td>
@@ -64,8 +73,8 @@ import IconCheck from "~icons/tabler/check"
 
         <!-- Output bar -->
         <div class="bg-primary border-t border-stroke-color px-6 py-3 flex items-center gap-4">
-          <span class="text-[#28c840] text-xs font-mono font-semibold tracking-widest uppercase">Output</span>
-          <span class="text-secondary/60 font-mono text-sm">Aprendiendo: Fundamentos de Rust</span>
+          <span class="text-[#28c840] text-xs font-mono font-semibold tracking-widest uppercase">{t("playground.output_label")}</span>
+          <span class="text-secondary/60 font-mono text-sm">{t("playground.output_example")}</span>
         </div>
       </div>
 
@@ -74,15 +83,15 @@ import IconCheck from "~icons/tabler/check"
         <Image
           class="w-28 h-auto"
           src={ferrisImage}
-          alt="Ferris, la mascota de Rust"
+          alt={t("playground.ferris_alt")}
         />
 
         <ul class="space-y-4 text-center lg:text-left">
           {[
-            "Editor con resaltado de sintaxis Rust",
-            "Ejecuta código real vía Rust Playground",
-            "Ejercicios con validación automática",
-            "Progreso guardado localmente",
+            t("playground.feature1"),
+            t("playground.feature2"),
+            t("playground.feature3"),
+            t("playground.feature4"),
           ].map((text) => (
             <li class="flex items-center gap-3 justify-center lg:justify-start">
               <span class="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-yellow/10 border border-yellow/25">
@@ -94,10 +103,10 @@ import IconCheck from "~icons/tabler/check"
         </ul>
 
         <a
-          href="/aprender"
+          href={`/${lang}/aprender`}
           class="px-6 py-2.5 rounded-lg border border-yellow/30 text-yellow font-semibold text-sm hover:bg-yellow/10 hover:-translate-y-0.5 transition-all duration-200"
         >
-          Ver lecciones →
+          {t("playground.view_lessons")}
         </a>
       </div>
 

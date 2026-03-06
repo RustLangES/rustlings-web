@@ -4,6 +4,10 @@ import logoImage from "~/assets/images/webp/logo.webp"
 import IconBrandDiscord from "~icons/tabler/brand-discord"
 import IconBrandGithub from "~icons/tabler/brand-github"
 import IconBrandLinkedin from "~icons/tabler/brand-linkedin"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 
 const socialLinks = [
 	{ href: "https://github.com/RustLangES/rustlings-web", icon: IconBrandGithub, label: "GitHub" },
@@ -24,18 +28,18 @@ const socialLinks = [
 	class="flex flex-col md:flex-row gap-6 p-6 md:p-4 justify-between items-center w-full bg-editor-bg/95 backdrop-blur-md border-t border-stroke-color shadow-inner"
 >
 	<a href="#hero" class="flex items-center gap-3">
-		<Image src={logoImage} alt="Rustlings Web" class="h-12 w-12"/>
+		<Image src={logoImage} alt={t("footer.logo_alt")} class="h-12 w-12"/>
 		<span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
 	</a>
 
 	<div class="flex flex-col items-center gap-1 text-center text-sm text-secondary/70 px-4">
-		<span>&copy; {new Date().getFullYear()} Rustlings Web. Todos los derechos reservados.</span>
-		<a href="/privacidad" class="text-xs text-secondary/50 hover:text-yellow transition-colors">
-			Política de Privacidad
+		<span>&copy; {new Date().getFullYear()} Rustlings Web. {t("footer.copyright")}</span>
+		<a href={`/${lang}/privacidad`} class="text-xs text-secondary/50 hover:text-yellow transition-colors">
+			{t("footer.privacy_policy")}
 		</a>
 	</div>
 
-	<nav class="flex items-center gap-6" aria-label="Redes sociales">
+	<nav class="flex items-center gap-6" aria-label={t("footer.social_nav")}>
 	{
 		socialLinks.map(link => (
         <a

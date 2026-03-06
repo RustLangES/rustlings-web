@@ -52,30 +52,32 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- DEBUG: remove before ship -->
-      <button
-        id="debug-tour-btn"
-        class="hidden md:flex items-center gap-1 px-2 py-1 text-xs text-orange-400 border border-orange-400/30 rounded-md hover:bg-orange-400/10 transition-colors"
-        title="[DEBUG] Lanzar tour"
-      >
-        tour
-      </button>
-
-      <a
-        href="https://github.com/RustLangES/rustlings-web"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="GitHub Repository"
-        class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
-      >
-        <IconBrandGithub font-size={20} />
-      </a>
+      <!-- Language selector -->
+      <div class="flex items-center gap-2">
+        <a
+          href="/es/"
+          class={`text-xs font-medium transition-all duration-300 ${
+            lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+          }`}
+        >
+          ES
+        </a>
+        <span class="text-secondary/20">|</span>
+        <a
+          href="/en/"
+          class={`text-xs font-medium transition-all duration-300 ${
+            lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+          }`}
+        >
+          EN
+        </a>
+      </div>
 
       {user ? (
         <div class="flex items-center gap-1">
           <a
             id="nav-profile-link"
-            href="/perfil"
+            href={`/${lang}/perfil`}
             class="flex items-center gap-1.5 px-2 py-1 text-xs text-secondary/60 rounded-md hover:text-yellow transition-colors"
           >
             <IconUser font-size={18} />
@@ -92,7 +94,7 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
         </div>
       ) : (
         <a
-          href="/login"
+          href={`/${lang}/login`}
           class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/50 rounded-md hover:text-yellow transition-colors"
           title="Iniciar sesión"
         >
@@ -109,7 +111,7 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
   title="Contenido"
   position="left"
   logo={logoImage}
-  backHref="/aprender"
+  backHref={`/${lang}/aprender`}
   backLabel="Temario"
 />
 

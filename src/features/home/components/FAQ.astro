@@ -1,35 +1,43 @@
 ---
 import Section from "~/components/sections/Section.astro"
 import IconChevronDown from "~icons/tabler/chevron-down"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 
 const faqs = [
 	{
-		q: "¿Necesito instalar Rust para usar RustLings?",
-		a: "No. Todo corre directamente en el navegador usando Rust Playground. No necesitas instalar nada en tu máquina.",
+		q: t("faq.q1"),
+		a: t("faq.a1"),
 	},
 	{
-		q: "¿Es realmente gratis?",
-		a: "Sí, 100% gratuito y open source. No hay planes de pago, ni suscripciones, ni contenido bloqueado. Todo el código está en GitHub.",
+		q: t("faq.q2"),
+		a: t("faq.a2"),
 	},
 	{
-		q: "¿Necesito experiencia previa en programación?",
-		a: "El track de Fundamentos está pensado para personas que ya tienen nociones básicas de programación, pero no requiere experiencia previa con Rust.",
+		q: t("faq.q3"),
+		a: t("faq.a3"),
 	},
 	{
-		q: "¿Cómo se guarda mi progreso?",
-		a: "Tu progreso se guarda localmente en el navegador. Si creas una cuenta, también se sincroniza para que puedas retomarlo desde cualquier dispositivo.",
+		q: t("faq.q4"),
+		a: t("faq.a4"),
 	},
 	{
-		q: "¿Cómo obtengo el certificado?",
-		a: "Al completar todas las lecciones del track, puedes generar tu certificado desde tu perfil. Incluye tu nombre y un enlace de verificación único.",
+		q: t("faq.q5"),
+		a: t("faq.a5"),
 	},
 	{
-		q: "¿Puedo contribuir al proyecto?",
-		a: "Claro. RustLings es open source. Puedes reportar bugs, proponer mejoras o añadir lecciones desde el repositorio en GitHub.",
+		q: t("faq.q6"),
+		a: t("faq.a6"),
 	},
 ]
 ---
-
 <Section
   id="faq"
   className="relative flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
@@ -38,12 +46,12 @@ const faqs = [
 
     <!-- Header -->
     <div class="text-center mb-14">
-      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">Preguntas frecuentes</p>
+      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">{t("faq.section_title")}</p>
       <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-        ¿Tienes dudas?
+        {t("faq.title")}
       </h2>
       <p class="text-secondary/45 text-base max-w-md mx-auto">
-        Estas son las preguntas más comunes. Si no encuentras la tuya, pásate por Discord.
+        {t("faq.subtitle")}
       </p>
     </div>
 
@@ -69,14 +77,14 @@ const faqs = [
 
     <!-- Bottom CTA -->
     <div class="mt-12 text-center">
-      <p class="text-secondary/35 text-sm mb-4">¿Aún tienes dudas?</p>
+      <p class="text-secondary/35 text-sm mb-4">{t("faq.still_doubt")}</p>
       <a
         href="https://discord.com/channels/778674594856960012/1292726289479893044"
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[#5865F2]/30 text-[#5865F2]/80 text-sm font-medium hover:bg-[#5865F2]/10 hover:-translate-y-0.5 transition-all duration-200"
       >
-        Pregunta en Discord →
+        {t("faq.ask_discord")}
       </a>
     </div>
 

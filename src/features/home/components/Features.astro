@@ -7,6 +7,15 @@ import IconDeviceLaptop from "~icons/tabler/device-laptop"
 import IconLanguage from "~icons/tabler/language"
 import IconProgress from "~icons/tabler/progress-check"
 import IconUsers from "~icons/tabler/users"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
@@ -17,12 +26,12 @@ import IconUsers from "~icons/tabler/users"
 
     <!-- Header -->
     <div class="text-center mb-14">
-      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">Por qué elegir RustLings</p>
+      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">{t("features.why_choose")}</p>
       <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-        Todo lo que necesitas<br class="hidden md:block" /> para aprender Rust
+        {t("features.everything_you_need")}<br class="hidden md:block" /> {t("features.to_learn_rust")}
       </h2>
       <p class="text-secondary/45 text-base max-w-md mx-auto">
-        Diseñado para hispanohablantes que quieren dominar Rust sin barreras.
+        {t("features.subtitle")}
       </p>
     </div>
 
@@ -36,9 +45,9 @@ import IconUsers from "~icons/tabler/users"
           <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
             <IconDeviceLaptop font-size={22} class="text-yellow" />
           </span>
-          <h3 class="text-xl font-bold mb-2">Editor integrado en el navegador</h3>
+          <h3 class="text-xl font-bold mb-2">{t("features.integrated_editor")}</h3>
           <p class="text-secondary/50 text-sm leading-relaxed max-w-sm">
-            Escribe y ejecuta Rust real directamente desde el navegador gracias al Rust Playground. Sin instalaciones, sin configuraciones.
+            {t("features.integrated_editor_desc")}
           </p>
         </div>
         <!-- mini mock editor -->
@@ -51,10 +60,10 @@ import IconUsers from "~icons/tabler/users"
           </div>
           <div class="px-5 py-3">
             <div><span class="text-[#ff79c6]">fn</span> <span class="text-[#50fa7b]">main</span><span class="text-secondary/40">()</span> <span class="text-secondary/40">&lbrace;</span></div>
-            <div class="pl-4"><span class="text-[#ff79c6]">println!</span><span class="text-secondary/40">(</span><span class="text-[#f1fa8c]">"¡Hola, Rust!"</span><span class="text-secondary/40">);</span></div>
+            <div class="pl-4"><span class="text-[#ff79c6]">println!</span><span class="text-secondary/40">(</span><span class="text-[#f1fa8c]">"{t("features.hello_rust")}"</span><span class="text-secondary/40">);</span></div>
             <div><span class="text-secondary/40">&rbrace;</span></div>
           </div>
-          <div class="px-5 py-2 border-t border-stroke-color/60 text-[#28c840] text-[10px]">✓ ¡Hola, Rust!</div>
+          <div class="px-5 py-2 border-t border-stroke-color/60 text-[#28c840] text-[10px]">✓ {t("features.hello_rust")}</div>
         </div>
       </div>
 
@@ -65,9 +74,9 @@ import IconUsers from "~icons/tabler/users"
           <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
             <IconBrandRust font-size={22} class="text-yellow" />
           </span>
-          <h3 class="text-xl font-bold mb-2">Rust real</h3>
+          <h3 class="text-xl font-bold mb-2">{t("features.real_rust")}</h3>
           <p class="text-secondary/50 text-sm leading-relaxed flex-1">
-            No simulaciones. Ejecutas el compilador real de Rust con errores reales y salidas reales.
+            {t("features.real_rust_desc")}
           </p>
           <div class="mt-6 px-3 py-2 rounded-lg bg-primary/50 border border-stroke-color/50 font-mono text-xs text-[#ff5f57]">
             error[E0308]: mismatched types
@@ -82,9 +91,9 @@ import IconUsers from "~icons/tabler/users"
           <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
             <IconLanguage font-size={22} class="text-yellow" />
           </span>
-          <h3 class="text-xl font-bold mb-2">100% en Español</h3>
+          <h3 class="text-xl font-bold mb-2">{t("features.spanish_100")}</h3>
           <p class="text-secondary/50 text-sm leading-relaxed">
-            Lecciones, explicaciones y ejercicios escritos en español claro y preciso para hispanohablantes.
+            {t("features.spanish_100_desc")}
           </p>
         </div>
       </div>
@@ -96,16 +105,16 @@ import IconUsers from "~icons/tabler/users"
           <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
             <IconProgress font-size={22} class="text-yellow" />
           </span>
-          <h3 class="text-xl font-bold mb-2">Progreso guardado</h3>
+          <h3 class="text-xl font-bold mb-2">{t("features.saved_progress")}</h3>
           <p class="text-secondary/50 text-sm leading-relaxed flex-1">
-            Tu avance se guarda automáticamente. Retoma donde lo dejaste, en cualquier dispositivo.
+            {t("features.saved_progress_desc")}
           </p>
           <!-- mini progress bar -->
           <div class="mt-6 space-y-2">
             {[
-              { label: "Ownership", pct: 100 },
-              { label: "Borrowing", pct: 70 },
-              { label: "Structs", pct: 30 },
+              { label: t("features.ownership"), pct: 100 },
+              { label: t("features.borrowing"), pct: 70 },
+              { label: t("features.structs"), pct: 30 },
             ].map(({ label, pct }) => (
               <div class="flex items-center gap-3 text-[10px]">
                 <span class="text-secondary/40 w-16 shrink-0">{label}</span>
@@ -126,18 +135,18 @@ import IconUsers from "~icons/tabler/users"
             <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
               <IconCertificate font-size={22} class="text-yellow" />
             </span>
-            <h3 class="text-xl font-bold mb-2">Certificado al finalizar</h3>
+            <h3 class="text-xl font-bold mb-2">{t("features.certificate_completion")}</h3>
             <p class="text-secondary/50 text-sm leading-relaxed">
-              Completa el track y obtén un certificado verificable para compartir en redes.
+              {t("features.certificate_completion_desc")}
             </p>
           </div>
           <div class="border-t border-stroke-color/40 pt-6">
             <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
               <IconUsers font-size={22} class="text-yellow" />
             </span>
-            <h3 class="text-xl font-bold mb-2">Comunidad activa</h3>
+            <h3 class="text-xl font-bold mb-2">{t("features.active_community")}</h3>
             <p class="text-secondary/50 text-sm leading-relaxed">
-              Miles de personas aprendiendo Rust en español en Discord y GitHub.
+              {t("features.active_community_desc")}
             </p>
           </div>
         </div>
@@ -150,17 +159,17 @@ import IconUsers from "~icons/tabler/users"
           <span class="flex items-center justify-center w-11 h-11 rounded-xl bg-yellow/10 border border-yellow/20 mb-5">
             <IconBolt font-size={22} class="text-yellow" />
           </span>
-          <h3 class="text-xl font-bold mb-2">Feedback instantáneo</h3>
+          <h3 class="text-xl font-bold mb-2">{t("features.instant_feedback")}</h3>
           <p class="text-secondary/50 text-sm leading-relaxed max-w-xs">
-            Cada ejercicio valida tu solución automáticamente. Sabrás exactamente qué falta y por qué.
+            {t("features.instant_feedback_desc")}
           </p>
         </div>
         <div class="relative z-10 flex-1 w-full">
           <div class="grid grid-cols-3 gap-2 text-center">
             {[
-              { value: "39", label: "ejercicios" },
-              { value: "<1s", label: "tiempo de ejecución" },
-              { value: "0", label: "instalaciones" },
+              { value: "39", label: t("features.exercises") },
+              { value: "<1s", label: t("features.execution_time") },
+              { value: "0", label: t("features.installations") },
             ].map(({ value, label }) => (
               <div class="py-4 rounded-xl bg-primary/50 border border-stroke-color/40">
                 <p class="text-2xl font-extrabold text-yellow">{value}</p>

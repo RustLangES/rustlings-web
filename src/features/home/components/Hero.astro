@@ -8,9 +8,16 @@ import IconBolt from "~icons/tabler/bolt"
 import IconBook from "~icons/tabler/book"
 import IconTrophy from "~icons/tabler/trophy"
 import IconUser from "~icons/tabler/user"
-import IconWorldCheck from "~icons/tabler/world-check"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
 const user = Astro.locals.user
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
@@ -34,24 +41,48 @@ const user = Astro.locals.user
   ></div>
 
   <!-- Auth link -->
-  {user ? (
-    <a
-      href="/perfil"
-      class="absolute top-6 right-6 flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-    >
-      <IconUser font-size={16} />
-      <span class="hidden sm:inline">{user.username ?? user.email}</span>
-    </a>
-  ) : (
-    <a
-      href="/login"
-      class="absolute top-6 right-6 flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-      aria-label="Iniciar sesión"
-    >
-      <IconUser font-size={16} />
-      <span class="hidden sm:inline">Iniciar sesión</span>
-    </a>
-  )}
+  <div class="absolute top-6 right-6 flex items-center gap-4">
+    <!-- Language selector -->
+    <div class="flex items-center gap-2">
+      <a
+        href="/es/"
+        class={`text-xs font-medium transition-all duration-300 ${
+          lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+        }`}
+      >
+        ES
+      </a>
+      <span class="text-secondary/20">|</span>
+      <a
+        href="/en/"
+        class={`text-xs font-medium transition-all duration-300 ${
+          lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+        }`}
+      >
+        EN
+      </a>
+    </div>
+
+    <!-- Auth link -->
+    {user ? (
+      <a
+        href={`/${lang}/perfil`}
+        class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+      >
+        <IconUser font-size={16} />
+        <span class="hidden sm:inline">{user.username ?? user.email}</span>
+      </a>
+    ) : (
+      <a
+        href={`/${lang}/login`}
+        class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+        aria-label={t("hero.login")}
+      >
+        <IconUser font-size={16} />
+        <span class="hidden sm:inline">{t("hero.login")}</span>
+      </a>
+    )}
+  </div>
 
   <!-- Content wrapper -->
   <div class="relative z-10 flex flex-col items-center max-w-4xl">
@@ -59,7 +90,7 @@ const user = Astro.locals.user
     <!-- Open source badge -->
     <div class="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow/20 bg-yellow/5 text-yellow text-xs font-semibold tracking-wide uppercase">
       <span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>
-      100% Gratuito · Open Source
+      {t("hero.free_badge")}
     </div>
 
     <!-- Logo with glow -->
@@ -79,17 +110,16 @@ const user = Astro.locals.user
     </h1>
 
     <p class="text-secondary/50 text-base md:text-lg max-w-md mx-auto leading-relaxed mb-10">
-      Lecciones interactivas con editor real en el navegador.
-      Sin instalar nada. Sin excusas.
+      {t("hero.subtitle")}
     </p>
 
     <!-- CTAs -->
     <div class="flex flex-col sm:flex-row gap-3 items-center mb-16">
       <a
-        href="/aprender"
+        href={`/${lang}/aprender`}
         class="group flex items-center gap-2 px-8 py-3.5 rounded-xl bg-yellow text-primary font-bold text-sm hover:bg-yellow/90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/20"
       >
-        Empezar gratis
+        {t("hero.start_free")}
         <IconArrowRight font-size={15} class="group-hover:translate-x-0.5 transition-transform duration-200" />
       </a>
       <a
@@ -99,16 +129,16 @@ const user = Astro.locals.user
         class="flex items-center gap-2 px-8 py-3.5 rounded-xl border border-stroke-color text-secondary/50 font-medium text-sm hover:border-yellow/40 hover:text-yellow hover:-translate-y-0.5 transition-all duration-200"
       >
         <JamGithub font-size={16} />
-        Ver código
+        {t("hero.view_code")}
       </a>
     </div>
 
     <!-- Feature pills -->
     <div class="flex flex-wrap justify-center gap-2.5">
       {[
-        { icon: IconBook, label: "39 lecciones" },
-        { icon: IconBolt, label: "Editor integrado" },
-        { icon: IconTrophy, label: "Certificados" },
+        { icon: IconBook, label: t("hero.lessons_count") },
+        { icon: IconBolt, label: t("hero.integrated_editor") },
+        { icon: IconTrophy, label: t("hero.certificates") },
       ].map(({ icon: Icon, label }) => (
         <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg/80 border border-stroke-color/50 text-secondary/45 text-xs backdrop-blur-sm">
           <Icon font-size={12} class="text-yellow shrink-0" />
@@ -120,7 +150,7 @@ const user = Astro.locals.user
 
   <!-- Scroll indicator -->
   <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-secondary/20">
-    <span class="text-xs tracking-widest uppercase font-medium">scroll</span>
+    <span class="text-xs tracking-widest uppercase font-medium">{t("hero.scroll")}</span>
     <div class="w-px h-8 bg-linear-to-b from-secondary/20 to-transparent"></div>
   </div>
 </Section>

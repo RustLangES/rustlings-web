@@ -6,6 +6,15 @@ import IconBook from "~icons/tabler/book"
 import IconExternalLink from "~icons/tabler/external-link"
 import IconInfinity from "~icons/tabler/infinity"
 import IconLockOpen from "~icons/tabler/lock-open"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
@@ -17,10 +26,10 @@ import IconLockOpen from "~icons/tabler/lock-open"
     <!-- Header -->
     <div class="text-center mb-16">
       <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-        Únete a la comunidad
+        {t("community.title")}
       </h2>
       <p class="text-secondary/50 text-lg max-w-xl mx-auto">
-        Miles de personas aprendiendo Rust en español. Resuelve dudas, comparte avances y colabora en el proyecto.
+        {t("community.subtitle")}
       </p>
     </div>
 
@@ -44,7 +53,7 @@ import IconLockOpen from "~icons/tabler/lock-open"
             <span class="font-bold text-lg">Discord</span>
           </div>
           <p class="text-secondary/60 text-sm leading-relaxed">
-            Nuestro servidor de Discord es el punto de encuentro principal. Pregunta, comparte tu progreso y conoce a otros aprendices y expertos.
+            {t("community.discord_desc")}
           </p>
         </div>
       </a>
@@ -66,7 +75,7 @@ import IconLockOpen from "~icons/tabler/lock-open"
             <span class="font-bold text-lg">GitHub</span>
           </div>
           <p class="text-secondary/60 text-sm leading-relaxed flex-1">
-            El proyecto es open source. Reporta bugs, propone mejoras o contribuye con lecciones.
+            {t("community.github_desc")}
           </p>
         </div>
       </a>
@@ -75,9 +84,9 @@ import IconLockOpen from "~icons/tabler/lock-open"
     <!-- Stats row -->
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {[
-        { value: "39", label: "lecciones gratuitas", icon: IconBook },
-        { value: "100%", label: "open source", icon: IconLockOpen },
-        { label: "posibilidades con Rust", icon: IconInfinity },
+        { value: "39", label: t("community.stats.lessons"), icon: IconBook },
+        { value: "100%", label: t("community.stats.open_source"), icon: IconLockOpen },
+        { label: t("community.stats.possibilities"), icon: IconInfinity },
       ].map(({ value, label, icon: Icon }) => (
         <div class="flex items-center gap-4 px-6 py-4 rounded-xl border border-stroke-color bg-dark-fg/50">
           <Icon class="text-yellow" font-size={24} aria-hidden="true" />
