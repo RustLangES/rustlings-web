@@ -13,7 +13,7 @@ export default defineConfig({
 	adapter: cloudflare({ platformProxy: { enabled: true }, imageService: "compile" }),
 	i18n: {
 		defaultLocale: "es",
-		locales: ["es"],
+		locales: ["es", "en"],
 	},
 	vite: {
 		plugins: [
