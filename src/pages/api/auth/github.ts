@@ -2,7 +2,7 @@ import type { APIRoute } from "astro"
 import { generateToken } from "~/lib/auth/crypto"
 
 export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
-	const { GITHUB_CLIENT_ID } = locals.runtime.env
+	const { GH_CLIENT_ID } = locals.runtime.env
 	const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1"
 
 	const lang = url.searchParams.get("lang") ?? "es"
@@ -19,7 +19,7 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 	cookies.set("oauth_lang", lang, cookieOptions)
 
 	const params = new URLSearchParams({
-		client_id: GITHUB_CLIENT_ID,
+		client_id: GH_CLIENT_ID,
 		scope: "user:email",
 		state,
 	})

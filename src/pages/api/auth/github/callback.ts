@@ -20,7 +20,7 @@ interface GitHubEmail {
 }
 
 export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
-  const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, DB } = locals.runtime.env;
+  const { GH_CLIENT_ID, GH_CLIENT_SECRET, DB } = locals.runtime.env;
 
   const code = url.searchParams.get("code");
   const state = url.searchParams.get("state");
@@ -39,8 +39,8 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
     method: "POST",
     headers: { Accept: "application/json", "Content-Type": "application/json" },
     body: JSON.stringify({
-      client_id: GITHUB_CLIENT_ID,
-      client_secret: GITHUB_CLIENT_SECRET,
+      client_id: GH_CLIENT_ID,
+      client_secret: GH_CLIENT_SECRET,
       code,
     }),
   });
