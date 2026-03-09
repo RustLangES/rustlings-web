@@ -1,15 +1,14 @@
 ---
 import { tracks } from "~/const/tracks"
+import Navbar from "~/features/content/components/Navbar.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import { getUserProgress } from "~/lib/progress-db"
-import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconCertificate from "~icons/tabler/certificate"
 import IconDownload from "~icons/tabler/download"
 import IconEdit from "~icons/tabler/edit"
 import IconInfoCircle from "~icons/tabler/info-circle"
 import IconLink from "~icons/tabler/link"
-import IconLogout from "~icons/tabler/logout"
 import IconX from "~icons/tabler/x"
 
 export function getStaticPaths() {
@@ -46,25 +45,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
 ---
 
 <Layout title={t("profile.title")}>
-  <header class="p-2 w-full shrink-0">
-    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
-      <a
-        href={`/${lang}/aprender`}
-        class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-      >
-        <IconLeft font-size={20} />
-        {t("profile.back_temario")}
-      </a>
-      <a
-        href="/api/auth/logout"
-        data-astro-reload
-        class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/50 border border-transparent rounded-lg hover:border-red-500/40 hover:text-red-400 transition-all duration-300"
-      >
-        <IconLogout font-size={16} />
-        {t("profile.logout")}
-      </a>
-    </nav>
-  </header>
+  <Navbar lang={lang} />
 
   <main class="flex-1 flex flex-col items-center px-4 py-10 gap-8">
     <div class="w-full max-w-xl flex flex-col gap-6">

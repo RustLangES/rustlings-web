@@ -2,24 +2,12 @@
 import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import { tracks } from "~/const/tracks"
-import { supportedLangs } from "~/content-manager"
+import Navbar from "~/features/content/components/Navbar.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
-import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
-import IconLogout from "~icons/tabler/logout"
-import IconUser from "~icons/tabler/user"
 
-export const prerender = true
-
-export function getStaticPaths() {
-	return supportedLangs.map((lang) => ({
-		params: { lang },
-		props: { lang },
-	}))
-}
-
-const { lang } = Astro.props
+const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 const user = Astro.locals.user
 ---
@@ -28,90 +16,7 @@ const user = Astro.locals.user
   title={t("learn.page_title")}
   description={t("learn.page_description")}
 >
-  <header class="p-2 w-full">
-    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
-      <a
-        href={`/${lang}/`}
-        class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-      >
-        <IconLeft font-size={20} />
-        {t("learn.back_home")}
-      </a>
-
-      {user ? (
-        <div class="flex items-center gap-2">
-          <!-- Language selector -->
-          <div class="flex items-center gap-2">
-            <a
-              href="/es/aprender"
-              class={`text-xs font-medium transition-all duration-300 ${
-                lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
-              }`}
-            >
-              ES
-            </a>
-            <span class="text-secondary/20">|</span>
-            <a
-              href="/en/aprender"
-              class={`text-xs font-medium transition-all duration-300 ${
-                lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
-              }`}
-            >
-              EN
-            </a>
-          </div>
-
-          <a
-            href={`/${lang}/perfil`}
-            class="flex items-center gap-2 px-3 py-1.5 text-sm text-secondary/70 border border-transparent rounded-lg hover:border-yellow/40 hover:text-secondary transition-all"
-          >
-            <IconUser font-size={16} />
-            <span class="hidden sm:inline">{user.username ?? user.email}</span>
-          </a>
-          <a
-            href="/api/auth/logout"
-            data-astro-reload
-            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/50 border border-transparent rounded-lg hover:border-red-500/40 hover:text-red-400 transition-all duration-300"
-            title={t("learn.logout")}
-          >
-            <IconLogout font-size={16} />
-            <span class="hidden sm:inline">{t("learn.logout_short")}</span>
-          </a>
-        </div>
-      ) : (
-        <div class="flex items-center gap-2">
-          <!-- Language selector -->
-          <div class="flex items-center gap-2">
-            <a
-              href="/es/aprender"
-              class={`text-xs font-medium transition-all duration-300 ${
-                lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
-              }`}
-            >
-              ES
-            </a>
-            <span class="text-secondary/20">|</span>
-            <a
-              href="/en/aprender"
-              class={`text-xs font-medium transition-all duration-300 ${
-                lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
-              }`}
-            >
-              EN
-            </a>
-          </div>
-
-          <a
-            href={`/${lang}/login`}
-            class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-          >
-            <IconUser font-size={16} />
-            {t("learn.login")}
-          </a>
-        </div>
-      )}
-    </nav>
-  </header>
+  <Navbar lang={lang} />
 
   <main class="flex-1 flex flex-col px-6 py-12">
 
