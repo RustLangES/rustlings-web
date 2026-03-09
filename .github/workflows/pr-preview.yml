@@ -73,8 +73,8 @@ jobs:
         run: npm install
       - name: Build
         env:
-          NUXT_CLARITY_ID: ${{ secrets.CLARITY_ID }}
-        run: npm run build --preset=cloudflare_pages
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
+        run: npm run build
 
       # Deploy steps
       - name: Normalize alias
