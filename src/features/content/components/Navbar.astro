@@ -19,12 +19,11 @@ const lessons = getLessonsByLang(lang)
 const t = useTranslations(lang)
 
 // Detect special pages that show a back button instead of the sidebar toggle
-const isLearnPage = Astro.url.pathname.includes('/aprender')
-const isProfilePage = Astro.url.pathname.includes('/perfil')
+const isLearnPage = Astro.url.pathname.includes("/aprender")
+const isProfilePage = Astro.url.pathname.includes("/perfil")
 
 // Language switch URLs: keep current path, swap the lang segment
-const switchLang = (targetLang: string) =>
-	Astro.url.pathname.replace(/^\/(es|en)/, `/${targetLang}`)
+const switchLang = (targetLang: string) => Astro.url.pathname.replace(/^\/(es|en)/, `/${targetLang}`)
 
 type GroupedLesson = { parent: Content; children: Content[] }
 
