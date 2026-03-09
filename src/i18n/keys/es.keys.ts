@@ -371,4 +371,32 @@ export const es_keys = {
 	"learn.lessons": "lecciones",
 	"learn.progress_of": "de",
 	"learn.continue_label": "Continuar:",
+
+	// Editor/Terminal buttons
+	"editor.reset": "Reiniciar",
+	"editor.run": "Ejecutar",
+	"editor.running": "Ejecutando...",
+	"editor.output_label": "Salida",
+
+	// Navigation buttons
+	"nav.previous": "Anterior",
+	"nav.next": "Siguiente",
+	"nav.content": "Contenido",
+	"nav.code": "Código",
+	"nav.terminal": "Terminal",
+
+	// Lesson page
+	"lesson.tab_content": "Contenido",
+	"lesson.tab_editor": "Editor",
+	"lesson.tab_terminal": "Terminal",
+
+	// Toasts
+	"toast.run_required_title": "Ejecuta el código",
+	"toast.run_required_desc": "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+	"toast.completed_title": "¡Lo lograste! 🦀",
+	"toast.completed_desc": "Completaste {trackTitle}. Encuentra tu certificado en tu perfil.",
+
+	// Auth
+	"auth.login_required_title": "Inicia sesión requerida",
+	"auth.login_required_desc": "Debes iniciar sesión para acceder al curso",
 }

@@ -1,4 +1,5 @@
 ---
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconLoader2 from "~icons/tabler/loader-2"
 import IconPlayerPlay from "~icons/tabler/player-play"
 import IconRestore from "~icons/tabler/restore"
@@ -11,6 +12,8 @@ interface Props {
 
 const { expectedOutput, testCode } = Astro.props
 const isTestMode = !!testCode
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <terminal-output
@@ -41,22 +44,22 @@ const isTestMode = !!testCode
 				id="btn-reset"
 				class="btn-control hover:text-yellow"
 				type="button"
-				aria-label="Reset code"
+				aria-label={t("editor.reset")}
 			>
 				<IconRestore font-size={14} />
-				<span>Reiniciar</span>
+				<span>{t("editor.reset")}</span>
 			</button>
 
 			<button
 				id="btn-run"
 				class="btn-control hover:text-green-500"
 				type="button"
-				aria-label="Run code"
+				aria-label={t("editor.run")}
 			>
 				<IconPlayerPlay class="group-data-running:hidden" font-size={14} />
 				<IconLoader2 class="hidden animate-spin group-data-running:block" font-size={14} />
-				<span class="group-data-running:hidden">Ejecutar</span>
-				<span class="hidden group-data-running:inline">Ejecutando...</span>
+				<span class="group-data-running:hidden">{t("editor.run")}</span>
+				<span class="hidden group-data-running:inline">{t("editor.running")}</span>
 			</button>
 		</div>
 	</header>
@@ -78,22 +81,22 @@ const isTestMode = !!testCode
 			<button
 				id="btn-reset-mobile"
 				type="button"
-				aria-label="Reset code"
+				aria-label={t("editor.reset")}
 				class="flex-1 flex items-center justify-center gap-2 py-3 text-sm text-secondary/60 border-r border-stroke-color hover:bg-stroke-color/20 active:bg-stroke-color/40 transition-colors cursor-pointer touch-manipulation"
 			>
 				<IconRestore font-size={18} />
-				<span>Reiniciar</span>
+				<span>{t("editor.reset")}</span>
 			</button>
 			<button
 				id="btn-run-mobile"
 				type="button"
-				aria-label="Run code"
+				aria-label={t("editor.run")}
 				class="flex-1 flex items-center justify-center gap-2 py-3 text-sm text-green-400 hover:bg-green-500/10 active:bg-green-500/20 transition-colors cursor-pointer touch-manipulation"
 			>
 				<IconPlayerPlay class="group-data-running:hidden" font-size={18} />
 				<IconLoader2 class="hidden animate-spin group-data-running:block" font-size={18} />
-				<span class="group-data-running:hidden">Ejecutar</span>
-				<span class="hidden group-data-running:inline">Ejecutando...</span>
+				<span class="group-data-running:hidden">{t("editor.run")}</span>
+				<span class="hidden group-data-running:inline">{t("editor.running")}</span>
 			</button>
 		</div>
 		<div class="hidden items-center gap-2 border-t border-stroke-color px-3 py-2 group-data-running:flex">

@@ -1,4 +1,31 @@
-import type { Track } from "~/entities/track"
+import type { Track, TrackI18n } from "~/entities/track"
+
+export const tracksI18n: Record<string, TrackI18n> = {
+	"fundamentos-de-rust": {
+		es: {
+			title: "Fundamentos de Rust",
+			description:
+				"Aprende Rust desde los fundamentos: sintaxis, ownership, borrowing y más. Ideal si nunca has programado en Rust.",
+		},
+		en: {
+			title: "Rust Fundamentals",
+			description:
+				"Learn Rust from the ground up: syntax, ownership, borrowing and more. Ideal if you've never programmed in Rust.",
+		},
+	},
+	"rust-avanzado-diseno-abstraccion": {
+		es: {
+			title: "Rust Avanzado: Diseño y Abstracción",
+			description:
+				"Profundiza en Rust con temas avanzados como lifetimes, traits, macros y programación asíncrona. Ideal para quienes ya conocen los fundamentos.",
+		},
+		en: {
+			title: "Advanced Rust: Design and Abstraction",
+			description:
+				"Deep dive into Rust with advanced topics like lifetimes, traits, macros and async programming. Ideal for those who already know the fundamentals.",
+		},
+	},
+}
 
 export const tracks: Track[] = [
 	{

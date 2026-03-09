@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
-import { tracks } from "~/const/tracks"
+import { tracks, tracksI18n } from "~/const/tracks"
 import { supportedLangs } from "~/content-manager"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
@@ -10,18 +10,17 @@ import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
 import IconLogout from "~icons/tabler/logout"
 import IconUser from "~icons/tabler/user"
 
-export const prerender = true
-
-export function getStaticPaths() {
-	return supportedLangs.map((lang) => ({
-		params: { lang },
-		props: { lang },
-	}))
-}
+export const prerender = false
 
 const { lang } = Astro.props
 const t = useTranslations(lang)
 const user = Astro.locals.user
+
+function getTrackData(trackId: string, lang: string) {
+	const i18n = tracksI18n[trackId]
+	if (!i18n) return { title: "", description: "" }
+	return i18n[lang as "es" | "en"] ?? i18n.es
+}
 ---
 
 <Layout
@@ -122,8 +121,9 @@ const user = Astro.locals.user
 
     <div class="flex flex-col items-center">
       <div class="w-full max-w-2xl flex flex-col gap-4">
-        {tracks.map(track => (
-          track.disabled ? (
+        {tracks.map(track => {
+          const trackData = getTrackData(track.id, lang)
+          return track.disabled ? (
             <div class="relative flex gap-3 sm:gap-6 items-start bg-light-bg/40 border border-stroke-color/40 rounded-2xl p-4 sm:p-6 cursor-not-allowed opacity-50 select-none">
               <div class="absolute top-3 right-3 flex items-center gap-1.5">
                 <span class="text-xs bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-full whitespace-nowrap">
@@ -139,8 +139,8 @@ const user = Astro.locals.user
               </div>
 
               <div class="flex flex-col gap-1.5 flex-1 min-w-0">
-                <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{track.title}</span>
-                <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{track.description}</p>
+                <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{trackData.title}</span>
+                <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{trackData.description}</p>
                 <span class="text-secondary/30 text-xs">{track.lessons} {t("learn.lessons")}</span>
               </div>
             </div>
@@ -148,10 +148,12 @@ const user = Astro.locals.user
             <div
               data-track-id={track.id}
               data-track-total={track.lessons}
-              data-track-title={track.title}
-              data-track-href={`/${lang}${track.href}`}
+              data-track-title={trackData.title}
+              data-track-href={user ? `/${lang}${track.href}` : `/${lang}/login`}
               data-track-lang={lang}
               data-track-slugs={JSON.stringify(track.slugs)}
+              data-requires-auth={!user}
+              data-original-track-href={`/${lang}${track.href}`}
               class="group relative flex gap-3 sm:gap-6 items-start bg-light-bg border border-stroke-color rounded-2xl p-4 sm:p-6 hover:border-yellow transition-all duration-200 cursor-pointer"
             >
               <span class="absolute top-3 right-3 text-xs bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-full whitespace-nowrap">
@@ -164,9 +166,9 @@ const user = Astro.locals.user
 
               <div class="flex flex-col gap-1.5 sm:gap-2 flex-1 min-w-0">
                 <span class="text-secondary font-bold text-base sm:text-xl group-hover:text-yellow transition-colors leading-tight pr-20">
-                  {track.title}
+                  {trackData.title}
                 </span>
-                <p class="text-secondary/60 text-xs sm:text-sm leading-relaxed">{track.description}</p>
+                <p class="text-secondary/60 text-xs sm:text-sm leading-relaxed">{trackData.description}</p>
 
                 <!-- Progress bar (hidden until JS populates it) -->
                 <div data-progress-container class="hidden flex-col gap-1 mt-0.5">
@@ -188,7 +190,7 @@ const user = Astro.locals.user
               </span>
             </div>
           )
-        ))}
+        })}
       </div>
     </div>
 
@@ -198,15 +200,12 @@ const user = Astro.locals.user
 
 <script>
   import { db } from "~/lib/stores/editor-store"
-  import { getTrackProgress } from "~/lib/progress"
   import { useTranslations, getLangFromUrl } from "~/i18n/utils"
 
   document.addEventListener("astro:page-load", async () => {
-    // Get translations for JavaScript usage
     const currentLang = getLangFromUrl(new URL(window.location.href))
     const t = useTranslations(currentLang)
 
-    // Sync server progress + last lesson positions (no-op if not logged in)
     await db.syncFromServer()
 
     const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
@@ -216,19 +215,15 @@ const user = Astro.locals.user
       const total = Number(card.dataset.trackTotal)
       const lang = card.dataset.trackLang ?? "es"
       const slugs: string[] = JSON.parse(card.dataset.trackSlugs ?? "[]")
+      const requiresAuth = card.dataset.requiresAuth === "true"
 
-      // Use server-synced IndexedDB completions as source of truth
       const completions = slugs.length > 0
         ? await Promise.all(slugs.map((s) => db.isCompleted(s)))
         : []
       const completedCount = completions.filter(Boolean).length
 
-      // Fall back to visited count if no completions yet
-      const visited = getTrackProgress(trackId)
-      const displayCount = completedCount > 0 ? completedCount : visited.length
-
-      if (displayCount > 0) {
-        const pct = Math.round((displayCount / total) * 100)
+      if (completedCount > 0) {
+        const pct = Math.round((completedCount / total) * 100)
         const container = card.querySelector<HTMLElement>("[data-progress-container]")
         const label = card.querySelector<HTMLElement>("[data-progress-label]")
         const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
@@ -236,7 +231,7 @@ const user = Astro.locals.user
         const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
 
         if (container && label && pctEl && bar) {
-          label.textContent = `${displayCount} ${t("learn.progress_of")} ${total} ${t("learn.lessons")}`
+          label.textContent = `${completedCount} ${t("learn.progress_of")} ${total} ${t("learn.lessons")}`
           pctEl.textContent = `${pct}%`
           bar.style.width = `${pct}%`
           container.classList.remove("hidden")
@@ -245,9 +240,8 @@ const user = Astro.locals.user
         }
       }
 
-      // If server has a last lesson, update navigation target and show resume label
       const lastLesson = db.lastLesson[trackId]
-      if (lastLesson) {
+      if (lastLesson && !requiresAuth) {
         card.dataset.trackHref = `/${lang}/${lastLesson.slug}`
         const resumeLabel = card.querySelector<HTMLElement>("[data-resume-label]")
         if (resumeLabel) {
@@ -256,9 +250,17 @@ const user = Astro.locals.user
         }
       }
 
-      // Card click → navigate
-      card.addEventListener("click", () => {
-        window.location.href = card.dataset.trackHref!
+      card.addEventListener("click", (e) => {
+        e.preventDefault()
+        const requiresAuth = card.dataset.requiresAuth === "true"
+        const trackHref = card.dataset.trackHref
+        const originalTrackHref = card.dataset.originalTrackHref
+        
+        if (requiresAuth || !trackHref) {
+          window.location.href = `/${lang}/login?returnUrl=${encodeURIComponent(originalTrackHref!)}`
+        } else {
+          window.location.href = trackHref
+        }
       })
     }
   })

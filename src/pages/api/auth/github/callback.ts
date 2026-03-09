@@ -22,10 +22,18 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 	const state = url.searchParams.get("state")
 	const storedState = cookies.get("oauth_state")?.value
 
+	let lang = "es"
+	if (storedState) {
+		const parts = storedState.split(":")
+		if (parts.length === 2 && ["es", "en"].includes(parts[1])) {
+			lang = parts[1]
+		}
+	}
+
 	cookies.delete("oauth_state", { path: "/" })
 
 	if (!code || !state || state !== storedState) {
-		return redirect("/login?error=oauth_invalid")
+		return redirect(`/${lang}/login?error=oauth_invalid`)
 	}
 
 	// Intercambiar code por access_token
@@ -43,11 +51,11 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 	try {
 		tokenData = await tokenRes.json()
 	} catch {
-		return redirect("/login?error=oauth_token")
+		return redirect(`/${lang}/login?error=oauth_token`)
 	}
 
 	if (!tokenData.access_token) {
-		return redirect("/login?error=oauth_token")
+		return redirect(`/${lang}/login?error=oauth_token`)
 	}
 
 	const accessToken = tokenData.access_token
@@ -72,12 +80,12 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 		ghUser = JSON.parse(userText)
 		ghEmails = JSON.parse(emailsText)
 	} catch {
-		return redirect("/login?error=oauth_token")
+		return redirect(`/${lang}/login?error=oauth_token`)
 	}
 
 	const primaryEmail = ghEmails.find((e) => e.primary && e.verified)?.email ?? ghUser.email
 	if (!primaryEmail) {
-		return redirect("/login?error=no_email")
+		return redirect(`/${lang}/login?error=no_email`)
 	}
 
 	const providerId = String(ghUser.id)
@@ -106,8 +114,8 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 
 		const token = await createSession(DB, user.id)
 		cookies.set(SESSION_COOKIE, token, sessionCookieOptions())
-		return redirect("/es/aprender")
+		return redirect(`/${lang}/aprender`)
 	} catch {
-		return redirect("/login?error=oauth_token")
+		return redirect(`/${lang}/login?error=oauth_token`)
 	}
 }

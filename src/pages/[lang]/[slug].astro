@@ -5,6 +5,7 @@ import { tracks } from "~/const/tracks"
 import { getLessonsByLang, supportedLangs } from "~/content-manager"
 import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
+import { useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconBook from "~icons/tabler/book"
 import IconChevronDown from "~icons/tabler/chevron-down"
@@ -33,6 +34,11 @@ export function getStaticPaths() {
 
 const { lesson, lang, previousLesson, nextLesson } = Astro.props
 const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
+const t = useTranslations(lang as "es" | "en")
+
+if (!Astro.locals.user) {
+	return Astro.redirect(`/${lang}/login?returnUrl=${encodeURIComponent(Astro.url.pathname)}`)
+}
 ---
 
 <style>
@@ -256,19 +262,19 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors ${!previousLesson ? "text-secondary/20 pointer-events-none" : "text-secondary/40 cursor-pointer hover:text-secondary"}`}
     >
       <IconChevronLeft font-size={20} />
-      <span class="text-[10px] font-medium">Anterior</span>
+      <span class="text-[10px] font-medium">{t("nav.previous")}</span>
     </a>
     <button id="tab-content" class="flex-1 flex flex-col items-center gap-1 py-2.5 text-yellow transition-colors cursor-pointer touch-manipulation">
       <IconBook font-size={20} />
-      <span class="text-[10px] font-medium">Contenido</span>
+      <span class="text-[10px] font-medium">{t("nav.content")}</span>
     </button>
     <button id="tab-editor" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors cursor-pointer touch-manipulation ${lesson.data.editor === false ? "text-secondary/20 opacity-30" : "text-secondary/40"}`}>
       <IconCode font-size={20} />
-      <span class="text-[10px] font-medium">Código</span>
+      <span class="text-[10px] font-medium">{t("nav.code")}</span>
     </button>
     <button id="tab-terminal" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors cursor-pointer touch-manipulation ${lesson.data.editor === false ? "text-secondary/20 opacity-30" : "text-secondary/40"}`}>
       <IconTerminal font-size={20} />
-      <span class="text-[10px] font-medium">Terminal</span>
+      <span class="text-[10px] font-medium">{t("nav.terminal")}</span>
     </button>
     <a
       id="mobile-next-btn"
@@ -277,7 +283,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors aria-disabled:text-secondary/20 aria-disabled:opacity-50 ${nextLesson ? "text-secondary/40 cursor-pointer hover:text-secondary" : ""}`}
     >
       <IconChevronRight font-size={20} />
-      <span class="text-[10px] font-medium">Siguiente</span>
+      <span class="text-[10px] font-medium">{t("nav.next")}</span>
     </a>
   </nav>
 </Layout>
@@ -316,21 +322,20 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 </script>
 
 <script>
-  import { markLessonVisited } from "~/lib/progress"
   import { db } from "~/lib/stores/editor-store"
+  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
 
   document.addEventListener("astro:page-load", async () => {
     const tracker = document.getElementById("lesson-tracker")
     const trackId = tracker?.dataset.trackId ?? "visited"
     const slug = tracker?.dataset.slug ?? window.location.pathname.split("/").pop()
-    if (slug) markLessonVisited(trackId, slug)
+    const currentLang = getLangFromUrl(new URL(window.location.href))
+    const t = useTranslations(currentLang)
 
-    // Track lesson position on server (enables "login anywhere" resume)
     if (slug && trackId !== "visited") {
       db.visitLesson(slug, trackId)
     }
 
-    // Non-editor lessons complete on visit (no exercise to run)
     const isNonEditor = document.querySelector("[data-panel='right']")?.classList.contains("collapsed")
     if (isNonEditor && slug) {
       await db.markCompleted(slug, trackId)
@@ -342,8 +347,12 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 <script>
   import { db } from "~/lib/stores/editor-store"
   import { toast } from "~/utils/toasts"
+  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
 
   document.addEventListener("astro:page-load", async () => {
+    const currentLang = getLangFromUrl(new URL(window.location.href))
+    const t = useTranslations(currentLang)
+
     const btn = document.getElementById("mobile-next-btn") as HTMLAnchorElement | null
     if (!btn || !btn.href) return
 
@@ -351,8 +360,8 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       if (btn.ariaDisabled === "true") {
         e.preventDefault()
         toast.info(
-          "Ejecuta el código",
-          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+          t("toast.run_required_title"),
+          t("toast.run_required_desc"),
         )
       }
     })
@@ -384,7 +393,6 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       if (resizer.dataset.direction === "vertical" && window.innerWidth < 1024)
         return;
 
-      // Check if editor is disabled by looking for collapsed class on right panel
       const container = resizer.parentElement!;
       const rightPanel =
         container.querySelector<HTMLElement>("[data-panel='right']") ??
@@ -516,29 +524,31 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 <script>
   import { toast } from "~/utils/toasts"
   import { db } from "~/lib/stores/editor-store"
+  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
+
+  const shownTrackToasts = new Set<string>()
 
   document.addEventListener("astro:page-load", () => {
     window.addEventListener("lesson:completed", async () => {
       const tracker = document.getElementById("lesson-tracker")
       const trackId = tracker?.dataset.trackId
       const trackTitle = tracker?.dataset.trackTitle ?? "el curso"
+      const currentLang = getLangFromUrl(new URL(window.location.href))
+      const t = useTranslations(currentLang)
       if (!trackId) return
 
-      // Only show once per track
-      const tourKey = `cert-tour-${trackId}`
-      if (localStorage.getItem(tourKey)) return
+      if (shownTrackToasts.has(trackId)) return
 
-      // Check if ALL lessons in this track are now completed
       const trackSlugs: string[] = JSON.parse(tracker?.dataset.trackSlugs ?? "[]")
       if (!trackSlugs.length) return
       const results = await Promise.all(trackSlugs.map((s) => db.isCompleted(s)))
       if (!results.every(Boolean)) return
 
-      localStorage.setItem(tourKey, "1")
+      shownTrackToasts.add(trackId)
 
       toast.success(
-        "¡Lo lograste! 🦀", 
-        `Completaste ${trackTitle}. Encuentra tu certificado en tu perfil.`
+        t("toast.completed_title"),
+        t("toast.completed_desc").replace("{trackTitle}", trackTitle)
       )
     })
   })

@@ -243,7 +243,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
   </main>
 </Layout>
 
-<script define:vars={{ 
+<script define:vars={{
   userData: {
     id: user.id,
     email: user.email,
@@ -260,28 +260,27 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
   }
 }}>
   import { initAuthStore, authActions } from "~/lib/stores/auth-store"
-  
+
   document.addEventListener("astro:page-load", () => {
-    // Initialize auth store with current user data
     initAuthStore(userData, nameLocked)
+
+    const editBtn = document.getElementById("edit-profile")
+    const saveBtn = document.getElementById("save-profile")
+    const input = document.getElementById("full-name")
+    const errorEl = document.getElementById("profile-error")
+    const successEl = document.getElementById("profile-success")
+    if (!editBtn || !saveBtn || !input || !errorEl || !successEl) return
     
-    const editBtn = document.getElementById("edit-profile") as HTMLButtonElement
-    const saveBtn = document.getElementById("save-profile") as HTMLButtonElement
-    const input = document.getElementById("full-name") as HTMLInputElement
-    const errorEl = document.getElementById("profile-error")!
-    const successEl = document.getElementById("profile-success")!
-    const editIcon = editBtn?.querySelector(".edit-icon")
-    const cancelIcon = editBtn?.querySelector(".cancel-icon")
-    const editLabel = editBtn?.querySelector(".edit-label")
+    const editIcon = editBtn.querySelector(".edit-icon")
+    const cancelIcon = editBtn.querySelector(".cancel-icon")
+    const editLabel = editBtn.querySelector(".edit-label")
 
     let isEditing = false
 
-    // Toggle edit mode
-    editBtn?.addEventListener("click", () => {
+    editBtn.addEventListener("click", () => {
       isEditing = !isEditing
-      
+
       if (isEditing) {
-        // Enter edit mode
         input.disabled = false
         input.focus()
         saveBtn.classList.remove("hidden")
@@ -291,9 +290,8 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         errorEl.classList.add("hidden")
         successEl.classList.add("hidden")
       } else {
-        // Exit edit mode (cancel)
         input.disabled = true
-        input.value = input.defaultValue // Reset to original value
+        input.value = input.defaultValue  // Reset to original value
         saveBtn.classList.add("hidden")
         editIcon?.classList.remove("hidden")
         cancelIcon?.classList.add("hidden")
@@ -303,8 +301,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
       }
     })
 
-    // Save profile
-    saveBtn?.addEventListener("click", async () => {
+    saveBtn.addEventListener("click", async () => {
       saveBtn.disabled = true
       saveBtn.textContent = translations.saveButtonLoading
       errorEl.classList.add("hidden")
@@ -320,34 +317,33 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
       saveBtn.textContent = translations.saveButton
 
       if (res.ok) {
-        // Success: exit edit mode and update default value
         input.defaultValue = input.value
         isEditing = false
         input.disabled = true
         saveBtn.classList.add("hidden")
-        editIcon?.classList.remove("hidden")
-        cancelIcon?.classList.add("hidden")
+        if (editIcon) editIcon.classList.remove("hidden")
+        if (cancelIcon) cancelIcon.classList.add("hidden")
         if (editLabel) editLabel.textContent = translations.editButton
-        
-        // Update auth store with new name
+
         authActions.updateFullName(input.value)
-        
+
         successEl.classList.remove("hidden")
         setTimeout(() => successEl.classList.add("hidden"), 3000)
       } else {
-        const { error } = await res.json() as { error: string }
+        const { error } = await res.json()
         errorEl.textContent = error
         errorEl.classList.remove("hidden")
       }
     })
 
-    // Copy verification link
-    document.querySelectorAll<HTMLButtonElement>("[data-copy-link]").forEach((btn) => {
+    document.querySelectorAll("[data-copy-link]").forEach((btn) => {
       btn.addEventListener("click", async () => {
-        const path = btn.dataset.copyLink!
+        const path = btn.dataset.copyLink
+        if (!path) return
         const url = `${window.location.origin}${path}`
         await navigator.clipboard.writeText(url)
-        const label = btn.querySelector(".copy-label")!
+        const label = btn.querySelector(".copy-label")
+        if (!label) return
         const original = label.textContent
         label.textContent = translations.certificateCopied
         btn.classList.add("border-yellow", "text-yellow")

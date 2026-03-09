@@ -21,12 +21,12 @@ export async function hashPassword(password: string): Promise<string> {
 	const keyMaterial = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, [
 		"deriveBits",
 	])
-	const hash = await crypto.subtle.deriveBits(
+	const hash = (await crypto.subtle.deriveBits(
 		{ name: "PBKDF2", salt, iterations: ITERATIONS, hash: "SHA-256" },
 		keyMaterial,
 		HASH_LENGTH * 8,
-	)
-	return `${bufToHex(salt)}:${bufToHex(hash)}`
+	)) as ArrayBuffer
+	return `${bufToHex(salt.buffer)}:${bufToHex(hash)}`
 }
 
 export async function verifyPassword(password: string, stored: string): Promise<boolean> {
@@ -36,16 +36,16 @@ export async function verifyPassword(password: string, stored: string): Promise<
 	const keyMaterial = await crypto.subtle.importKey("raw", new TextEncoder().encode(password), "PBKDF2", false, [
 		"deriveBits",
 	])
-	const hash = await crypto.subtle.deriveBits(
+	const hash = (await crypto.subtle.deriveBits(
 		{ name: "PBKDF2", salt, iterations: ITERATIONS, hash: "SHA-256" },
 		keyMaterial,
 		HASH_LENGTH * 8,
-	)
+	)) as ArrayBuffer
 	return bufToHex(hash) === hashHex
 }
 
 export function generateToken(): string {
-	return bufToHex(crypto.getRandomValues(new Uint8Array(32)))
+	return bufToHex(crypto.getRandomValues(new Uint8Array(32)).buffer)
 }
 
 export function generateId(): string {

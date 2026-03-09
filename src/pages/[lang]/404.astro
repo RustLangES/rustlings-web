@@ -1,7 +1,5 @@
 ---
-import { Image } from "astro:assets"
-import img404 from "~/assets/images/webp/404.png"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import { useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 
@@ -11,14 +9,14 @@ export function getStaticPaths() {
 	return [{ params: { lang: "es" } }, { params: { lang: "en" } }]
 }
 
-const lang = getLangFromUrl(Astro.url)
+const lang = Astro.params.lang as "es" | "en"
 const t = useTranslations(lang)
 ---
 
 <Layout title={t("404.title")}>
   <main class="flex-1 flex flex-col items-center justify-center px-4 gap-8">
-    <Image
-      src={img404}
+    <img
+      src="/404.png"
       alt={t("404.image_alt")}
       class="w-full max-w-lg h-auto select-none pointer-events-none"
     />

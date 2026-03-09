@@ -27,7 +27,7 @@ export function getDisplayName(): string {
  * Verifica si el usuario puede editar su nombre
  */
 export function canEditName(): boolean {
-	return authActions.canEditName()
+	return !!authActions.canEditName()
 }
 
 /**

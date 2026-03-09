@@ -1,7 +1,7 @@
 ---
 import logoSvgUrl from "~/assets/Rust_Lang_ES_Logo_Blanco_color.svg?url"
 import { tracks } from "~/const/tracks"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import { useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 
@@ -17,7 +17,7 @@ export function getStaticPaths() {
 }
 
 const { track } = Astro.props
-const lang = getLangFromUrl(Astro.url)
+const lang = Astro.params.lang as "es" | "en"
 const t = useTranslations(lang)
 ---
 
@@ -52,7 +52,7 @@ const t = useTranslations(lang)
             {t("certificate.success_message_1")}
           </p>
           <p class="text-secondary/70 text-xs leading-relaxed">
-            {t("certificate.success_message_2", { trackTitle: track.title })}
+            {t("certificate.success_message_2").replace("{trackTitle}", track.title)}
           </p>
           <p class="text-yellow/60 text-xs font-medium mt-1">
             {t("certificate.intro_text")}

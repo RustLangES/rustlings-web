@@ -1,4 +1,5 @@
 ---
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
 
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const { lang, previous, next } = Astro.props
+const t = useTranslations(lang as "es" | "en")
 const isNextDisabled = true
 
 const btnBaseClass =
@@ -21,7 +23,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
 <nav class="not-prose mt-auto flex w-full items-center justify-between pb-2" aria-label="Navegación de lecciones">
   <a
     href={previous ? `/${lang}/${previous.slug}` : undefined}
-    aria-label={previous ? `Anterior: ${previous.title}` : undefined}
+    aria-label={previous ? `${t("nav.previous")}: ${previous.title}` : undefined}
     aria-disabled={!previous}
     class={btnBaseClass}
   >
@@ -30,7 +32,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
     </span>
     <div class="flex flex-col text-left">
       <span class:list={["text-md font-medium", previous ? "text-yellow" : "text-[#ccc]"]}>
-        Anterior
+        {t("nav.previous")}
       </span>
       <span class="text-xs text-[#ccc]">{previous?.title || "-"}</span>
     </div>
@@ -38,13 +40,13 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
   <a
     id="next-lesson-btn"
     href={next ? `/${lang}/${next.slug}` : undefined}
-    aria-label={next ? `Siguiente: ${next.title}` : undefined}
+    aria-label={next ? `${t("nav.next")}: ${next.title}` : undefined}
     aria-disabled={isNextDisabled}
     class={nextBtnClass}
   >
     <div class="flex flex-col text-right">
       <span class:list={["text-md font-medium", next ? "text-yellow" : "text-[#ccc]"]}>
-        Siguiente
+        {t("nav.next")}
       </span>
       <span class="text-xs text-[#ccc]">{next?.title || "-"}</span>
     </div>
@@ -57,6 +59,7 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
 <script>
   import { db } from "~/lib/stores/editor-store"
   import { toast } from "~/utils/toasts"
+  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
 
   const initNextButton = async () => {
     const btn = document.getElementById("next-lesson-btn") as HTMLAnchorElement | null
@@ -65,9 +68,11 @@ const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 tran
     btn.addEventListener("click", (e) => {
       if (btn.ariaDisabled === "true") {
         e.preventDefault()
+        const currentLang = getLangFromUrl(new URL(window.location.href))
+        const t = useTranslations(currentLang)
         toast.info(
-          "Ejecuta el código",
-          "El código debe ser ejecutado al menos una vez para poder avanzar a la siguiente sección",
+          t("toast.run_required_title"),
+          t("toast.run_required_desc"),
         )
       }
     })

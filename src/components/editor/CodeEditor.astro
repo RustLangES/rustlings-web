@@ -24,11 +24,10 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
   import { basicSetup } from "codemirror";
   import { indentWithTab } from "@codemirror/commands";
   import { gruvbox } from "~/components/editor/theme";
-  import { db, editorCode } from "~/lib/stores/editor-store";
+  import { editorCode } from "~/lib/stores/editor-store";
   import { rust } from "~/components/editor/config";
 
   let editorView: EditorView | null = null;
-  let saveTimeout: number | undefined;
 
   async function initEditor() {
     const editorElement = document.getElementById("editor");
@@ -44,7 +43,7 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
       initialCode: string;
     };
 
-    const initialDoc = (await db.getCode(slug)) ?? initialCode;
+    const initialDoc = initialCode;
 
     editorView = new EditorView({
       state: EditorState.create({
@@ -58,11 +57,6 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
             if (update.docChanged) {
               const value = update.state.doc.toString();
               editorCode.set(value);
-              clearTimeout(saveTimeout);
-              saveTimeout = window.setTimeout(
-                () => db.saveCode(slug, value),
-                500,
-              );
             }
           }),
         ],
@@ -89,7 +83,6 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
   document.addEventListener("astro:page-load", initEditor);
 
   document.addEventListener("astro:before-swap", () => {
-    clearTimeout(saveTimeout);
     window.removeEventListener("editor:reset", handleReset);
 
     if (editorView) {

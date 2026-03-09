@@ -17,7 +17,7 @@ interface Props {
 }
 
 const { lang: langProp } = Astro.props
-const lang = langProp ?? getLangFromUrl(Astro.url)
+const lang = (langProp ?? getLangFromUrl(Astro.url)) as "es" | "en"
 const t = useTranslations(lang)
 
 const topics = [

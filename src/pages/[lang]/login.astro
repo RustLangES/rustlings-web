@@ -1,5 +1,5 @@
 ---
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import { useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import JamGithub from "~icons/jam/github"
 
@@ -8,13 +8,14 @@ export function getStaticPaths() {
 }
 
 if (Astro.locals.user) {
-	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/aprender`)
+	return Astro.redirect(`/${Astro.params.lang}/aprender`)
 }
 
-const lang = getLangFromUrl(Astro.url)
+const lang = Astro.params.lang as "es" | "en"
 const t = useTranslations(lang)
 
 const error = Astro.url.searchParams.get("error")
+const returnUrl = Astro.url.searchParams.get("returnUrl") ?? `/${lang}/aprender`
 const errorMessages: Record<string, string> = {
 	oauth_invalid: t("login.error_oauth_invalid"),
 	oauth_token: t("login.error_oauth_token"),
@@ -176,7 +177,7 @@ const errorMessages: Record<string, string> = {
   loginButtonLoading: t("login.login_button_loading"),
   registerButtonText: t("login.register_button"),
   registerButtonLoading: t("login.register_button_loading"),
-  redirectPath: `/${lang}/aprender`
+  returnUrl: returnUrl
 }}>
   // Tabs
   const tabs = document.querySelectorAll<HTMLButtonElement>(".tab-btn")
@@ -200,12 +201,13 @@ const errorMessages: Record<string, string> = {
     })
   })
 
-  // Login
   document.getElementById("form-login")?.addEventListener("submit", async (e) => {
     e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const errorEl = document.getElementById("login-error")!
-    const btn = form.querySelector("button[type=submit]") as HTMLButtonElement
+    const form = e.target
+    const errorEl = document.getElementById("login-error")
+    const btn = form.querySelector("button[type=submit]")
+    if (!form || !errorEl || !btn) return
+    
     btn.disabled = true
     btn.textContent = loginButtonLoading
 
@@ -217,9 +219,9 @@ const errorMessages: Record<string, string> = {
     })
 
     if (res.ok) {
-      window.location.href = redirectPath
+      window.location.href = returnUrl
     } else {
-      const { error } = await res.json() as { error: string }
+      const { error } = await res.json()
       errorEl.textContent = error
       errorEl.classList.remove("hidden")
       btn.disabled = false
@@ -227,12 +229,13 @@ const errorMessages: Record<string, string> = {
     }
   })
 
-  // Register
   document.getElementById("form-register")?.addEventListener("submit", async (e) => {
     e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const errorEl = document.getElementById("register-error")!
-    const btn = form.querySelector("button[type=submit]") as HTMLButtonElement
+    const form = e.target
+    const errorEl = document.getElementById("register-error")
+    const btn = form.querySelector("button[type=submit]")
+    if (!form || !errorEl || !btn) return
+    
     btn.disabled = true
     btn.textContent = registerButtonLoading
 
@@ -244,9 +247,9 @@ const errorMessages: Record<string, string> = {
     })
 
     if (res.ok) {
-      window.location.href = redirectPath
+      window.location.href = returnUrl
     } else {
-      const { error } = await res.json() as { error: string }
+      const { error } = await res.json()
       errorEl.textContent = error
       errorEl.classList.remove("hidden")
       btn.disabled = false

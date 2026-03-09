@@ -8,7 +8,7 @@ import IconCertificate from "~icons/tabler/certificate"
 
 const { certId } = Astro.params
 const { DB } = Astro.locals.runtime.env
-const lang = getLangFromUrl(Astro.url)
+const lang = getLangFromUrl(Astro.url) as "es" | "en"
 const t = useTranslations(lang)
 
 interface CertRow {
@@ -35,7 +35,7 @@ const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang === "es" ? "
 })
 ---
 
-<Layout title={t("verification.title", { name: cert.name_used })}>
+<Layout title={`${t("verification.title")} - ${cert.name_used}`}>
   <header class="p-2 w-full shrink-0">
     <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
       <a

@@ -127,8 +127,8 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
     // Setup reactive navbar (this handles all user state changes automatically)
     setupNavbar({
       profileLinkId: "nav-profile-link",
-      loginLinkId: null, // This navbar doesn't have a login link
-      logoutLinkId: null // This navbar doesn't have a logout link directly
+      loginLinkId: undefined,
+      logoutLinkId: undefined
     })
     
     // Update username in profile link dynamically by targeting the span

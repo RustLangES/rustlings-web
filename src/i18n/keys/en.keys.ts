@@ -364,4 +364,32 @@ export const en_keys = {
 	"learn.lessons": "lessons",
 	"learn.progress_of": "of",
 	"learn.continue_label": "Continue:",
+
+	// Editor/Terminal buttons
+	"editor.reset": "Reset",
+	"editor.run": "Run",
+	"editor.running": "Running...",
+	"editor.output_label": "Output",
+
+	// Navigation buttons
+	"nav.previous": "Previous",
+	"nav.next": "Next",
+	"nav.content": "Content",
+	"nav.code": "Code",
+	"nav.terminal": "Terminal",
+
+	// Lesson page
+	"lesson.tab_content": "Content",
+	"lesson.tab_editor": "Editor",
+	"lesson.tab_terminal": "Terminal",
+
+	// Toasts
+	"toast.run_required_title": "Run the code",
+	"toast.run_required_desc": "Code must be run at least once before moving to the next section",
+	"toast.completed_title": "You did it! 🦀",
+	"toast.completed_desc": "You completed {trackTitle}. Find your certificate in your profile.",
+
+	// Auth
+	"auth.login_required_title": "Login required",
+	"auth.login_required_desc": "You must log in to access the course",
 }

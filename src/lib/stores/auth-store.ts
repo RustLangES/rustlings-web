@@ -81,7 +81,7 @@ export const authActions = {
 		try {
 			const response = await fetch("/api/auth/me")
 			if (response.ok) {
-				const userData = await response.json()
+				const userData = (await response.json()) as { user: SessionUser; full_name_locked: boolean }
 				this.setUser(userData.user, userData.full_name_locked)
 			} else {
 				this.clearUser()
