@@ -23,7 +23,9 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 			return new Response(JSON.stringify({ error: "El usuario no puede estar vacío" }), { status: 400 })
 		}
 		if (username.length > 30) {
-			return new Response(JSON.stringify({ error: "El usuario es demasiado largo (máx. 30 caracteres)" }), { status: 400 })
+			return new Response(JSON.stringify({ error: "El usuario es demasiado largo (máx. 30 caracteres)" }), {
+				status: 400,
+			})
 		}
 		if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
 			return new Response(
@@ -37,9 +39,7 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 		if (existing) {
 			return new Response(JSON.stringify({ error: "Ese nombre de usuario ya está en uso" }), { status: 409 })
 		}
-		await DB.prepare("UPDATE users SET username = ?, updated_at = ? WHERE id = ?")
-			.bind(username, now, user.id)
-			.run()
+		await DB.prepare("UPDATE users SET username = ?, updated_at = ? WHERE id = ?").bind(username, now, user.id).run()
 	}
 
 	// Handle fullName update
@@ -52,10 +52,9 @@ export const PATCH: APIRoute = async ({ request, locals }) => {
 			.bind(user.id)
 			.first<{ full_name_locked: number }>()
 		if (row?.full_name_locked) {
-			return new Response(
-				JSON.stringify({ error: "El nombre ya fue modificado y no puede cambiarse nuevamente" }),
-				{ status: 403 },
-			)
+			return new Response(JSON.stringify({ error: "El nombre ya fue modificado y no puede cambiarse nuevamente" }), {
+				status: 403,
+			})
 		}
 		await DB.prepare("UPDATE users SET full_name = ?, full_name_locked = 1, updated_at = ? WHERE id = ?")
 			.bind(fullName || null, now, user.id)
