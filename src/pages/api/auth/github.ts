@@ -5,14 +5,18 @@ export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 	const { GITHUB_CLIENT_ID } = locals.runtime.env
 	const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1"
 
-	const state = generateToken()
-	cookies.set("oauth_state", state, {
+	const lang = url.searchParams.get("lang") ?? "es"
+	const cookieOptions = {
 		httpOnly: true,
 		secure: !isLocalhost,
-		sameSite: "lax",
+		sameSite: "lax" as const,
 		path: "/",
 		maxAge: 600,
-	})
+	}
+
+	const state = generateToken()
+	cookies.set("oauth_state", state, cookieOptions)
+	cookies.set("oauth_lang", lang, cookieOptions)
 
 	const params = new URLSearchParams({
 		client_id: GITHUB_CLIENT_ID,
