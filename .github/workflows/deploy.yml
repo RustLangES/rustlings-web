@@ -48,6 +48,9 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         env:
           VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
         with:
           wranglerVersion: "4.19.1"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -55,3 +58,6 @@ jobs:
           command: deploy
           secrets: |
             VITE_CLARITY_PROJECT_ID
+            GH_CLIENT_ID
+            GH_CLIENT_SECRET
+            SESSION_SECRET
