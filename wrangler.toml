@@ -16,4 +16,4 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "rustlings"
-database_id = "0c7236f1-1195-49cd-920a-d921fb5955fb"
+database_id = "2d7785fc-fa51-41df-836b-b8806804f451"
