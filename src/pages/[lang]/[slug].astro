@@ -2,7 +2,7 @@
 import CodeEditor from "~/components/editor/CodeEditor.astro"
 import Terminal from "~/components/editor/output/Terminal.astro"
 import { tracks } from "~/const/tracks"
-import { getLessonsByLang, supportedLangs } from "~/content-manager"
+import { getLessonsByLang } from "~/content-manager"
 import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
 import Layout from "~/layouts/Layout.astro"
@@ -14,24 +14,22 @@ import IconCode from "~icons/tabler/code"
 import IconGripVertical from "~icons/tabler/grip-vertical"
 import IconTerminal from "~icons/tabler/terminal-2"
 
-export const prerender = true
+const { lang, slug } = Astro.params
 
-export function getStaticPaths() {
-	return supportedLangs.flatMap((lang) => {
-		const lessons = getLessonsByLang(lang)
-		return lessons.map((lesson, index) => ({
-			params: { lang, slug: lesson.meta.slug },
-			props: {
-				lesson,
-				lang,
-				previousLesson: lessons[index - 1],
-				nextLesson: lessons[index + 1],
-			},
-		}))
-	})
+if (!Astro.locals.user) {
+	return Astro.redirect(`/${lang}/login`)
 }
 
-const { lesson, lang, previousLesson, nextLesson } = Astro.props
+const lessons = getLessonsByLang(lang ?? "es")
+const lessonIndex = lessons.findIndex((l) => l.meta.slug === slug)
+
+if (lessonIndex === -1) {
+	return Astro.redirect(`/${lang}/404`)
+}
+
+const lesson = lessons[lessonIndex]
+const previousLesson = lessons[lessonIndex - 1]
+const nextLesson = lessons[lessonIndex + 1]
 const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 ---
 
