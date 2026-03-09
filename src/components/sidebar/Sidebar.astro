@@ -2,6 +2,8 @@
 import { Image } from "astro:assets"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconX from "~icons/tabler/x"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
 export interface SidebarItem {
 	label: string
 	href?: string
@@ -17,17 +19,24 @@ interface Props {
 	logo?: ImageMetadata
 	backHref?: string
 	backLabel?: string
+	lang?: string
 }
 
 const {
-	title = "Menú",
+	title: titleProp,
 	items = [],
 	position = "left",
 	id = "sidebar",
 	logo,
 	backHref,
-	backLabel = "Volver",
+	backLabel: backLabelProp,
+	lang: langProp,
 } = Astro.props
+
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+const title = titleProp ?? t("sidebar.menu")
+const backLabel = backLabelProp ?? t("sidebar.back")
 ---
 
 <div
@@ -70,7 +79,7 @@ const {
 			<button
 				type="button"
 				data-sidebar-close={id}
-				aria-label="Cerrar menú"
+				aria-label={t("sidebar.close_menu")}
 				class="p-1.5 rounded-lg text-secondary/70 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/30 border border-transparent transition-all duration-200 hover:scale-110"
 			>
 				<IconX font-size={20} aria-hidden="true" />
@@ -78,7 +87,7 @@ const {
 		</div>
 	</header>
 
-	<nav class="flex-1 px-4 pt-4 pb-4 overflow-y-auto" aria-label={`Navegación de ${title.toLowerCase()}`}>
+	<nav class="flex-1 px-4 pt-4 pb-4 overflow-y-auto" aria-label={`${t("sidebar.navigation_of")} ${title.toLowerCase()}`}>
 		{backHref && (
 			<a
 				href={backHref}
@@ -98,7 +107,7 @@ const {
 					>
 						{item.icon && <span class="text-lg" aria-hidden="true">{item.icon}</span>}
 						<span class="font-medium text-sm flex-1">{item.label}</span>
-						<span data-visited-check class="hidden text-xs text-yellow/70">✓</span>
+						<span data-visited-check class="hidden"></span>
 					</a>
 					{item.children && item.children.length > 0 && (
 						<ul class="mt-0.5 ml-3 pl-3 border-l border-stroke-color/40 space-y-0.5">
@@ -110,7 +119,7 @@ const {
 										class="group flex items-center gap-2 px-2 py-1.5 rounded-md text-secondary/70 hover:text-yellow hover:bg-yellow/10 hover:translate-x-1 transition-all duration-200 border border-transparent hover:border-yellow/20 text-xs"
 									>
 										<span class="flex-1">{child.label}</span>
-										<span data-visited-check class="hidden text-yellow/70">✓</span>
+										<span data-visited-check class="hidden"></span>
 									</a>
 								</li>
 							))}
@@ -121,6 +130,26 @@ const {
 		</ul>
 	</nav>
 </aside>
+
+<template id="lock-icon-tpl">
+  <svg
+    data-lock
+    xmlns="http://www.w3.org/2000/svg"
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    aria-hidden="true"
+    class="shrink-0"
+  >
+    <rect x="5" y="11" width="14" height="10" rx="2"/>
+    <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+  </svg>
+</template>
 
 <script>
   import { db } from "~/lib/stores/editor-store"
@@ -153,11 +182,11 @@ const {
   function lockLink(link: HTMLAnchorElement) {
     link.classList.add("opacity-40", "pointer-events-none")
     if (!link.querySelector("[data-lock]")) {
-      const icon = document.createElement("span")
-      icon.dataset.lock = ""
-      icon.textContent = "🔒"
-      icon.className = "text-xs"
-      link.appendChild(icon)
+      const tpl = document.getElementById("lock-icon-tpl") as HTMLTemplateElement | null
+      if (tpl) {
+        const node = tpl.content.cloneNode(true) as DocumentFragment
+        link.appendChild(node)
+      }
     }
   }
 
