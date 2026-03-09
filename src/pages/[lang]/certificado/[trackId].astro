@@ -68,18 +68,7 @@ const t = useTranslations(lang)
           </a>
         </div>
 
-        <!-- Name input for anonymous users -->
-        <input
-          id="cert-name"
-          type="text"
-          placeholder={t("certificate.enter_name")}
-          maxlength="60"
-          data-track-title={t(track.title)}
-          data-track-id={track.id}
-          class="hidden w-full px-4 py-2.5 rounded-lg bg-light-bg border border-stroke-color text-secondary placeholder:text-secondary/30 focus:outline-none focus:border-yellow transition-colors font-medium"
-        />
-
-        <!-- Share buttons (shown after cert is claimed) -->
+<!-- Share buttons (shown after cert is claimed) -->
         <div id="share-buttons" class="hidden flex-col gap-3 pt-4 border-t border-stroke-color/30">
           <p class="text-xs text-secondary/40">{t("certificate.share_title")}</p>
           <div class="flex flex-col gap-2">
@@ -144,6 +133,8 @@ const t = useTranslations(lang)
           data-cert-id-label={t("certificate.certificate_id_label")}
           data-website-url={t("certificate.website_url")}
           data-badge-certification={t("certificate.badge_certification")}
+          data-track-title={t(track.title)}
+          data-track-id={track.id}
         ></canvas>
 
         <button
@@ -481,12 +472,11 @@ const t = useTranslations(lang)
 
   document.addEventListener("astro:page-load", async () => {
     const canvas = document.getElementById("certificate-canvas") as HTMLCanvasElement
-    const nameInput = document.getElementById("cert-name") as HTMLInputElement
     const nameDisplay = document.getElementById("cert-name-display") as HTMLDivElement
     const nameText = document.getElementById("cert-name-text") as HTMLElement
     const subtitle = document.getElementById("cert-subtitle") as HTMLElement
-    const trackTitle = nameInput.dataset.trackTitle!
-    const trackId = nameInput.dataset.trackId!
+    const trackTitle = canvas.dataset.trackTitle!
+    const trackId = canvas.dataset.trackId!
     const logoUrl = canvas.dataset.logoUrl!
 
     let certName = ""
@@ -510,6 +500,32 @@ const t = useTranslations(lang)
     }
     toggleCertBtn.addEventListener("click", () => setMode("cert"))
     toggleBadgeBtn.addEventListener("click", () => setMode("badge"))
+
+    // Get translations from canvas data attributes
+    const {
+      brandLine1, brandLine2, awardedIn, certTitle, certSubtitle,
+      certIntro, defaultName, completionText, completionSuffix,
+      issueDateLabel, certIdLabel, websiteUrl, badgeCertification
+    } = canvas.dataset as Record<string, string>
+
+    const translations = {
+      brandLine1, brandLine2, awardedIn, certTitle, certSubtitle,
+      certIntro, defaultName, completionText, completionSuffix,
+      issueDateLabel, certIdLabel, websiteUrl
+    }
+
+    const getName = () => certName
+
+    const redraw = () => {
+      const name = getName()
+      if (mode === "badge") {
+        document.fonts.ready.then(() => drawBadge(canvas, trackTitle, name, logoUrl, badgeCertification, defaultName, websiteUrl))
+      } else {
+        document.fonts.ready.then(() =>
+          drawCertificate(canvas, trackTitle, name, logoUrl, translations, currentIssuedAt || undefined, currentCertId || undefined),
+        )
+      }
+    }
 
     const showShareButtons = (certId: string, issuedAt: string) => {
       currentCertId = certId
@@ -544,13 +560,15 @@ const t = useTranslations(lang)
     try {
       const res = await fetch("/api/auth/me")
       if (res.ok) {
-        const { fullName } = await res.json() as { fullName: string | null }
+        const data = await res.json() as { user: { full_name: string | null } }
+        const fullName = data.user?.full_name ?? null
         if (fullName) {
           certName = fullName
           nameText.textContent = fullName
           nameDisplay.classList.remove("hidden")
           nameDisplay.classList.add("flex")
           subtitle.textContent = "Tu nombre se toma de tu perfil"
+          redraw()
 
           fetch("/api/certificates/claim", {
             method: "POST",
@@ -569,43 +587,12 @@ const t = useTranslations(lang)
           nameText.textContent = "Sin nombre configurado"
           subtitle.textContent = "Configura tu nombre en tu perfil"
         }
-      } else {
-        nameInput.classList.remove("hidden")
-        subtitle.textContent = "Ingresa tu nombre para personalizar el certificado"
       }
     } catch {
-      nameInput.classList.remove("hidden")
-      subtitle.textContent = "Ingresa tu nombre para personalizar el certificado"
-    }
-
-    const getName = () => certName || nameInput.value
-
-    // Get translations from canvas data attributes
-    const { 
-      brandLine1, brandLine2, awardedIn, certTitle, certSubtitle,
-      certIntro, defaultName, completionText, completionSuffix,
-      issueDateLabel, certIdLabel, websiteUrl, badgeCertification
-    } = canvas.dataset as Record<string, string>
-
-    const translations = {
-      brandLine1, brandLine2, awardedIn, certTitle, certSubtitle,
-      certIntro, defaultName, completionText, completionSuffix,
-      issueDateLabel, certIdLabel, websiteUrl
-    }
-
-    const redraw = () => {
-      const name = getName()
-      if (mode === "badge") {
-        document.fonts.ready.then(() => drawBadge(canvas, trackTitle, name, logoUrl, badgeCertification, defaultName, websiteUrl))
-      } else {
-        document.fonts.ready.then(() =>
-          drawCertificate(canvas, trackTitle, name, logoUrl, translations, currentIssuedAt || undefined, currentCertId || undefined),
-        )
-      }
+      // silent
     }
 
     redraw()
-    nameInput.addEventListener("input", redraw)
 
     document.getElementById("download-btn")?.addEventListener("click", () => {
       const link = document.createElement("a")
