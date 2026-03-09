@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconX from "~icons/tabler/x"
-import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 
 export interface SidebarItem {
 	label: string
