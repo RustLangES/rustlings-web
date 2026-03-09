@@ -10,7 +10,7 @@ import Icons from "unplugin-icons/vite"
 // https://astro.build/config
 export default defineConfig({
 	output: "server",
-	adapter: cloudflare({ imageService: "compile" }),
+	adapter: cloudflare({ imageService: "cloudflare" }),
 	i18n: {
 		defaultLocale: "es",
 		locales: ["es", "en"],
