@@ -3,10 +3,6 @@ import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import JamGithub from "~icons/jam/github"
 
-export function getStaticPaths() {
-	return [{ params: { lang: "es" } }, { params: { lang: "en" } }]
-}
-
 if (Astro.locals.user) {
 	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/aprender`)
 }
@@ -160,96 +156,3 @@ const errorMessages: Record<string, string> = {
   </main>
 </Layout>
 
-<style>
-  .tab-btn {
-    color: rgb(var(--color-secondary) / 0.5);
-  }
-  .tab-btn.active {
-    background-color: rgb(var(--color-yellow) / 0.1);
-    color: rgb(var(--color-yellow));
-  }
-</style>
-
-<script define:vars={{
-  loginButtonText: t("login.login_button"),
-  loginButtonLoading: t("login.login_button_loading"),
-  registerButtonText: t("login.register_button"),
-  registerButtonLoading: t("login.register_button_loading"),
-  redirectPath: `/${lang}/aprender`
-}}>
-  // Tabs
-  const tabs = document.querySelectorAll<HTMLButtonElement>(".tab-btn")
-  const panels = document.querySelectorAll<HTMLFormElement>(".tab-panel")
-
-  tabs.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const target = btn.dataset.tab
-      tabs.forEach((t) => t.classList.remove("active"))
-      btn.classList.add("active")
-      panels.forEach((p) => {
-        const id = p.id.replace("form-", "")
-        if (id === target) {
-          p.classList.remove("hidden")
-          p.classList.add("flex")
-        } else {
-          p.classList.add("hidden")
-          p.classList.remove("flex")
-        }
-      })
-    })
-  })
-
-  // Login
-  document.getElementById("form-login")?.addEventListener("submit", async (e) => {
-    e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const errorEl = document.getElementById("login-error")!
-    const btn = form.querySelector("button[type=submit]") as HTMLButtonElement
-    btn.disabled = true
-    btn.textContent = loginButtonLoading
-
-    const data = Object.fromEntries(new FormData(form))
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-
-    if (res.ok) {
-      window.location.href = redirectPath
-    } else {
-      const { error } = await res.json() as { error: string }
-      errorEl.textContent = error
-      errorEl.classList.remove("hidden")
-      btn.disabled = false
-      btn.textContent = loginButtonText
-    }
-  })
-
-  // Register
-  document.getElementById("form-register")?.addEventListener("submit", async (e) => {
-    e.preventDefault()
-    const form = e.target as HTMLFormElement
-    const errorEl = document.getElementById("register-error")!
-    const btn = form.querySelector("button[type=submit]") as HTMLButtonElement
-    btn.disabled = true
-    btn.textContent = registerButtonLoading
-
-    const data = Object.fromEntries(new FormData(form))
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
-    })
-
-    if (res.ok) {
-      window.location.href = redirectPath
-    } else {
-      const { error } = await res.json() as { error: string }
-      errorEl.textContent = error
-      errorEl.classList.remove("hidden")
-      btn.disabled = false
-      btn.textContent = registerButtonText
-    }
-  })
-</script>
