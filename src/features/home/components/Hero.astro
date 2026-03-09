@@ -64,24 +64,25 @@ const t = useTranslations(lang)
     </div>
 
     <!-- Auth link -->
-    {user ? (
-      <a
-        href={`/${lang}/perfil`}
-        class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-      >
-        <IconUser font-size={16} />
-        <span class="hidden sm:inline">{user.username ?? user.email}</span>
-      </a>
-    ) : (
-      <a
-        href={`/${lang}/login`}
-        class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-        aria-label={t("hero.login")}
-      >
-        <IconUser font-size={16} />
-        <span class="hidden sm:inline">{t("hero.login")}</span>
-      </a>
-    )}
+    <a
+      id="hero-profile-link"
+      href={`/${lang}/perfil`}
+      style={user ? "" : "display: none"}
+      class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+    >
+      <IconUser font-size={16} />
+      <span id="hero-username" class="hidden sm:inline">{user?.username ?? user?.email ?? ""}</span>
+    </a>
+    <a
+      id="hero-login-link"
+      href={`/${lang}/login`}
+      style={user ? "display: none" : ""}
+      class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+      aria-label={t("hero.login")}
+    >
+      <IconUser font-size={16} />
+      <span class="hidden sm:inline">{t("hero.login")}</span>
+    </a>
   </div>
 
   <!-- Content wrapper -->
@@ -154,6 +155,27 @@ const t = useTranslations(lang)
     <div class="w-px h-8 bg-linear-to-b from-secondary/20 to-transparent"></div>
   </div>
 </Section>
+
+<script>
+  import { initAuthStore } from "~/lib/stores/auth-store"
+  import { onDisplayNameChange, onLoginStateChange } from "~/lib/stores/user-utils"
+
+  document.addEventListener("astro:page-load", () => {
+    initAuthStore()
+
+    onLoginStateChange((loggedIn) => {
+      const profileLink = document.getElementById("hero-profile-link")
+      const loginLink = document.getElementById("hero-login-link")
+      if (profileLink) profileLink.style.display = loggedIn ? "" : "none"
+      if (loginLink) loginLink.style.display = loggedIn ? "none" : ""
+    })
+
+    onDisplayNameChange((displayName) => {
+      const span = document.getElementById("hero-username")
+      if (span && displayName) span.textContent = displayName
+    })
+  })
+</script>
 
 <style>
   .dot-grid {
