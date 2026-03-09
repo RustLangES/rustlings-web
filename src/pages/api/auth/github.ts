@@ -1,22 +1,14 @@
 import type { APIRoute } from "astro"
 import { generateToken } from "~/lib/auth/crypto"
 
-export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
-	const { GH_CLIENT_ID } = locals.runtime.env
-	const isLocalhost = url.hostname === "localhost" || url.hostname === "127.0.0.1"
+export const GET: APIRoute = async ({ url, locals, redirect }) => {
+	const { GH_CLIENT_ID, DB } = locals.runtime.env
 
 	const lang = url.searchParams.get("lang") ?? "es"
-	const cookieOptions = {
-		httpOnly: true,
-		secure: !isLocalhost,
-		sameSite: "lax" as const,
-		path: "/",
-		maxAge: 600,
-	}
-
 	const state = generateToken()
-	cookies.set("oauth_state", state, cookieOptions)
-	cookies.set("oauth_lang", lang, cookieOptions)
+	const now = Math.floor(Date.now() / 1000)
+
+	await DB.prepare("INSERT INTO oauth_states (state, lang, created_at) VALUES (?, ?, ?)").bind(state, lang, now).run()
 
 	const params = new URLSearchParams({
 		client_id: GH_CLIENT_ID,

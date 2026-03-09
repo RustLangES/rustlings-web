@@ -15,20 +15,34 @@ interface GitHubEmail {
 	verified: boolean
 }
 
+interface OAuthStateRow {
+	state: string
+	lang: string
+	created_at: number
+}
+
 export const GET: APIRoute = async ({ url, locals, cookies, redirect }) => {
 	const { GH_CLIENT_ID, GH_CLIENT_SECRET, DB } = locals.runtime.env
 
 	const code = url.searchParams.get("code")
 	const state = url.searchParams.get("state")
-	const storedState = cookies.get("oauth_state")?.value
-	const lang = cookies.get("oauth_lang")?.value ?? "es"
 
-	cookies.delete("oauth_state", { path: "/" })
-	cookies.delete("oauth_lang", { path: "/" })
-
-	if (!code || !state || state !== storedState) {
-		return redirect(`/${lang}/login?error=oauth_invalid`)
+	if (!code || !state) {
+		return redirect("/es/login?error=oauth_invalid")
 	}
+
+	const TTL = 600 // 10 minutos
+	const now = Math.floor(Date.now() / 1000)
+
+	const stateRow = await DB.prepare("SELECT * FROM oauth_states WHERE state = ?").bind(state).first<OAuthStateRow>()
+
+	await DB.prepare("DELETE FROM oauth_states WHERE state = ?").bind(state).run()
+
+	if (!stateRow || now - stateRow.created_at > TTL) {
+		return redirect("/es/login?error=oauth_invalid")
+	}
+
+	const lang = stateRow.lang
 
 	// Intercambiar code por access_token
 	const tokenRes = await fetch("https://github.com/login/oauth/access_token", {
