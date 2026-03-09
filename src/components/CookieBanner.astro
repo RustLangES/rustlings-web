@@ -2,43 +2,50 @@
 import { Image } from "astro:assets"
 import ferrisCooking from "~/assets/images/webp/ferris_cooking.jpg"
 
+import { defaultLang, ui } from "~/i18n/ui"
+
+const lang = Astro.locals.lang ?? defaultLang
+
+type TranslationKey = keyof (typeof ui)[typeof defaultLang]
+const t = (key: TranslationKey) => ui[lang][key] ?? ui[defaultLang][key]
 const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
 ---
 
 <div
-  id="cookie-overlay"
+  id="privacy-overlay"
   class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4"
 >
   <div
-    id="cookie-banner"
+    id="privacy-banner"
     data-clarity-id={projectId}
-    class="w-full max-w-2xl bg-editor-bg border border-stroke-color rounded-xl shadow-2xl overflow-hidden grid grid-cols-2"
+    class="w-full max-w-2xl max-h-[90vh] bg-editor-bg border border-stroke-color rounded-xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2"
   >
-    <div class="relative min-h-[380px]">
+    <div class="relative aspect-4/3 md:aspect-auto">
       <Image
         src={ferrisCooking}
-        alt="Ferris cocinando cookies"
+        alt={t("cookie.banner.img.alt")}
         class="absolute inset-0 w-full h-full object-cover"
       />
     </div>
 
-    <div class="flex flex-col justify-center gap-5 p-6">
+    <div class="flex flex-col justify-center gap-5 p-6 overflow-y-auto">
       <div class="flex flex-col gap-3">
-        <h2 class="text-secondary font-semibold text-lg">🍪 Aviso de Cookies</h2>
+        <h2 class="text-secondary font-semibold text-lg">{t("cookie.banner.title")}</h2>
         <p class="text-sm text-secondary/70 leading-relaxed">
-          Utilizamos cookies propias y de terceros para mejorar tu experiencia
-          en nuestro sitio web, analizar el tráfico y entender cómo interactúan
-          los usuarios con nuestro contenido.
+          {t("cookie.banner.purpose")}
         </p>
         <p class="text-sm text-secondary/70 leading-relaxed">
-          También utilizamos <span class="text-secondary font-medium">Microsoft Clarity</span>,
-          una herramienta de análisis que nos permite comprender el comportamiento
-          de navegación mediante mapas de calor y grabaciones anónimas de sesiones,
-          con el fin de optimizar nuestro servicio.
+          {t("cookie.banner.company.also")}<span class="text-secondary font-medium">{t("cookie.banner.company")}</span>
+          {t("cookie.banner.company.description")}
         </p>
         <p class="text-xs text-secondary/50 leading-relaxed">
-          Al hacer clic en "Aceptar", consientes el uso de cookies según nuestra
-          Política de Privacidad.
+          {t("cookie.banner.accept")}
+          <a
+            href="/privacidad"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-yellow hover:underline"
+          >{t("policy.privacy")}</a>.
         </p>
       </div>
 
@@ -47,13 +54,13 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
           id="reject-cookies"
           class="flex-1 px-4 py-2 text-sm text-secondary/60 border border-stroke-color rounded-lg hover:bg-stroke-color/20 transition-colors cursor-pointer"
         >
-          Rechazar
+          {t("text.denied")}
         </button>
         <button
           id="accept-cookies"
           class="flex-1 px-4 py-2 text-sm bg-yellow text-primary font-semibold rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
         >
-          Aceptar
+          {t("text.accept")}
         </button>
       </div>
     </div>
@@ -63,8 +70,8 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
 <script>
   import Clarity from "@microsoft/clarity"
 
-  const overlay = document.getElementById("cookie-overlay")
-  const banner = document.getElementById("cookie-banner")
+  const overlay = document.getElementById("privacy-overlay")
+  const banner = document.getElementById("privacy-banner")
   const projectId = banner?.dataset.clarityId ?? ""
 
   function loadClarity() {
@@ -85,10 +92,11 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
   }
 
   const consent = localStorage.getItem("cookiesAccepted")
+  const isPrivacyPage = window.location.pathname === "/privacidad"
 
   if (consent === "true") {
     loadClarity()
-  } else if (consent === null) {
+  } else if (consent === null && !isPrivacyPage) {
     showOverlay()
   }
 

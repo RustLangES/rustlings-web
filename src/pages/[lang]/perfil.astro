@@ -1,0 +1,349 @@
+---
+import { tracks } from "~/const/tracks"
+import Navbar from "~/features/content/components/Navbar.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import Layout from "~/layouts/Layout.astro"
+import { getUserProgress } from "~/lib/progress-db"
+import IconCertificate from "~icons/tabler/certificate"
+import IconDownload from "~icons/tabler/download"
+import IconEdit from "~icons/tabler/edit"
+import IconInfoCircle from "~icons/tabler/info-circle"
+import IconLink from "~icons/tabler/link"
+import IconX from "~icons/tabler/x"
+
+export function getStaticPaths() {
+	return [{ params: { lang: "es" } }, { params: { lang: "en" } }]
+}
+
+if (!Astro.locals.user) {
+	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/login`)
+}
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+
+const user = Astro.locals.user
+const { DB } = Astro.locals.runtime.env
+
+const [fullNameRow, certsResult, progress] = await Promise.all([
+	DB.prepare("SELECT full_name, full_name_locked FROM users WHERE id = ?")
+		.bind(user.id)
+		.first<{ full_name: string | null; full_name_locked: number }>(),
+	DB.prepare(
+		"SELECT id, course_id, name_used, issued_at FROM user_certificates WHERE user_id = ? ORDER BY issued_at DESC",
+	)
+		.bind(user.id)
+		.all<{ id: string; course_id: string; name_used: string; issued_at: string }>(),
+	getUserProgress(DB, user.id),
+])
+
+const fullName = fullNameRow?.full_name ?? ""
+const nameLocked = !!fullNameRow?.full_name_locked
+const certificates = certsResult.results
+
+const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
+---
+
+<Layout title={t("profile.title")}>
+  <Navbar lang={lang} />
+
+  <main class="flex-1 flex flex-col items-center px-4 py-10 gap-8">
+    <div class="w-full max-w-xl flex flex-col gap-6">
+
+      <!-- User info card -->
+      <section class="bg-light-bg border border-stroke-color rounded-2xl p-6 flex flex-col gap-5">
+        <div class="flex items-start justify-between">
+          <div class="flex flex-col gap-0.5">
+            <h1 class="text-lg font-bold text-secondary">{t("profile.my_profile")}</h1>
+            <p class="text-xs text-secondary/40">{user.email}</p>
+          </div>
+          <button
+            id="edit-profile"
+            type="button"
+            class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
+          >
+            <IconEdit font-size={14} class="edit-icon" />
+            <IconX font-size={14} class="cancel-icon hidden" />
+            <span class="edit-label">{t("profile.edit_button")}</span>
+          </button>
+        </div>
+
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs text-secondary/60 font-medium" for="username">{t("profile.username_label")}</label>
+            <input
+              id="username"
+              type="text"
+              value={user.username ?? ""}
+              maxlength="30"
+              disabled
+              class="bg-primary border border-stroke-color/50 rounded-lg px-4 py-2.5 text-sm transition-colors disabled:cursor-not-allowed disabled:text-secondary/40 enabled:text-secondary enabled:cursor-text enabled:border-stroke-color focus:outline-none focus:border-yellow/50"
+            />
+          </div>
+
+          <div class="flex flex-col gap-1.5">
+            <div class="flex items-center gap-2">
+              <label class="text-xs text-secondary/60 font-medium" for="full-name">{t("profile.full_name_label")}</label>
+              <div class="relative group">
+                <IconInfoCircle font-size={14} class="text-secondary/40 hover:text-secondary/60 transition-colors cursor-help" />
+                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-primary border border-stroke-color rounded-lg shadow-lg text-xs text-secondary/80 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 z-10 w-72">
+                  <div class="text-center">
+                    {t("profile.full_name_tooltip")}
+                  </div>
+                  <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-stroke-color"></div>
+                </div>
+              </div>
+            </div>
+            <input
+              id="full-name"
+              type="text"
+              value={fullName}
+              maxlength="80"
+              placeholder={t("profile.full_name_placeholder")}
+              disabled
+              class="bg-primary border border-stroke-color/50 rounded-lg px-4 py-2.5 text-sm text-secondary/40 cursor-not-allowed transition-colors disabled:cursor-not-allowed disabled:text-secondary/40 enabled:text-secondary enabled:cursor-text enabled:border-stroke-color focus:outline-none focus:border-yellow/50"
+              data-locked={nameLocked ? "true" : undefined}
+            />
+          </div>
+
+          <div id="profile-error" class="hidden text-red-400 text-sm"></div>
+          <div id="profile-success" class="hidden text-green-400 text-sm">{t("profile.success_message")}</div>
+
+          <button
+            id="save-profile"
+            type="button"
+            class="hidden self-start px-5 py-2 bg-yellow text-primary text-sm font-bold rounded-lg hover:opacity-90 transition-opacity"
+          >
+            {t("profile.save_button")}
+          </button>
+        </div>
+      </section>
+
+      <!-- Certificates section -->
+      <section class="flex flex-col gap-4">
+        <h2 class="text-base font-bold text-secondary flex items-center gap-2">
+          <IconCertificate font-size={18} class="text-yellow" />
+          {t("profile.certificates_title")}
+        </h2>
+
+        {certificates.length === 0 ? (
+          <div class="bg-light-bg border border-stroke-color rounded-2xl p-6 text-center">
+            <p class="text-secondary/40 text-sm">{t("profile.no_certificates")}</p>
+            <p class="text-secondary/30 text-xs mt-1">{t("profile.no_certificates_desc")}</p>
+          </div>
+        ) : (
+          <div class="flex flex-col gap-3">
+            {certificates.map((cert) => {
+              const track = trackMap[cert.course_id]
+              const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+              return (
+                <div class="bg-light-bg border border-stroke-color rounded-2xl p-5 flex items-center gap-4">
+                  <div class="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-yellow/10 border border-yellow/20">
+                    <IconCertificate font-size={20} class="text-yellow" />
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-semibold text-secondary truncate">
+                      {track ? t(track.title) : cert.course_id}
+                    </p>
+                    <p class="text-xs text-secondary/40 mt-0.5">
+                      {t("profile.certificate_issued")} {issuedDate} · {t("profile.certificate_name")} <span class="text-secondary/60">{cert.name_used}</span>
+                    </p>
+                  </div>
+                  <div class="shrink-0 flex items-center gap-2">
+                    <button
+                      data-copy-link={`/${lang}/verificar/${cert.id}`}
+                      class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
+                      title={t("profile.certificate_copy_tooltip")}
+                    >
+                      <IconLink font-size={14} />
+                      <span class="copy-label">{t("profile.certificate_copy")}</span>
+                    </button>
+                    <a
+                      href={`/${lang}/certificado/${cert.course_id}`}
+                      class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
+                    >
+                      <IconDownload font-size={14} />
+                      {t("profile.certificate_download")}
+                    </a>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        <!-- Courses in progress without certificates -->
+        {tracks.filter(t => !t.disabled && !certificates.find(c => c.course_id === t.id)).map(track => {
+          const completed = (progress[track.id] ?? []).length
+          const total = track.lessons
+          const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+          const isComplete = pct === 100
+          return (
+            <div class={`bg-light-bg/50 border border-stroke-color/50 rounded-2xl p-5 flex items-center gap-4 ${isComplete ? "" : "opacity-60"}`}>
+              <div class={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl ${isComplete ? "bg-yellow/10 border border-yellow/20" : "bg-stroke-color/30"}`}>
+                <IconCertificate font-size={20} class={isComplete ? "text-yellow" : "text-secondary/30"} />
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class={`text-sm font-semibold truncate ${isComplete ? "text-secondary" : "text-secondary/60"}`}>{t(track.title)}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <div class="flex-1 h-1 bg-stroke-color/30 rounded-full overflow-hidden max-w-32">
+                    <div class={`h-full rounded-full ${isComplete ? "bg-yellow" : "bg-yellow/40"}`} style={`width:${pct}%`}></div>
+                  </div>
+                  <span class={`text-xs ${isComplete ? "text-yellow" : "text-secondary/30"}`}>{pct}% {t("profile.progress_completed")}</span>
+                </div>
+              </div>
+              {isComplete ? (
+                <a
+                  href={`/${lang}/certificado/${track.id}`}
+                  class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-black bg-yellow rounded-lg hover:opacity-80 transition-all"
+                >
+                  <IconCertificate font-size={14} />
+                  {t("profile.certificate_view")}
+                </a>
+              ) : (
+                <span class="shrink-0 text-xs text-secondary/30 px-3 py-1.5 border border-stroke-color/30 rounded-lg">
+                  {t("profile.progress_in_progress")}
+                </span>
+              )}
+            </div>
+          )
+        })}
+      </section>
+
+    </div>
+  </main>
+</Layout>
+
+<div
+  id="profile-config"
+  data-user-id={user.id}
+  data-email={user.email}
+  data-username={user.username ?? ""}
+  data-full-name={fullName}
+  data-name-locked={nameLocked ? "true" : "false"}
+  data-edit-label={t("profile.edit_button")}
+  data-cancel-label={t("profile.cancel_button")}
+  data-save-label={t("profile.save_button")}
+  data-save-loading-label={t("profile.save_button_loading")}
+  data-copied-label={t("profile.certificate_copied")}
+  hidden
+/>
+
+<script>
+  import { initAuthStore, authActions } from "~/lib/stores/auth-store"
+
+  document.addEventListener("astro:page-load", () => {
+    const config = document.getElementById("profile-config") as HTMLElement
+    const { userId, email, username, fullName, nameLocked: nameLockedStr, editLabel, cancelLabel, saveLabel, saveLoadingLabel, copiedLabel } = config.dataset
+    const nameLocked = nameLockedStr === "true"
+
+    initAuthStore(
+      { id: userId!, email: email!, username: username || null, full_name: fullName || null },
+      nameLocked,
+    )
+
+    const editBtn = document.getElementById("edit-profile") as HTMLButtonElement
+    const saveBtn = document.getElementById("save-profile") as HTMLButtonElement
+    const usernameInput = document.getElementById("username") as HTMLInputElement
+    const fullNameInput = document.getElementById("full-name") as HTMLInputElement
+    const errorEl = document.getElementById("profile-error")!
+    const successEl = document.getElementById("profile-success")!
+    const editIcon = editBtn?.querySelector(".edit-icon")
+    const cancelIcon = editBtn?.querySelector(".cancel-icon")
+    const editLabelEl = editBtn?.querySelector(".edit-label")
+
+    let isEditing = false
+
+    const enterEditMode = () => {
+      isEditing = true
+      usernameInput.disabled = false
+      usernameInput.focus()
+      if (!nameLocked) fullNameInput.disabled = false
+      saveBtn.classList.remove("hidden")
+      editIcon?.classList.add("hidden")
+      cancelIcon?.classList.remove("hidden")
+      if (editLabelEl) editLabelEl.textContent = cancelLabel!
+      errorEl.classList.add("hidden")
+      successEl.classList.add("hidden")
+    }
+
+    const exitEditMode = () => {
+      isEditing = false
+      usernameInput.disabled = true
+      usernameInput.value = usernameInput.defaultValue
+      fullNameInput.disabled = true
+      fullNameInput.value = fullNameInput.defaultValue
+      saveBtn.classList.add("hidden")
+      editIcon?.classList.remove("hidden")
+      cancelIcon?.classList.add("hidden")
+      if (editLabelEl) editLabelEl.textContent = editLabel!
+      errorEl.classList.add("hidden")
+      successEl.classList.add("hidden")
+    }
+
+    editBtn?.addEventListener("click", () => {
+      isEditing ? exitEditMode() : enterEditMode()
+    })
+
+    saveBtn?.addEventListener("click", async () => {
+      saveBtn.disabled = true
+      saveBtn.textContent = saveLoadingLabel!
+      errorEl.classList.add("hidden")
+      successEl.classList.add("hidden")
+
+      const body: { username: string; fullName?: string } = { username: usernameInput.value }
+      if (!nameLocked) body.fullName = fullNameInput.value
+
+      const res = await fetch("/api/auth/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      })
+
+      saveBtn.disabled = false
+      saveBtn.textContent = saveLabel!
+
+      if (res.ok) {
+        usernameInput.defaultValue = usernameInput.value
+        fullNameInput.defaultValue = fullNameInput.value
+        isEditing = false
+        usernameInput.disabled = true
+        fullNameInput.disabled = true
+        saveBtn.classList.add("hidden")
+        editIcon?.classList.remove("hidden")
+        cancelIcon?.classList.add("hidden")
+        if (editLabelEl) editLabelEl.textContent = editLabel!
+
+        authActions.updateUser({ username: usernameInput.value })
+        if (!nameLocked) authActions.updateFullName(fullNameInput.value)
+
+        successEl.classList.remove("hidden")
+        setTimeout(() => successEl.classList.add("hidden"), 3000)
+      } else {
+        const { error } = await res.json() as { error: string }
+        errorEl.textContent = error
+        errorEl.classList.remove("hidden")
+      }
+    })
+
+    document.querySelectorAll<HTMLButtonElement>("[data-copy-link]").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const path = btn.dataset.copyLink!
+        const url = `${window.location.origin}${path}`
+        await navigator.clipboard.writeText(url)
+        const label = btn.querySelector(".copy-label")!
+        const original = label.textContent
+        label.textContent = copiedLabel!
+        btn.classList.add("border-yellow", "text-yellow")
+        setTimeout(() => {
+          label.textContent = original
+          btn.classList.remove("border-yellow", "text-yellow")
+        }, 2000)
+      })
+    })
+  })
+</script>

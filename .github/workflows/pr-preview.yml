@@ -73,8 +73,11 @@ jobs:
         run: npm install
       - name: Build
         env:
-          NUXT_CLARITY_ID: ${{ secrets.CLARITY_ID }}
-        run: npm run build --preset=cloudflare_pages
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
+        run: npm run build
+
+      - name: Ignore _worker.js in assets
+        run: echo "_worker.js" > dist/.assetsignore
 
       # Deploy steps
       - name: Normalize alias
@@ -89,7 +92,16 @@ jobs:
           wranglerVersion: "4.45.0"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: versions upload --name "${{ env.PROJECT_NAME }}" --preview-alias "${{ env.ALIAS }}"
+          secrets: |
+            VITE_CLARITY_PROJECT_ID
+            GH_CLIENT_ID
+            GH_CLIENT_SECRET
+            SESSION_SECRET
+        env:
+          VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
 
       - name: Extract hash from CF url Deploy
         run: |

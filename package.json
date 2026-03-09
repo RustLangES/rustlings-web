@@ -13,6 +13,7 @@
 		"prepare": "lefthook install"
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^12.6.12",
 		"@astrojs/mdx": "^4.3.8",
 		"@codemirror/autocomplete": "^6.19.1",
 		"@codemirror/lang-rust": "^6.0.2",
@@ -26,14 +27,19 @@
 		"@tailwindcss/vite": "^4.1.16",
 		"astro": "^5.15.0",
 		"codemirror": "^6.0.2",
+		"driver.js": "^1.4.0",
 		"nanostores": "^1.0.1",
+		"qrcode": "^1.5.4",
 		"rehype-github-alerts": "4.2.0",
+		"sweetalert2": "^11.26.21",
 		"tailwindcss": "^4.1.16"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.2",
+		"@cloudflare/workers-types": "^4.20260301.1",
 		"@iconify/json": "^2.2.405",
 		"@tailwindcss/typography": "^0.5.19",
+		"@types/qrcode": "^1.5.6",
 		"lefthook": "^2.0.0",
 		"unplugin-icons": "^22.5.0"
 	}

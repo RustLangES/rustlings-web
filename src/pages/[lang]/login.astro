@@ -1,0 +1,158 @@
+---
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import Layout from "~/layouts/Layout.astro"
+import JamGithub from "~icons/jam/github"
+
+if (Astro.locals.user) {
+	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/aprender`)
+}
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+
+const error = Astro.url.searchParams.get("error")
+const errorMessages: Record<string, string> = {
+	oauth_invalid: t("login.error_oauth_invalid"),
+	oauth_token: t("login.error_oauth_token"),
+	no_email: t("login.error_no_email"),
+}
+---
+
+<Layout title={t("login.title")}>
+  <main class="min-h-screen flex items-center justify-center px-4 bg-primary">
+    <div class="w-full max-w-md">
+      <!-- Logo / title -->
+      <div class="text-center mb-8">
+        <a href={`/${lang}/`} class="text-yellow font-extrabold text-3xl tracking-tight">
+          Rust<span class="text-secondary">lings</span>
+        </a>
+        <p class="text-secondary/50 text-sm mt-2">{t("login.tagline")}</p>
+      </div>
+
+      <!-- Card -->
+      <div class="bg-editor-bg border border-stroke-color rounded-xl p-8 shadow-2xl">
+        <!-- Error banner -->
+        {error && (
+          <div class="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            {errorMessages[error] ?? t("login.error_default")}
+          </div>
+        )}
+
+<!-- 
+
+        <div class="flex border border-stroke-color rounded-lg p-1 mb-6 gap-1" id="tabs">
+          <button
+            data-tab="login"
+            class="tab-btn flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200 active"
+          >
+            {t("login.tab_login")}
+          </button>
+          <button
+            data-tab="register"
+            class="tab-btn flex-1 py-2 text-sm font-semibold rounded-md transition-all duration-200"
+          >
+            {t("login.tab_register")}
+          </button>
+        </div>
+
+        <form id="form-login" class="tab-panel flex flex-col gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs text-secondary/60 font-medium" for="login-email">{t("login.email_label")}</label>
+            <input
+              id="login-email"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder={t("login.email_placeholder")}
+              class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs text-secondary/60 font-medium" for="login-password">{t("login.password_label")}</label>
+            <input
+              id="login-password"
+              type="password"
+              name="password"
+              required
+              autocomplete="current-password"
+              placeholder={t("login.password_placeholder")}
+              class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
+            />
+          </div>
+          <div id="login-error" class="hidden text-red-400 text-sm"></div>
+          <button
+            type="submit"
+            class="mt-1 w-full py-2.5 bg-yellow text-primary font-bold rounded-lg hover:opacity-90 transition-opacity text-sm"
+          >
+            {t("login.login_button")}
+          </button>
+        </form>
+
+        <form id="form-register" class="tab-panel hidden flex-col gap-4">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs text-secondary/60 font-medium" for="register-username">{t("login.username_label")}</label>
+            <input
+              id="register-username"
+              type="text"
+              name="username"
+              required
+              autocomplete="username"
+              placeholder={t("login.username_placeholder")}
+              class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs text-secondary/60 font-medium" for="register-email">{t("login.email_label")}</label>
+            <input
+              id="register-email"
+              type="email"
+              name="email"
+              required
+              autocomplete="email"
+              placeholder={t("login.email_placeholder")}
+              class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
+            />
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs text-secondary/60 font-medium" for="register-password">{t("login.password_label")}</label>
+            <input
+              id="register-password"
+              type="password"
+              name="password"
+              required
+              autocomplete="new-password"
+              placeholder={t("login.register_password_placeholder")}
+              class="bg-primary border border-stroke-color rounded-lg px-4 py-2.5 text-sm text-secondary placeholder-secondary/30 focus:outline-none focus:border-yellow/50 transition-colors"
+            />
+          </div>
+          <div id="register-error" class="hidden text-red-400 text-sm"></div>
+          <button
+            type="submit"
+            class="mt-1 w-full py-2.5 bg-yellow text-primary font-bold rounded-lg hover:opacity-90 transition-opacity text-sm"
+          >
+            {t("login.register_button")}
+          </button>
+        </form>
+
+        <div class="flex items-center gap-3 my-6">
+          <div class="flex-1 h-px bg-stroke-color"></div>
+          <span class="text-xs text-secondary/40">{t("login.divider")}</span>
+          <div class="flex-1 h-px bg-stroke-color"></div>
+        </div>
+-->
+
+        <!-- GitHub OAuth -->
+        <a
+          href={`/api/auth/github?lang=${lang}`}
+          data-astro-reload
+          class="flex items-center justify-center gap-3 w-full py-2.5 border border-stroke-color rounded-lg text-sm text-secondary/70 font-medium hover:border-yellow/40 hover:text-secondary transition-all duration-200"
+        >
+          <JamGithub font-size={18} />
+          {t("login.github_button")}
+        </a>
+      </div>
+    </div>
+  </main>
+</Layout>
+

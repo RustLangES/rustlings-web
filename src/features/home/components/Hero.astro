@@ -2,49 +2,192 @@
 import { Image } from "astro:assets"
 import logoImage from "~/assets/images/webp/logo.webp"
 import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import JamGithub from "~icons/jam/github"
+import IconArrowRight from "~icons/tabler/arrow-right"
+import IconBolt from "~icons/tabler/bolt"
+import IconBook from "~icons/tabler/book"
+import IconTrophy from "~icons/tabler/trophy"
+import IconUser from "~icons/tabler/user"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const user = Astro.locals.user
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
   id="hero"
-  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6"
+  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden"
 >
-  <a
-    href="https://github.com/RustLangES/rustlings-web"
-    target="_blank"
-    rel="noopener noreferrer"
-    class="absolute top-4 right-6 text-secondary hover:text-yellow transition-transform duration-300 hover:scale-110"
-    aria-label="Repositorio de RustLings en GitHub"
-  >
-    <JamGithub font-size={32} />
-  </a>
+  <!-- Dot grid background -->
+  <div class="dot-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
 
-  <Image
-    class="w-56 md:w-64 logo mb-8"
-    src={logoImage}
-    alt="Rustlings logo"
-    width={256}
-    height={256}
-    fetchpriority="high"
-    loading="eager"
-  />
+  <!-- Top radial glow -->
+  <div
+    class="pointer-events-none absolute inset-0"
+    style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(255,215,118,0.13) 0%, transparent 65%)"
+    aria-hidden="true"
+  ></div>
+  <!-- Bottom fade -->
+  <div
+    class="pointer-events-none absolute bottom-0 left-0 right-0 h-48"
+    style="background: linear-gradient(to bottom, transparent, var(--color-primary))"
+    aria-hidden="true"
+  ></div>
 
-  <div class="my-10">
-    <h1 class="font-semibold text-5xl md:text-6xl mb-4">RustLings Web</h1>
-    <p class="text-xl opacity-90">Aprender Rust nunca fue tan fácil</p>
+  <!-- Auth link -->
+  <div class="absolute top-6 right-6 flex items-center gap-4">
+    <!-- Language selector -->
+    <div class="flex items-center gap-2">
+      <a
+        href="/es/"
+        class={`text-xs font-medium transition-all duration-300 ${
+          lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+        }`}
+      >
+        ES
+      </a>
+      <span class="text-secondary/20">|</span>
+      <a
+        href="/en/"
+        class={`text-xs font-medium transition-all duration-300 ${
+          lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+        }`}
+      >
+        EN
+      </a>
+    </div>
+
+    <!-- Auth link -->
+    <a
+      id="hero-profile-link"
+      href={`/${lang}/perfil`}
+      style={user ? "" : "display: none"}
+      class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+    >
+      <IconUser font-size={16} />
+      <span id="hero-username" class="hidden sm:inline">{user?.username ?? user?.email ?? ""}</span>
+    </a>
+    <a
+      id="hero-login-link"
+      href={`/${lang}/login`}
+      style={user ? "display: none" : ""}
+      class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
+      aria-label={t("hero.login")}
+    >
+      <IconUser font-size={16} />
+      <span class="hidden sm:inline">{t("hero.login")}</span>
+    </a>
   </div>
 
-  <a
-    href="/introduccion"
-    class="mt-6 px-8 py-2 border rounded-lg border-stroke-color hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300"
-  >
-    Aprender
-  </a>
+  <!-- Content wrapper -->
+  <div class="relative z-10 flex flex-col items-center max-w-4xl">
+
+    <!-- Open source badge -->
+    <div class="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow/20 bg-yellow/5 text-yellow text-xs font-semibold tracking-wide uppercase">
+      <span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>
+      {t("hero.free_badge")}
+    </div>
+
+    <!-- Logo with glow -->
+    <Image
+      class="w-32 md:w-40 logo mb-10"
+      src={logoImage}
+      alt="Rustlings logo"
+      width={160}
+      height={160}
+      fetchpriority="high"
+      loading="eager"
+    />
+
+    <!-- Headline -->
+    <h1 class="font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6">
+      Rust<span class="text-yellow">lings</span>
+    </h1>
+
+    <p class="text-secondary/50 text-base md:text-lg max-w-md mx-auto leading-relaxed mb-10">
+      {t("hero.subtitle")}
+    </p>
+
+    <!-- CTAs -->
+    <div class="flex flex-col sm:flex-row gap-3 items-center mb-16">
+      <a
+        href={`/${lang}/aprender`}
+        class="group flex items-center gap-2 px-8 py-3.5 rounded-xl bg-yellow text-primary font-bold text-sm hover:bg-yellow/90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/20"
+      >
+        {t("hero.start_free")}
+        <IconArrowRight font-size={15} class="group-hover:translate-x-0.5 transition-transform duration-200" />
+      </a>
+      <a
+        href="https://github.com/RustLangES/rustlings-web"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-2 px-8 py-3.5 rounded-xl border border-stroke-color text-secondary/50 font-medium text-sm hover:border-yellow/40 hover:text-yellow hover:-translate-y-0.5 transition-all duration-200"
+      >
+        <JamGithub font-size={16} />
+        {t("hero.view_code")}
+      </a>
+    </div>
+
+    <!-- Feature pills -->
+    <div class="flex flex-wrap justify-center gap-2.5">
+      {[
+        { icon: IconBook, label: t("hero.lessons_count") },
+        { icon: IconBolt, label: t("hero.integrated_editor") },
+        { icon: IconTrophy, label: t("hero.certificates") },
+      ].map(({ icon: Icon, label }) => (
+        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg/80 border border-stroke-color/50 text-secondary/45 text-xs backdrop-blur-sm">
+          <Icon font-size={12} class="text-yellow shrink-0" />
+          {label}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 text-secondary/20">
+    <span class="text-xs tracking-widest uppercase font-medium">{t("hero.scroll")}</span>
+    <div class="w-px h-8 bg-linear-to-b from-secondary/20 to-transparent"></div>
+  </div>
 </Section>
 
+<script>
+  import { initAuthStore } from "~/lib/stores/auth-store"
+  import { onDisplayNameChange, onLoginStateChange } from "~/lib/stores/user-utils"
+
+  document.addEventListener("astro:page-load", () => {
+    initAuthStore()
+
+    onLoginStateChange((loggedIn) => {
+      const profileLink = document.getElementById("hero-profile-link")
+      const loginLink = document.getElementById("hero-login-link")
+      if (profileLink) profileLink.style.display = loggedIn ? "" : "none"
+      if (loginLink) loginLink.style.display = loggedIn ? "none" : ""
+    })
+
+    onDisplayNameChange((displayName) => {
+      const span = document.getElementById("hero-username")
+      if (span && displayName) span.textContent = displayName
+    })
+  })
+</script>
+
 <style>
-  .logo {
-    -webkit-filter: drop-shadow(0 -6mm 100mm var(--color-yellow));
-    filter: drop-shadow(0 -6mm 90mm var(--color-yellow));
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(255, 215, 118, 0.07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 100%);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-yellow) 20%, rgba(255, 215, 118, 0.35) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 </style>

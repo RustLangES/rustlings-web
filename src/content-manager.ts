@@ -4,6 +4,7 @@ type ContentFrontmatter = {
 	editor: boolean
 	code?: string
 	expectedOutput?: string
+	testCode?: string
 }
 
 type ContentHeading = {
@@ -16,6 +17,8 @@ type ContentMeta = {
 	id: number
 	slug: string
 	title: string
+	major: number
+	minor: number
 }
 
 interface RawContent {
@@ -29,25 +32,44 @@ export type Content = Omit<RawContent, "frontmatter"> & {
 	meta: ContentMeta
 }
 
+function parseId(id: string): number {
+	const parts = id.split("-").map(Number)
+	return parts[0] * 1000 + (parts[1] ?? 0)
+}
+
 function extractMetadata(filepath: string) {
 	const filename =
 		filepath
 			.split("/")
 			.pop()
 			?.replace(/\.mdx?$/, "") ?? ""
-	const [, id, slug] = filename.match(/^(\d+)\.(.+)$/) ?? []
+	const [, id, slug] = filename.match(/^([\d-]+)\.(.+)$/) ?? []
 	const title = slug?.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()) ?? ""
+	const parts = (id ?? "0").split("-").map(Number)
 
-	return { id: Number(id), slug, title }
+	return {
+		id: parseId(id ?? "0"),
+		slug,
+		title,
+		major: parts[0] ?? 0,
+		minor: parts[1] ?? 0,
+	}
 }
 
-const files = import.meta.glob<RawContent>("./content/*.{md,mdx}", { eager: true })
+export const supportedLangs = ["es", "en"] as const
+export type SupportedLang = (typeof supportedLangs)[number]
 
-export const lessons: Content[] = Object.entries(files)
-	.map(([filepath, { Content, getHeadings, frontmatter }]) => ({
-		Content,
-		getHeadings,
-		data: frontmatter,
-		meta: extractMetadata(filepath),
-	}))
-	.sort((a, b) => a.meta.id - b.meta.id)
+const allFiles = import.meta.glob<RawContent>("./content/fundamentos-de-rust/*/*.{md,mdx}", { eager: true })
+
+export function getLessonsByLang(lang: string): Content[] {
+	const prefix = `./content/fundamentos-de-rust/${lang}/`
+	return Object.entries(allFiles)
+		.filter(([filepath]) => filepath.startsWith(prefix))
+		.map(([filepath, { Content, getHeadings, frontmatter }]) => ({
+			Content,
+			getHeadings,
+			data: frontmatter,
+			meta: extractMetadata(filepath),
+		}))
+		.sort((a, b) => a.meta.id - b.meta.id)
+}

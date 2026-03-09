@@ -2,12 +2,53 @@
 import logoImage from "~/assets/images/webp/logo.webp"
 import Sidebar from "~/components/sidebar/Sidebar.astro"
 import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
-import { lessons } from "~/content-manager"
+import { type Content, getLessonsByLang } from "~/content-manager"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconBrandGithub from "~icons/tabler/brand-github"
+import IconLogout from "~icons/tabler/logout"
+import IconUser from "~icons/tabler/user"
 
-const sidebarItems = lessons.map((content) => ({
-	label: content.meta.title,
-	href: `/${content.meta.slug}`,
+interface Props {
+	lang?: string
+}
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const user = Astro.locals.user
+const lessons = getLessonsByLang(lang)
+const t = useTranslations(lang)
+
+// Detect special pages that show a back button instead of the sidebar toggle
+const isLearnPage = Astro.url.pathname.includes("/aprender")
+const isProfilePage = Astro.url.pathname.includes("/perfil")
+
+// Language switch URLs: keep current path, swap the lang segment
+const switchLang = (targetLang: string) => Astro.url.pathname.replace(/^\/(es|en)/, `/${targetLang}`)
+
+type GroupedLesson = { parent: Content; children: Content[] }
+
+const groupMap = new Map<number, GroupedLesson>()
+
+for (const lesson of lessons) {
+	const { major, minor } = lesson.meta
+	if (minor === 0) {
+		groupMap.set(major, { parent: lesson, children: [] })
+	} else {
+		const group = groupMap.get(major)
+		if (group) group.children.push(lesson)
+	}
+}
+
+const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
+	label: `${parent.meta.major}. ${t(`lesson.${parent.meta.slug}` as Parameters<typeof t>[0])}`,
+	href: `/${lang}/${parent.meta.slug}`,
+	children:
+		children.length > 0
+			? children.map((child) => ({
+					label: `${parent.meta.major}.${child.meta.minor}. ${t(`lesson.${child.meta.slug}` as Parameters<typeof t>[0])}`,
+					href: `/${lang}/${child.meta.slug}`,
+				}))
+			: undefined,
 }))
 ---
 
@@ -16,25 +57,126 @@ const sidebarItems = lessons.map((content) => ({
     class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg"
   >
     <div class="flex items-center gap-4">
-      <ToggleSidebarButton sidebarId="content" label="Contenido" />
+      {isLearnPage ? (
+        <a
+          href={`/${lang}/`}
+          class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+        >
+          <IconLeft font-size={20} />
+          {t("learn.back_home")}
+        </a>
+      ) : isProfilePage ? (
+        <a
+          href={`/${lang}/aprender`}
+          class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+        >
+          <IconLeft font-size={20} />
+          {t("profile.back_temario")}
+        </a>
+      ) : (
+        <ToggleSidebarButton sidebarId="content" label={t("sidebar.menu")} />
+      )}
     </div>
 
-    <a
-      href="https://github.com/RustLangES/rustlings-web"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="GitHub Repository"
-      class="hidden text-white md:flex gap-1 bg-editor-bg p-1 rounded-md border border-white/50 hover:scale-105 duration-300 justify-center items-center"
-    >
-      <IconBrandGithub font-size={20} />
-    </a>
+    <div class="flex items-center gap-2">
+      <!-- Language selector -->
+      <div class="flex items-center gap-2">
+        <a
+          href={switchLang("es")}
+          class={`text-xs font-medium transition-all duration-300 ${
+            lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+          }`}
+        >
+          ES
+        </a>
+        <span class="text-secondary/20">|</span>
+        <a
+          href={switchLang("en")}
+          class={`text-xs font-medium transition-all duration-300 ${
+            lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+          }`}
+        >
+          EN
+        </a>
+      </div>
+
+      <div id="nav-user-section" style={user ? "" : "display: none"} class="flex items-center gap-1">
+        <a
+          id="nav-profile-link"
+          href={`/${lang}/perfil`}
+          class="flex items-center gap-1.5 px-2 py-1 text-xs text-secondary/60 rounded-md hover:text-yellow transition-colors"
+        >
+          <IconUser font-size={18} />
+          <span class="hidden sm:inline">{user?.username ?? user?.email ?? ""}</span>
+        </a>
+        <a
+          href="/api/auth/logout"
+          data-astro-reload
+          title="Cerrar sesión"
+          class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/40 rounded-md hover:text-red-400 transition-colors"
+        >
+          <IconLogout font-size={14} />
+        </a>
+      </div>
+      <a
+        id="nav-login-link"
+        href={`/${lang}/login`}
+        style={user ? "display: none" : ""}
+        class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/50 rounded-md hover:text-yellow transition-colors"
+        title="Iniciar sesión"
+      >
+        <IconUser font-size={18} />
+      </a>
+    </div>
   </nav>
 </header>
 
-<Sidebar
-  id="content"
-  items={sidebarItems}
-  title="Contenido"
-  position="left"
-  logo={logoImage}
-/>
+{!isLearnPage && !isProfilePage && (
+  <Sidebar
+    id="content"
+    items={sidebarItems}
+    title={t("sidebar.content")}
+    position="left"
+    logo={logoImage}
+    backHref={`/${lang}/aprender`}
+    backLabel={t("sidebar.curriculum")}
+    lang={lang}
+  />
+)}
+
+<script>
+  import { toast } from "~/utils/toasts"
+  import { initAuthStore } from "~/lib/stores/auth-store"
+  import { setupNavbar, onDisplayNameChange } from "~/lib/stores/user-utils"
+
+  document.addEventListener("astro:page-load", () => {
+    // Initialize auth store from server or fetch automatically
+    initAuthStore()
+    
+    // Setup reactive navbar (this handles all user state changes automatically)
+    setupNavbar({
+      profileLinkId: "nav-user-section",
+      loginLinkId: "nav-login-link",
+      logoutLinkId: null
+    })
+    
+    // Update username in profile link dynamically by targeting the span
+    onDisplayNameChange((displayName) => {
+      const profileLink = document.getElementById("nav-profile-link")
+      const usernameSpan = profileLink?.querySelector("span")
+      if (usernameSpan && displayName) {
+        usernameSpan.textContent = displayName
+      }
+    })
+
+    document.getElementById("debug-tour-btn")?.addEventListener("click", () => {
+      const tracker = document.getElementById("lesson-tracker")
+      const trackTitle = tracker?.dataset.trackTitle ?? "Fundamentos de Rust"
+
+      toast.success(
+        "¡Lo lograste! 🦀", 
+        `Completaste ${trackTitle}. Encuentra tu certificado en tu perfil.`
+      )
+    })
+  })
+</script>

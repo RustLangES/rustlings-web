@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN full_name_locked INTEGER NOT NULL DEFAULT 0;

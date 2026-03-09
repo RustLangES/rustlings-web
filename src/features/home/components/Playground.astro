@@ -1,46 +1,115 @@
 ---
 import { Image } from "astro:assets"
-import figuresSvg from "~/assets/images/figures.svg"
 import ferrisImage from "~/assets/images/webp/ferris.webp"
 import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import IconCheck from "~icons/tabler/check"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
   id="playground"
-  className="relative flex flex-col justify-center items-center w-full py-20 px-6 bg-dark-fg"
+  className="relative flex flex-col justify-center items-center w-full py-24 px-6 bg-dark-fg shrink-0"
 >
-  <div
-    class="w-full h-12 absolute bottom-full bg-repeat-x"
-    style={`background-image: url(${figuresSvg.src})`}
-  >
-  </div>
+  <div class="max-w-6xl w-full">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
+        {t("playground.title")}
+      </h2>
+      <p class="text-secondary/50 text-lg max-w-xl mx-auto">
+        {t("playground.subtitle")}
+      </p>
+    </div>
 
-  <h2 class="text-5xl md:text-6xl font-extrabold text-center mb-12">
-    Prueba Rust en tu navegador
-  </h2>
+    <div class="flex flex-col lg:flex-row items-center gap-12">
 
-  <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-10">
-    <Image
-      class="w-full md:w-1/2 max-w-md h-auto z-20"
-      src={ferrisImage}
-      alt="Ferris, la mascota de Rust"
-      fetchpriority="high"
-    />
+      <!-- Mock editor -->
+      <div class="w-full lg:w-3/5 rounded-2xl overflow-hidden border border-stroke-color shadow-2xl shadow-black/40">
+        <!-- Tab bar -->
+        <div class="flex items-center justify-between px-4 py-2.5 bg-editor-bg border-b border-stroke-color">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#febc2e]"></span>
+            <span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+          </div>
+          <span class="text-secondary/25 text-xs font-mono">main.rs</span>
+          <div class="w-14"></div>
+        </div>
 
-    <p
-      class="text-center md:text-left w-full md:w-1/2 text-pretty leading-relaxed"
-    >
-      <span class="block font-bold text-xl mb-2 text-center"
-        >¡Aprende Rust sin instalar nada!</span
-      >
-      Explora lecciones interactivas y experimenta con código en un playground integrado,
-      directamente desde tu navegador. 🚀
-    </p>
-  </div>
+        <!-- Code area -->
+        <div class="bg-editor-bg px-6 py-5 font-mono text-sm leading-7 text-left overflow-x-auto select-none">
+          <table class="border-separate border-spacing-0 w-full">
+            <tbody>
+              <tr>
+                <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">1</td>
+                <td><span class="text-[#ff79c6]">fn</span> <span class="text-[#50fa7b]">main</span><span class="text-secondary/50">()</span> <span class="text-secondary/50">&lbrace;</span></td>
+              </tr>
+              <tr>
+                <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">2</td>
+                <td class="pl-6"><span class="text-[#ff79c6]">let</span> <span class="text-secondary">curso</span> <span class="text-secondary/50">=</span> <span class="text-[#f1fa8c]">"{t("playground.course_name")}"</span><span class="text-secondary/50">;</span></td>
+              </tr>
+              <tr>
+                <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">3</td>
+                <td class="pl-6"><span class="text-secondary/30">{t("playground.comment")}</span></td>
+              </tr>
+              <tr>
+                <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">4</td>
+                <td class="pl-6"><span class="text-yellow">println!</span><span class="text-secondary/50">(</span><span class="text-[#f1fa8c]">"{t("playground.learning_format")}"</span><span class="text-secondary/50">, curso);</span></td>
+              </tr>
+              <tr>
+                <td class="text-secondary/20 text-xs text-right pr-5 w-6 align-top pt-0.5">5</td>
+                <td><span class="text-secondary/50">&rbrace;</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-  <div
-    class="w-full rotate-180 h-12 absolute top-full bg-repeat-x"
-    style={`background-image: url(${figuresSvg.src})`}
-  >
+        <!-- Output bar -->
+        <div class="bg-primary border-t border-stroke-color px-6 py-3 flex items-center gap-4">
+          <span class="text-[#28c840] text-xs font-mono font-semibold tracking-widest uppercase">{t("playground.output_label")}</span>
+          <span class="text-secondary/60 font-mono text-sm">{t("playground.output_example")}</span>
+        </div>
+      </div>
+
+      <!-- Features side -->
+      <div class="w-full lg:w-2/5 flex flex-col items-center lg:items-start gap-8">
+        <Image
+          class="w-28 h-auto"
+          src={ferrisImage}
+          alt={t("playground.ferris_alt")}
+        />
+
+        <ul class="space-y-4 text-center lg:text-left">
+          {[
+            t("playground.feature1"),
+            t("playground.feature2"),
+            t("playground.feature3"),
+            t("playground.feature4"),
+          ].map((text) => (
+            <li class="flex items-center gap-3 justify-center lg:justify-start">
+              <span class="shrink-0 flex items-center justify-center w-5 h-5 rounded-full bg-yellow/10 border border-yellow/25">
+                <IconCheck font-size={11} class="text-yellow" />
+              </span>
+              <span class="text-secondary/60 text-sm">{text}</span>
+            </li>
+          ))}
+        </ul>
+
+        <a
+          href={`/${lang}/aprender`}
+          class="px-6 py-2.5 rounded-lg border border-yellow/30 text-yellow font-semibold text-sm hover:bg-yellow/10 hover:-translate-y-0.5 transition-all duration-200"
+        >
+          {t("playground.view_lessons")}
+        </a>
+      </div>
+
+    </div>
   </div>
 </Section>

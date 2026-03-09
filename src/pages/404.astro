@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets"
+//import img404 from "~/assets/images/webp/404_image.png"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import Layout from "~/layouts/Layout.astro"
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+
+export const prerender = true
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<Layout title={t("404.title")}>
+  <main class="flex-1 flex flex-col items-center justify-center px-4 gap-8">
+    <!-- Temporally disabled (corrupted image) -->
+    <!--
+    <Image
+      src={img404}
+      alt={t("404.image_alt")}
+      class="w-full max-w-lg h-auto select-none pointer-events-none"
+    />
+    -->
+    <a
+      href={`/${lang}/`}
+      class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
+    >
+      <IconLeft font-size={20} />
+      {t("404.back_home")}
+    </a>
+  </main>
+</Layout>

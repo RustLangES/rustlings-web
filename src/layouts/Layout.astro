@@ -1,17 +1,22 @@
 ---
 import { ClientRouter } from "astro:transitions"
 import "~/styles/global.css"
+import "sweetalert2/dist/sweetalert2.min.css"
+import "driver.js/dist/driver.css"
 import favicon from "~/assets/images/webp/favicon.webp"
 import CookieBanner from "~/components/CookieBanner.astro"
+import { getLangFromUrl } from "~/i18n/utils"
 
 const {
 	title = "RustLings Web",
 	description = "Aprende Rust mediante ejercicios interactivos y desafíos. ¡Todo explicado aquí!",
 } = Astro.props
+
+const lang = Astro.locals.lang ?? getLangFromUrl(Astro.url)
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <title>{title}</title>
@@ -27,3 +32,20 @@ const {
     <CookieBanner />
   </body>
 </html>
+
+<script>
+  import { db } from "~/lib/stores/editor-store"
+
+  document.addEventListener("astro:page-load", () => {
+    document.querySelectorAll<HTMLAnchorElement>('[href="/api/auth/logout"]').forEach((link) => {
+      link.addEventListener("click", async (e) => {
+        e.preventDefault()
+        try {
+          localStorage.removeItem("rustlings_progress")
+          await db.clearAll()
+        } catch {}
+        window.location.href = "/api/auth/logout"
+      })
+    })
+  })
+</script>

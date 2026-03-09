@@ -25,8 +25,13 @@ const chalky = "#fdd835",
 export const gruvboxDarkTheme = EditorView.theme(
 	{
 		"&": {
+			height: "100%",
 			color: ivory,
 			fontSize: "16px",
+		},
+
+		".cm-scroller": {
+			overflow: "auto",
 		},
 
 		".cm-content": {

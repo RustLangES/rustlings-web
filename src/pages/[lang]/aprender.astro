@@ -1,0 +1,170 @@
+---
+import { Image } from "astro:assets"
+import logoImage from "~/assets/images/webp/logo.webp"
+import { tracks } from "~/const/tracks"
+import Navbar from "~/features/content/components/Navbar.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import Layout from "~/layouts/Layout.astro"
+import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+const user = Astro.locals.user
+---
+
+<Layout
+  title={t("learn.page_title")}
+  description={t("learn.page_description")}
+>
+  <Navbar lang={lang} />
+
+  <main class="flex-1 flex flex-col px-6 py-12">
+
+    <div class="flex flex-col items-center text-center mb-12">
+      <h1 class="text-2xl md:text-3xl font-bold text-secondary">{t("learn.main_title")}</h1>
+      <p class="text-secondary/50 text-sm">{t("learn.subtitle")}</p>
+    </div>
+
+    <div class="flex flex-col items-center">
+      <div class="w-full max-w-2xl flex flex-col gap-4">
+        {tracks.map(track => (
+          track.disabled ? (
+            <div class="relative flex gap-3 sm:gap-6 items-start bg-light-bg/40 border border-stroke-color/40 rounded-2xl p-4 sm:p-6 cursor-not-allowed opacity-50 select-none">
+              <div class="absolute top-3 right-3 flex items-center gap-1.5">
+                <span class="text-xs bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  {t(track.badge)}
+                </span>
+                <span class="text-xs bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-full whitespace-nowrap">
+                  {t("learn.coming_soon")}
+                </span>
+              </div>
+
+              <div class="shrink-0 w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl bg-editor-bg border border-stroke-color/40 mt-0.5">
+                <Image src={logoImage} alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12 grayscale" />
+              </div>
+
+              <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+                <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{t(track.title)}</span>
+                <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{t(track.description)}</p>
+                <span class="text-secondary/30 text-xs">{track.lessons} {t("learn.lessons")}</span>
+              </div>
+            </div>
+          ) : (
+            <div
+              data-track-id={track.id}
+              data-track-total={track.lessons}
+              data-track-title={t(track.title)}
+              data-track-href={`/${lang}${track.href}`}
+              data-track-lang={lang}
+              data-track-slugs={JSON.stringify(track.slugs)}
+              class="group relative flex gap-3 sm:gap-6 items-start bg-light-bg border border-stroke-color rounded-2xl p-4 sm:p-6 hover:border-yellow transition-all duration-200 cursor-pointer"
+            >
+              <span class="absolute top-3 right-3 text-xs bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-full whitespace-nowrap">
+                {t(track.badge)}
+              </span>
+
+              <div class="shrink-0 w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl bg-editor-bg border border-stroke-color mt-0.5">
+                <Image src={logoImage} alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12" />
+              </div>
+
+              <div class="flex flex-col gap-1.5 sm:gap-2 flex-1 min-w-0">
+                <span class="text-secondary font-bold text-base sm:text-xl group-hover:text-yellow transition-colors leading-tight pr-20">
+                  {t(track.title)}
+                </span>
+                <p class="text-secondary/60 text-xs sm:text-sm leading-relaxed">{t(track.description)}</p>
+
+                <!-- Progress bar (hidden until JS populates it) -->
+                <div data-progress-container class="hidden flex-col gap-1 mt-0.5">
+                  <div class="flex justify-between items-center">
+                    <span data-progress-label class="text-xs text-secondary/50"></span>
+                    <span data-progress-pct class="text-xs text-yellow font-medium"></span>
+                  </div>
+                  <div class="w-full h-1.5 bg-stroke-color/30 rounded-full overflow-hidden">
+                    <div data-progress-bar class="h-full bg-yellow rounded-full transition-all duration-500" style="width:0%"></div>
+                  </div>
+                </div>
+
+                <span data-lessons-label class="text-secondary/40 text-xs">{track.lessons} {t("learn.lessons")}</span>
+                <span data-resume-label class="hidden text-xs text-yellow/70 font-medium"></span>
+              </div>
+
+              <span class="text-secondary/30 group-hover:text-yellow group-hover:translate-x-1 transition-all shrink-0 self-end mb-0.5">
+                <IconRight font-size={20} />
+              </span>
+            </div>
+          )
+        ))}
+      </div>
+    </div>
+
+  </main>
+
+</Layout>
+
+<script>
+  import { db } from "~/lib/stores/editor-store"
+  import { getTrackProgress } from "~/lib/progress"
+  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
+
+  document.addEventListener("astro:page-load", async () => {
+    // Get translations for JavaScript usage
+    const currentLang = getLangFromUrl(new URL(window.location.href))
+    const t = useTranslations(currentLang)
+
+    // Sync server progress + last lesson positions (no-op if not logged in)
+    await db.syncFromServer()
+
+    const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
+
+    for (const card of cards) {
+      const trackId = card.dataset.trackId!
+      const total = Number(card.dataset.trackTotal)
+      const lang = card.dataset.trackLang ?? "es"
+      const slugs: string[] = JSON.parse(card.dataset.trackSlugs ?? "[]")
+
+      // Use server-synced IndexedDB completions as source of truth
+      const completions = slugs.length > 0
+        ? await Promise.all(slugs.map((s) => db.isCompleted(s)))
+        : []
+      const completedCount = completions.filter(Boolean).length
+
+      // Fall back to visited count if no completions yet
+      const visited = getTrackProgress(trackId)
+      const displayCount = completedCount > 0 ? completedCount : visited.length
+
+      if (displayCount > 0) {
+        const pct = Math.round((displayCount / total) * 100)
+        const container = card.querySelector<HTMLElement>("[data-progress-container]")
+        const label = card.querySelector<HTMLElement>("[data-progress-label]")
+        const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
+        const bar = card.querySelector<HTMLElement>("[data-progress-bar]")
+        const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
+
+        if (container && label && pctEl && bar) {
+          label.textContent = `${displayCount} ${t("learn.progress_of")} ${total} ${t("learn.lessons")}`
+          pctEl.textContent = `${pct}%`
+          bar.style.width = `${pct}%`
+          container.classList.remove("hidden")
+          container.classList.add("flex")
+          if (lessonsLabel) lessonsLabel.classList.add("hidden")
+        }
+      }
+
+      // If server has a last lesson, update navigation target and show resume label
+      const lastLesson = db.lastLesson[trackId]
+      if (lastLesson) {
+        card.dataset.trackHref = `/${lang}/${lastLesson.slug}`
+        const resumeLabel = card.querySelector<HTMLElement>("[data-resume-label]")
+        if (resumeLabel) {
+          resumeLabel.textContent = `${t("learn.continue_label")} ${lastLesson.title}`
+          resumeLabel.classList.remove("hidden")
+        }
+      }
+
+      // Card click → navigate
+      card.addEventListener("click", () => {
+        window.location.href = card.dataset.trackHref!
+      })
+    }
+  })
+</script>

@@ -1,48 +1,102 @@
 ---
 import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import FaBrandsDiscord from "~icons/fa-brands/discord"
+import FaBrandsGithub from "~icons/fa-brands/github"
+import IconBook from "~icons/tabler/book"
+import IconExternalLink from "~icons/tabler/external-link"
+import IconInfinity from "~icons/tabler/infinity"
+import IconLockOpen from "~icons/tabler/lock-open"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
 ---
 
 <Section
   id="community"
-  className="min-h-screen flex flex-col justify-center items-center w-full py-20 px-6"
+  className="flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
 >
-  <h2 class="text-5xl md:text-6xl font-extrabold text-center mb-12">
-    Comunidad Rust
-  </h2>
+  <div class="max-w-6xl w-full">
 
-  <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-10">
-    <div
-      class="md:w-1/2 w-full flex flex-col items-center md:items-start text-center md:text-left"
-    >
-      <p class="text-pretty leading-relaxed text-xl">
-        <span class="block font-bold text-xl mb-2">
-          Sigue aprendiendo junto a miles de entusiastas de Rust
-        </span>
-        Forma parte de nuestra comunidad, comparte tus avances, resuelve dudas y colabora
-        con otros aprendices y expertos de Rust.
+    <!-- Header -->
+    <div class="text-center mb-16">
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
+        {t("community.title")}
+      </h2>
+      <p class="text-secondary/50 text-lg max-w-xl mx-auto">
+        {t("community.subtitle")}
       </p>
+    </div>
 
+    <!-- Cards grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+      <!-- Discord card -->
       <a
         href="https://discord.com/channels/778674594856960012/1292726289479893044"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Únete al Discord de la Comunidad Rust"
-        class="mt-8 px-6 py-3 border rounded-lg border-stroke-color bg-light-bg hover:border-secondary hover:-translate-y-1 hover:scale-105 cursor-pointer duration-300 font-bold flex items-center gap-2 text-lg"
+        class="md:col-span-2 relative overflow-hidden rounded-2xl border border-stroke-color bg-dark-fg p-8 flex flex-col gap-6 hover:border-[#5865F2]/50 hover:-translate-y-0.5 transition-all duration-200 group"
       >
-        <FaBrandsDiscord />
-        Discord
+        <div class="absolute inset-0 bg-[#5865F2]/5 pointer-events-none group-hover:bg-[#5865F2]/10 transition-colors duration-200"></div>
+        <IconExternalLink font-size={16} class="absolute top-4 right-4 text-secondary/20 group-hover:text-[#5865F2]/60 transition-colors duration-200" />
+        <div class="relative">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/30">
+              <FaBrandsDiscord font-size={20} class="text-[#5865F2]" />
+            </span>
+            <span class="font-bold text-lg">Discord</span>
+          </div>
+          <p class="text-secondary/60 text-sm leading-relaxed">
+            {t("community.discord_desc")}
+          </p>
+        </div>
+      </a>
+
+      <!-- GitHub card -->
+      <a
+        href="https://github.com/RustLangES/rustlings-web"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="relative overflow-hidden rounded-2xl border border-stroke-color bg-dark-fg p-8 flex flex-col gap-4 hover:border-yellow/40 hover:-translate-y-0.5 transition-all duration-200 group"
+      >
+        <div class="absolute inset-0 bg-yellow/3 pointer-events-none group-hover:bg-yellow/6 transition-colors duration-200"></div>
+        <IconExternalLink font-size={16} class="absolute top-4 right-4 text-secondary/20 group-hover:text-yellow/50 transition-colors duration-200" />
+        <div class="relative flex flex-col h-full">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-yellow/10 border border-yellow/25">
+              <FaBrandsGithub font-size={20} class="text-yellow" />
+            </span>
+            <span class="font-bold text-lg">GitHub</span>
+          </div>
+          <p class="text-secondary/60 text-sm leading-relaxed flex-1">
+            {t("community.github_desc")}
+          </p>
+        </div>
       </a>
     </div>
 
-    <div class="md:w-1/2 w-full flex justify-center">
-      <iframe
-        src="https://discord.com/widget?id=778674594856960012&theme=dark"
-        class="w-full max-w-xl h-[450px] md:h-[500px] rounded-lg border border-stroke-color"
-        allow="fullscreen"
-        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-        loading="lazy"
-        title="Widget de Discord de la Comunidad Rust"></iframe>
+    <!-- Stats row -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      {[
+        { value: "39", label: t("community.stats.lessons"), icon: IconBook },
+        { value: "100%", label: t("community.stats.open_source"), icon: IconLockOpen },
+        { label: t("community.stats.possibilities"), icon: IconInfinity },
+      ].map(({ value, label, icon: Icon }) => (
+        <div class="flex items-center gap-4 px-6 py-4 rounded-xl border border-stroke-color bg-dark-fg/50">
+          <Icon class="text-yellow" font-size={24} aria-hidden="true" />
+          <div>
+            <p class="text-2xl font-extrabold text-yellow leading-none">{value}</p>
+            <p class="text-secondary/50 text-xs mt-0.5">{label}</p>
+          </div>
+        </div>
+      ))}
     </div>
+
   </div>
 </Section>

@@ -44,14 +44,23 @@ jobs:
           VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
         run: npm run build
 
+      - name: Ignore _worker.js in assets
+        run: echo "_worker.js" > dist/.assetsignore
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         env:
           VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
+          GH_CLIENT_ID: ${{ secrets.GH_CLIENT_ID }}
+          GH_CLIENT_SECRET: ${{ secrets.GH_CLIENT_SECRET }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
         with:
-          wranglerVersion: "4.19.1"
+          wranglerVersion: "4.45.0"
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
           secrets: |
             VITE_CLARITY_PROJECT_ID
+            GH_CLIENT_ID
+            GH_CLIENT_SECRET
+            SESSION_SECRET

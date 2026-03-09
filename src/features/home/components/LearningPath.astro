@@ -1,0 +1,117 @@
+---
+import Section from "~/components/sections/Section.astro"
+import IconArrowRight from "~icons/tabler/arrow-right"
+import IconGift from "~icons/tabler/gift"
+import IconLock from "~icons/tabler/lock"
+
+const lessons = [
+	{ slug: "introduccion-rust", title: "Introducción a Rust", group: "Inicio" },
+	{ slug: "sintaxis-esencial", title: "Sintaxis esencial", group: "Inicio" },
+	{ slug: "variables-mutabilidad", title: "Variables y mutabilidad", group: "Fundamentos" },
+	{ slug: "tipos-primitivos", title: "Tipos primitivos", group: "Fundamentos" },
+	{ slug: "constantes-shadowing", title: "Constantes y shadowing", group: "Fundamentos" },
+	{ slug: "control-flujo", title: "Control de flujo", group: "Fundamentos" },
+	{ slug: "if-expresion", title: "if como expresión", group: "Fundamentos" },
+	{ slug: "match", title: "Match y patrones", group: "Fundamentos" },
+	{ slug: "bucles", title: "Bucles", group: "Fundamentos" },
+	{ slug: "funciones", title: "Funciones", group: "Fundamentos" },
+	{ slug: "ownership", title: "Ownership", group: "Memoria" },
+	{ slug: "borrowing", title: "Borrowing", group: "Memoria" },
+	{ slug: "referencias-inmutables", title: "Referencias inmutables", group: "Memoria" },
+	{ slug: "referencias-mutables", title: "Referencias mutables", group: "Memoria" },
+	{ slug: "slices", title: "Slices", group: "Memoria" },
+	{ slug: "structs", title: "Structs", group: "Tipos" },
+	{ slug: "definicion-structs", title: "Definición de structs", group: "Tipos" },
+	{ slug: "metodos-impl", title: "Métodos e impl", group: "Tipos" },
+	{ slug: "enums", title: "Enums", group: "Tipos" },
+	{ slug: "enums-con-datos", title: "Enums con datos", group: "Tipos" },
+	{ slug: "option-result", title: "Option y Result", group: "Tipos" },
+	{ slug: "manejo-errores", title: "Manejo de errores", group: "Avanzado" },
+	{ slug: "result-y-propagacion", title: "Result y propagación", group: "Avanzado" },
+	{ slug: "colecciones", title: "Colecciones", group: "Avanzado" },
+	{ slug: "vec", title: "Vec<T>", group: "Avanzado" },
+	{ slug: "hashmap", title: "HashMap", group: "Avanzado" },
+	{ slug: "iteradores", title: "Iteradores", group: "Avanzado" },
+	{ slug: "modulos", title: "Módulos", group: "Avanzado" },
+]
+
+// Show first 12, rest collapsed
+const visibleLessons = lessons.slice(0, 12)
+---
+
+<Section
+  id="learning-path"
+  className="relative flex flex-col justify-center items-center w-full py-24 px-6 bg-dark-fg"
+>
+  <div class="max-w-6xl w-full">
+
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-6">
+      <div>
+        <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">Track gratuito</p>
+        <h2 class="text-4xl md:text-5xl font-extrabold mb-3">
+          Fundamentos de Rust
+        </h2>
+        <p class="text-secondary/45 text-base max-w-lg">
+          Un camino estructurado desde cero hasta dominar los conceptos esenciales de Rust.
+        </p>
+      </div>
+      <div class="flex gap-3 shrink-0">
+        <div class="px-4 py-2 rounded-xl bg-primary/60 border border-stroke-color text-center">
+          <div class="flex justify-center mb-1">
+            <IconGift class="text-yellow" font-size={24} />
+          </div>
+          <p class="text-secondary/40 text-xs">lecciones</p>
+        </div>
+        <div class="px-4 py-2 rounded-xl bg-primary/60 border border-stroke-color text-center">
+          <div class="flex justify-center mb-1">
+            <IconGift class="text-yellow" font-size={24} />
+          </div>
+          <p class="text-secondary/40 text-xs">gratis</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lessons grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-6">
+      {visibleLessons.map((lesson, i) => (
+        <a
+          href={`/aprender`}
+          class="lesson-card group flex items-center gap-4 px-5 py-4 rounded-xl border border-stroke-color/60 bg-primary/40 hover:border-yellow/35 hover:bg-primary/70 transition-all duration-200"
+        >
+          <span class="shrink-0 w-8 h-8 rounded-lg bg-yellow/10 border border-yellow/20 text-yellow text-xs font-bold flex items-center justify-center">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <div class="flex-1 min-w-0">
+            <p class="text-secondary/70 text-sm font-medium truncate group-hover:text-secondary transition-colors">{lesson.title}</p>
+            <p class="text-secondary/30 text-xs mt-0.5">{lesson.group}</p>
+          </div>
+          <IconArrowRight font-size={14} class="text-secondary/20 group-hover:text-yellow/60 group-hover:translate-x-0.5 transition-all duration-200 shrink-0" />
+        </a>
+      ))}
+    </div>
+
+    <!-- Collapsed rest indicator -->
+    <div class="flex items-center gap-4 mb-10">
+      <div class="flex-1 h-px bg-stroke-color/40"></div>
+      <div class="flex items-center gap-2 px-4 py-2 rounded-full border border-stroke-color/50 bg-primary/40 text-secondary/35 text-xs">
+        <IconLock font-size={11} />
+        +{lessons.length - visibleLessons.length} lecciones más
+      </div>
+      <div class="flex-1 h-px bg-stroke-color/40"></div>
+    </div>
+
+    <!-- Coming soon track -->
+    <div class="relative overflow-hidden rounded-2xl border border-stroke-color/40 bg-primary/30 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 opacity-60">
+      <div>
+        <span class="inline-block px-2 py-0.5 rounded-full bg-secondary/10 border border-stroke-color text-secondary/40 text-[10px] font-semibold uppercase tracking-wide mb-3">Próximamente</span>
+        <h3 class="text-lg font-bold text-secondary/60 mb-1">Rust Avanzado: Diseño y Abstracción</h3>
+        <p class="text-secondary/35 text-sm">Lifetimes, traits, generics, closures y diseño de APIs.</p>
+      </div>
+      <div class="shrink-0 px-5 py-2.5 rounded-xl border border-stroke-color/40 text-secondary/30 text-sm font-medium cursor-not-allowed">
+        Próximamente
+      </div>
+    </div>
+
+  </div>
+</Section>

@@ -1,0 +1,98 @@
+---
+import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import IconChevronDown from "~icons/tabler/chevron-down"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+
+const faqs = [
+	{
+		q: t("faq.q1"),
+		a: t("faq.a1"),
+	},
+	{
+		q: t("faq.q2"),
+		a: t("faq.a2"),
+	},
+	{
+		q: t("faq.q3"),
+		a: t("faq.a3"),
+	},
+	{
+		q: t("faq.q4"),
+		a: t("faq.a4"),
+	},
+	{
+		q: t("faq.q5"),
+		a: t("faq.a5"),
+	},
+	{
+		q: t("faq.q6"),
+		a: t("faq.a6"),
+	},
+]
+---
+<Section
+  id="faq"
+  className="relative flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
+>
+  <div class="max-w-3xl w-full">
+
+    <!-- Header -->
+    <div class="text-center mb-14">
+      <p class="text-yellow text-xs font-semibold tracking-widest uppercase mb-3">{t("faq.section_title")}</p>
+      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
+        {t("faq.title")}
+      </h2>
+      <p class="text-secondary/45 text-base max-w-md mx-auto">
+        {t("faq.subtitle")}
+      </p>
+    </div>
+
+    <!-- FAQ items -->
+    <div class="space-y-3">
+      {faqs.map((faq, i) => (
+        <details class="faq-item group rounded-xl border border-stroke-color bg-dark-fg overflow-hidden">
+          <summary class="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none hover:text-yellow transition-colors duration-200 font-medium text-secondary/80 text-sm">
+            <span>{faq.q}</span>
+            <IconChevronDown
+              font-size={16}
+              class="text-secondary/30 group-open:rotate-180 transition-transform duration-200 shrink-0 group-hover:text-yellow/60"
+            />
+          </summary>
+          <div class="px-6 pb-5">
+            <p class="text-secondary/50 text-sm leading-relaxed border-t border-stroke-color/40 pt-4">
+              {faq.a}
+            </p>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="mt-12 text-center">
+      <p class="text-secondary/35 text-sm mb-4">{t("faq.still_doubt")}</p>
+      <a
+        href="https://discord.com/channels/778674594856960012/1292726289479893044"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-[#5865F2]/30 text-[#5865F2]/80 text-sm font-medium hover:bg-[#5865F2]/10 hover:-translate-y-0.5 transition-all duration-200"
+      >
+        {t("faq.ask_discord")}
+      </a>
+    </div>
+
+  </div>
+</Section>
+
+<style>
+  .faq-item[open] {
+    border-color: rgba(255, 215, 118, 0.2);
+  }
+</style>
