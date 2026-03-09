@@ -52,7 +52,7 @@ const t = useTranslations(lang)
             {t("certificate.success_message_1")}
           </p>
           <p class="text-secondary/70 text-xs leading-relaxed">
-            {t("certificate.success_message_2", { trackTitle: t(track.title) })}
+            {t("certificate.success_message_2").replace("{trackTitle}", t(track.title))}
           </p>
           <p class="text-yellow/60 text-xs font-medium mt-1">
             {t("certificate.intro_text")}
