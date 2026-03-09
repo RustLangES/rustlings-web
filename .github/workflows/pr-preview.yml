@@ -76,6 +76,9 @@ jobs:
           VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
         run: npm run build
 
+      - name: Ignore _worker.js in assets
+        run: echo "_worker.js" > dist/.assetsignore
+
       # Deploy steps
       - name: Normalize alias
         run: |

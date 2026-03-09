@@ -44,6 +44,9 @@ jobs:
           VITE_CLARITY_PROJECT_ID: ${{ secrets.VITE_CLARITY_PROJECT_ID }}
         run: npm run build
 
+      - name: Ignore _worker.js in assets
+        run: echo "_worker.js" > dist/.assetsignore
+
       - name: Deploy
         uses: cloudflare/wrangler-action@v3
         env:

@@ -57,7 +57,7 @@ const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang === "es" ? "
       </div>
       <h1 class="text-2xl font-bold text-secondary mt-2">{cert.name_used}</h1>
       <p class="text-secondary/50 text-sm">
-        {t("verification.completed")} <span class="text-secondary font-semibold">{track?.title ?? cert.course_id}</span>
+        {t("verification.completed")} <span class="text-secondary font-semibold">{track ? t(track.title) : cert.course_id}</span>
       </p>
       <p class="text-secondary/30 text-xs">{t("verification.issued_date")}: {issuedDate}</p>
     </div>
@@ -71,7 +71,7 @@ const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang === "es" ? "
         class="w-full drop-shadow-2xl rounded-sm"
         data-logo-url={logoSvgUrl}
         data-name={cert.name_used}
-        data-track-title={track?.title ?? cert.course_id}
+        data-track-title={track ? t(track.title) : cert.course_id}
         data-issued-at={cert.issued_at}
         data-cert-id={cert.id}
         data-brand-line1={t("certificate.brand_name_line1")}

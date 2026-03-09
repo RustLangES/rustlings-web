@@ -135,6 +135,10 @@ const t = useTranslations(lang)
           data-badge-certification={t("certificate.badge_certification")}
           data-track-title={t(track.title)}
           data-track-id={track.id}
+<<<<<<< Updated upstream
+=======
+          data-lang={lang}
+>>>>>>> Stashed changes
         ></canvas>
 
         <button
@@ -478,28 +482,12 @@ const t = useTranslations(lang)
     const trackTitle = canvas.dataset.trackTitle!
     const trackId = canvas.dataset.trackId!
     const logoUrl = canvas.dataset.logoUrl!
+    const lang = canvas.dataset.lang!
 
     let certName = ""
     let currentCertId = ""
     let currentIssuedAt = ""
     let mode: "cert" | "badge" = "cert"
-
-    // Toggle buttons
-    const toggleCertBtn = document.getElementById("toggle-cert") as HTMLButtonElement
-    const toggleBadgeBtn = document.getElementById("toggle-badge") as HTMLButtonElement
-
-    const setMode = (m: "cert" | "badge") => {
-      mode = m
-      const isC = m === "cert"
-      toggleCertBtn.className = `flex-1 py-2.5 transition-colors ${isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
-      toggleBadgeBtn.className = `flex-1 py-2.5 transition-colors ${!isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
-      canvas.className = isC
-        ? "w-full drop-shadow-2xl rounded-sm"
-        : "drop-shadow-2xl rounded-sm w-[500px] max-w-full mx-auto"
-      redraw()
-    }
-    toggleCertBtn.addEventListener("click", () => setMode("cert"))
-    toggleBadgeBtn.addEventListener("click", () => setMode("badge"))
 
     // Get translations from canvas data attributes
     const {
@@ -535,7 +523,7 @@ const t = useTranslations(lang)
       const shareDiv = document.getElementById("share-buttons")!
       const linkedinBtn = document.getElementById("linkedin-btn") as HTMLAnchorElement
       const xBtn = document.getElementById("x-btn") as HTMLAnchorElement
-      const certUrl = `${window.location.origin}/verificar/${certId}`
+      const certUrl = `${window.location.origin}/${lang}/verificar/${certId}`
       const issued = new Date(issuedAt)
 
       const linkedinParams = new URLSearchParams({
@@ -555,6 +543,23 @@ const t = useTranslations(lang)
       shareDiv.classList.remove("hidden")
       shareDiv.classList.add("flex")
     }
+
+    // Toggle buttons
+    const toggleCertBtn = document.getElementById("toggle-cert") as HTMLButtonElement
+    const toggleBadgeBtn = document.getElementById("toggle-badge") as HTMLButtonElement
+
+    const setMode = (m: "cert" | "badge") => {
+      mode = m
+      const isC = m === "cert"
+      toggleCertBtn.className = `flex-1 py-2.5 transition-colors ${isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
+      toggleBadgeBtn.className = `flex-1 py-2.5 transition-colors ${!isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
+      canvas.className = isC
+        ? "w-full drop-shadow-2xl rounded-sm"
+        : "drop-shadow-2xl rounded-sm w-[500px] max-w-full mx-auto"
+      redraw()
+    }
+    toggleCertBtn.addEventListener("click", () => setMode("cert"))
+    toggleBadgeBtn.addEventListener("click", () => setMode("badge"))
 
     // Try to load name from user profile
     try {
