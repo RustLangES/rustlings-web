@@ -139,8 +139,8 @@ const user = Astro.locals.user
               </div>
 
               <div class="flex flex-col gap-1.5 flex-1 min-w-0">
-                <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{track.title}</span>
-                <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{track.description}</p>
+                <span class="text-secondary/50 font-bold text-base sm:text-xl leading-tight">{t(track.title)}</span>
+                <p class="text-secondary/40 text-xs sm:text-sm leading-relaxed">{t(track.description)}</p>
                 <span class="text-secondary/30 text-xs">{track.lessons} {t("learn.lessons")}</span>
               </div>
             </div>
@@ -148,7 +148,7 @@ const user = Astro.locals.user
             <div
               data-track-id={track.id}
               data-track-total={track.lessons}
-              data-track-title={track.title}
+              data-track-title={t(track.title)}
               data-track-href={`/${lang}${track.href}`}
               data-track-lang={lang}
               data-track-slugs={JSON.stringify(track.slugs)}
@@ -164,9 +164,9 @@ const user = Astro.locals.user
 
               <div class="flex flex-col gap-1.5 sm:gap-2 flex-1 min-w-0">
                 <span class="text-secondary font-bold text-base sm:text-xl group-hover:text-yellow transition-colors leading-tight pr-20">
-                  {track.title}
+                  {t(track.title)}
                 </span>
-                <p class="text-secondary/60 text-xs sm:text-sm leading-relaxed">{track.description}</p>
+                <p class="text-secondary/60 text-xs sm:text-sm leading-relaxed">{t(track.description)}</p>
 
                 <!-- Progress bar (hidden until JS populates it) -->
                 <div data-progress-container class="hidden flex-col gap-1 mt-0.5">

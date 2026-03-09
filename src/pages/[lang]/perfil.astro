@@ -172,7 +172,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-sm font-semibold text-secondary truncate">
-                      {track?.title ?? cert.course_id}
+                      {track ? t(track.title) : cert.course_id}
                     </p>
                     <p class="text-xs text-secondary/40 mt-0.5">
                       {t("profile.certificate_issued")} {issuedDate} · {t("profile.certificate_name")} <span class="text-secondary/60">{cert.name_used}</span>
@@ -213,7 +213,7 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
                 <IconCertificate font-size={20} class={isComplete ? "text-yellow" : "text-secondary/30"} />
               </div>
               <div class="flex-1 min-w-0">
-                <p class={`text-sm font-semibold truncate ${isComplete ? "text-secondary" : "text-secondary/60"}`}>{track.title}</p>
+                <p class={`text-sm font-semibold truncate ${isComplete ? "text-secondary" : "text-secondary/60"}`}>{t(track.title)}</p>
                 <div class="flex items-center gap-2 mt-1">
                   <div class="flex-1 h-1 bg-stroke-color/30 rounded-full overflow-hidden max-w-32">
                     <div class={`h-full rounded-full ${isComplete ? "bg-yellow" : "bg-yellow/40"}`} style={`width:${pct}%`}></div>

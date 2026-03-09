@@ -21,7 +21,7 @@ const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 ---
 
-<Layout title={`${t("certificate.back_button")} — ${track.title}`}>
+<Layout title={`${t("certificate.back_button")} — ${t(track.title)}`}>
   <header class="p-2 w-full shrink-0">
     <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
       <a
@@ -52,7 +52,7 @@ const t = useTranslations(lang)
             {t("certificate.success_message_1")}
           </p>
           <p class="text-secondary/70 text-xs leading-relaxed">
-            {t("certificate.success_message_2", { trackTitle: track.title })}
+            {t("certificate.success_message_2", { trackTitle: t(track.title) })}
           </p>
           <p class="text-yellow/60 text-xs font-medium mt-1">
             {t("certificate.intro_text")}
@@ -74,7 +74,7 @@ const t = useTranslations(lang)
           type="text"
           placeholder={t("certificate.enter_name")}
           maxlength="60"
-          data-track-title={track.title}
+          data-track-title={t(track.title)}
           data-track-id={track.id}
           class="hidden w-full px-4 py-2.5 rounded-lg bg-light-bg border border-stroke-color text-secondary placeholder:text-secondary/30 focus:outline-none focus:border-yellow transition-colors font-medium"
         />

@@ -3,9 +3,8 @@ import type { Track } from "~/entities/track"
 export const tracks: Track[] = [
 	{
 		id: "fundamentos-de-rust",
-		title: "Fundamentos de Rust",
-		description:
-			"Aprende Rust desde los fundamentos: sintaxis, ownership, borrowing y más. Ideal si nunca has programado en Rust.",
+		title: "track.fundamentos-de-rust.title",
+		description: "track.fundamentos-de-rust.description",
 		href: "/introduccion-rust",
 		lessons: 39,
 		badge: "track.badge.beginner",
@@ -61,9 +60,8 @@ export const tracks: Track[] = [
 		// Iteradores
 		// Diseño de APIs
 		id: "rust-avanzado-diseno-abstraccion",
-		title: "Rust Avanzado: Diseño y Abstracción",
-		description:
-			"Profundiza en Rust con temas avanzados como lifetimes, traits, macros y programación asíncrona. Ideal para quienes ya conocen los fundamentos.",
+		title: "track.rust-avanzado-diseno-abstraccion.title",
+		description: "track.rust-avanzado-diseno-abstraccion.description",
 		href: "/introduccion",
 		lessons: 0,
 		badge: "track.badge.advanced",
