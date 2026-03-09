@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets"
-import logoImage from "~/assets/images/webp/logo.webp"
 import { tracks } from "~/const/tracks"
 import Navbar from "~/features/content/components/Navbar.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
@@ -40,7 +38,7 @@ const user = Astro.locals.user
               </div>
 
               <div class="shrink-0 w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl bg-editor-bg border border-stroke-color/40 mt-0.5">
-                <Image src={logoImage} alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12 grayscale" />
+                <img src="/logo.webp" alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12 grayscale" />
               </div>
 
               <div class="flex flex-col gap-1.5 flex-1 min-w-0">
@@ -64,7 +62,7 @@ const user = Astro.locals.user
               </span>
 
               <div class="shrink-0 w-12 h-12 sm:w-20 sm:h-20 flex items-center justify-center rounded-xl sm:rounded-2xl bg-editor-bg border border-stroke-color mt-0.5">
-                <Image src={logoImage} alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12" />
+                <img src="/logo.webp" alt="Rustlings" class="w-8 h-8 sm:w-12 sm:h-12" />
               </div>
 
               <div class="flex flex-col gap-1.5 sm:gap-2 flex-1 min-w-0">

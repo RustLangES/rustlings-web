@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets"
-import logoImage from "~/assets/images/webp/logo.webp"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconBrandDiscord from "~icons/tabler/brand-discord"
 import IconBrandGithub from "~icons/tabler/brand-github"
@@ -28,7 +26,7 @@ const socialLinks = [
 	class="flex flex-col md:flex-row gap-6 p-6 md:p-4 justify-between items-center w-full bg-editor-bg/95 backdrop-blur-md border-t border-stroke-color shadow-inner"
 >
 	<a href="#hero" class="flex items-center gap-3">
-		<Image src={logoImage} alt={t("footer.logo_alt")} class="h-12 w-12"/>
+		<img src="/logo.webp" alt={t("footer.logo_alt")} class="h-12 w-12"/>
 		<span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
 	</a>
 

@@ -1,5 +1,4 @@
 ---
-import logoImage from "~/assets/images/webp/logo.webp"
 import Sidebar from "~/components/sidebar/Sidebar.astro"
 import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
 import { type Content, getLessonsByLang } from "~/content-manager"
@@ -137,7 +136,7 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
     items={sidebarItems}
     title={t("sidebar.content")}
     position="left"
-    logo={logoImage}
+    logo="/logo.webp"
     backHref={`/${lang}/aprender`}
     backLabel={t("sidebar.curriculum")}
     lang={lang}

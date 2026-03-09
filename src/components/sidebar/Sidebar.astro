@@ -1,5 +1,4 @@
 ---
-import { Image } from "astro:assets"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconX from "~icons/tabler/x"
@@ -16,7 +15,7 @@ interface Props {
 	items?: SidebarItem[]
 	position?: "left" | "right"
 	id?: string
-	logo?: ImageMetadata
+	logo?: string
 	backHref?: string
 	backLabel?: string
 	lang?: string
@@ -64,7 +63,7 @@ const backLabel = backLabelProp ?? t("sidebar.back")
 				href="/" 
 				class="group flex justify-center items-center mx-auto p-3 rounded-xl bg-yellow/10 hover:bg-yellow/20 border border-yellow/20 hover:border-yellow/40 transition-all duration-300 hover:shadow-lg hover:shadow-yellow/20"
 			>
-				<Image
+				<img
 					src={logo}
 					alt="Rustlings Web"
 					class="h-14 w-14 group-hover:scale-110 transition-transform duration-300"

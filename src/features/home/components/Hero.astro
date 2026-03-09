@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets"
-import logoImage from "~/assets/images/webp/logo.webp"
 import Section from "~/components/sections/Section.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import JamGithub from "~icons/jam/github"
@@ -95,9 +93,9 @@ const t = useTranslations(lang)
     </div>
 
     <!-- Logo with glow -->
-    <Image
+    <img
       class="w-32 md:w-40 logo mb-10"
-      src={logoImage}
+      src="/logo.webp"
       alt="Rustlings logo"
       width={160}
       height={160}
