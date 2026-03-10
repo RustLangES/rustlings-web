@@ -3,7 +3,6 @@ import { ClientRouter } from "astro:transitions"
 import "~/styles/global.css"
 import "sweetalert2/dist/sweetalert2.min.css"
 import "driver.js/dist/driver.css"
-import favicon from "~/assets/images/webp/favicon.webp"
 import CookieBanner from "~/components/CookieBanner.astro"
 import { getLangFromUrl } from "~/i18n/utils"
 
@@ -20,7 +19,7 @@ const lang = Astro.locals.lang ?? getLangFromUrl(Astro.url)
   <head>
     <meta charset="UTF-8" />
     <title>{title}</title>
-    <link rel="icon" type="image/webp" href={favicon.src} />
+    <link rel="icon" type="image/webp" href="/images/webp/favicon.webp" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <ClientRouter />

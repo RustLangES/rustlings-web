@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./src/assets/images/webp/favicon.webp"/>
+<img src="./public/images/webp/favicon.webp"/>
 <h1>RustLings-Web</h1>
 </div>
 

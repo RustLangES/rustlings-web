@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets"
-import ferrisCooking from "~/assets/images/webp/ferris_cooking.jpg"
 
 import { defaultLang, ui } from "~/i18n/ui"
 
@@ -21,8 +19,8 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
     class="w-full max-w-2xl max-h-[90vh] bg-editor-bg border border-stroke-color rounded-xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2"
   >
     <div class="relative aspect-4/3 md:aspect-auto">
-      <Image
-        src={ferrisCooking}
+      <img
+        src="/images/webp/ferris_cooking.jpg"
         alt={t("cookie.banner.img.alt")}
         class="absolute inset-0 w-full h-full object-cover"
       />
