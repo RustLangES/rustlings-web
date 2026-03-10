@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets"
-import ferrisImage from "~/assets/images/webp/ferris.webp"
 import Section from "~/components/sections/Section.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconCheck from "~icons/tabler/check"
@@ -80,9 +78,9 @@ const t = useTranslations(lang)
 
       <!-- Features side -->
       <div class="w-full lg:w-2/5 flex flex-col items-center lg:items-start gap-8">
-        <Image
+        <img
           class="w-28 h-auto"
-          src={ferrisImage}
+          src="/images/webp/ferris.webp"
           alt={t("playground.ferris_alt")}
         />
 

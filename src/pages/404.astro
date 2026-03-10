@@ -1,6 +1,4 @@
 ---
-import { Image } from "astro:assets"
-//import img404 from "~/assets/images/webp/404_image.png"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
@@ -15,8 +13,8 @@ const t = useTranslations(lang)
   <main class="flex-1 flex flex-col items-center justify-center px-4 gap-8">
     <!-- Temporally disabled (corrupted image) -->
     <!--
-    <Image
-      src={img404}
+    <img
+      src="/images/webp/404_image.png"
       alt={t("404.image_alt")}
       class="w-full max-w-lg h-auto select-none pointer-events-none"
     />

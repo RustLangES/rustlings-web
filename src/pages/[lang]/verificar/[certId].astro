@@ -1,11 +1,11 @@
 ---
-import logoSvgUrl from "~/assets/Rust_Lang_ES_Logo_Blanco_color.svg?url"
 import { tracks } from "~/const/tracks"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconCertificate from "~icons/tabler/certificate"
 
+const logoSvgUrl = "/Rust_Lang_ES_Logo_Blanco_color.svg"
 const { certId } = Astro.params
 const { DB } = Astro.locals.runtime.env
 const lang = getLangFromUrl(Astro.url)
