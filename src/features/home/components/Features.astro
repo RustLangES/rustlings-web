@@ -36,7 +36,7 @@ const t = useTranslations(lang)
     </div>
 
     <!-- Bento grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div id="bento-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
       <!-- Card grande: Editor -->
       <div class="md:col-span-2 bento-card group relative overflow-hidden rounded-2xl border border-stroke-color bg-dark-fg p-8 flex flex-col gap-5 hover:border-yellow/30 transition-all duration-300">
@@ -185,16 +185,40 @@ const t = useTranslations(lang)
 </Section>
 
 <style>
+  #bento-grid:hover .glow-yellow {
+    opacity: 0.4;
+  }
+
   .bento-card:hover .glow-yellow {
     opacity: 1;
   }
 
   .glow-yellow {
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.4s ease;
     pointer-events: none;
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 60% 50% at 30% 20%, rgba(255, 215, 118, 0.06) 0%, transparent 70%);
+    background: radial-gradient(
+      600px circle at var(--mouse-x, 30%) var(--mouse-y, 20%),
+      rgba(255, 215, 118, 0.12),
+      transparent 40%
+    );
+    z-index: 1;
   }
 </style>
+
+<script>
+  const grid = document.getElementById("bento-grid");
+
+  grid?.addEventListener("mousemove", (e) => {
+    const mouseEvent = e as MouseEvent;
+    for (const card of grid.querySelectorAll<HTMLElement>(".bento-card")) {
+      const rect = card.getBoundingClientRect();
+      const x = mouseEvent.clientX - rect.left;
+      const y = mouseEvent.clientY - rect.top;
+      card.style.setProperty("--mouse-x", `${x}px`);
+      card.style.setProperty("--mouse-y", `${y}px`);
+    }
+  });
+</script>
