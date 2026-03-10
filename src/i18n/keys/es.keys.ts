@@ -351,6 +351,9 @@ export const es_keys = {
 	"profile.certificate_view": "Ver Certificado",
 	"profile.progress_in_progress": "En progreso",
 	"profile.progress_completed": "completado",
+	"profile.editor_section": "Editor",
+	"profile.vim_mode_label": "Modo Vim",
+	"profile.vim_mode_desc": "Habilita keybindings de Vim en el editor",
 
 	// Certificate Page
 	"certificate.back_button": "Volver",
