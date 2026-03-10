@@ -2,6 +2,7 @@
 import IconLoader2 from "~icons/tabler/loader-2"
 import IconPlayerPlay from "~icons/tabler/player-play"
 import IconRestore from "~icons/tabler/restore"
+import IconSparkles from "~icons/tabler/sparkles"
 import IconTerminal from "~icons/tabler/terminal"
 
 interface Props {
@@ -47,6 +48,20 @@ const isTestMode = !!testCode
 				<span>Reiniciar</span>
 			</button>
 
+			<!--
+			<button
+				id="btn-format"
+				class="btn-control hover:text-blue-400"
+				type="button"
+				aria-label="Format code"
+			>
+				<IconSparkles class="group-data-formatting:hidden" font-size={14} />
+				<IconLoader2 class="hidden animate-spin group-data-formatting:block" font-size={14} />
+				<span class="group-data-formatting:hidden">Formatear</span>
+				<span class="hidden group-data-formatting:inline">...</span>
+			</button>
+			-->
+
 			<button
 				id="btn-run"
 				class="btn-control hover:text-green-500"
@@ -84,6 +99,19 @@ const isTestMode = !!testCode
 				<IconRestore font-size={18} />
 				<span>Reiniciar</span>
 			</button>
+			<!--
+			<button
+				id="btn-format-mobile"
+				type="button"
+				aria-label="Format code"
+				class="flex-1 flex items-center justify-center gap-2 py-3 text-sm text-blue-400 border-r border-stroke-color hover:bg-blue-500/10 active:bg-blue-500/20 transition-colors cursor-pointer touch-manipulation"
+			>
+				<IconSparkles class="group-data-formatting:hidden" font-size={18} />
+				<IconLoader2 class="hidden animate-spin group-data-formatting:block" font-size={18} />
+				<span class="group-data-formatting:hidden">Formatear</span>
+				<span class="hidden group-data-formatting:inline">...</span>
+			</button>
+			-->
 			<button
 				id="btn-run-mobile"
 				type="button"
@@ -111,7 +139,7 @@ const isTestMode = !!testCode
 
 <script>
 import { rustPlayground } from "~/lib/rust-playground";
-import { db, editorCode } from "~/lib/stores/editor-store";
+import { db, editorCode, pendingEditorCode } from "~/lib/stores/editor-store";
 import { getStderrHTML } from "~/components/editor/output/renderer";
 
 class TerminalOutput extends HTMLElement {
@@ -123,8 +151,10 @@ class TerminalOutput extends HTMLElement {
 		stdout: document.getElementById("stdout") as HTMLPreElement,
 		btnRun: document.getElementById("btn-run") as HTMLButtonElement,
 		btnReset: document.getElementById("btn-reset") as HTMLButtonElement,
+		btnFormat: document.getElementById("btn-format") as HTMLButtonElement,
 		btnRunMobile: document.getElementById("btn-run-mobile") as HTMLButtonElement | null,
 		btnResetMobile: document.getElementById("btn-reset-mobile") as HTMLButtonElement | null,
+		btnFormatMobile: document.getElementById("btn-format-mobile") as HTMLButtonElement | null,
 	};
 
 	private state = {
@@ -135,8 +165,10 @@ class TerminalOutput extends HTMLElement {
 	connectedCallback() {
 		this.ui.btnRun.addEventListener("click", this.execute);
 		this.ui.btnReset.addEventListener("click", this.reset);
+		this.ui.btnFormat.addEventListener("click", this.format);
 		this.ui.btnRunMobile?.addEventListener("click", this.execute);
 		this.ui.btnResetMobile?.addEventListener("click", this.reset);
+		this.ui.btnFormatMobile?.addEventListener("click", this.format);
 		this.ui.stdin.addEventListener("keydown", this.handleStdin);
 		this.ui.stdinMobile?.addEventListener("keydown", this.handleStdin);
 	}
@@ -261,6 +293,29 @@ class TerminalOutput extends HTMLElement {
 		await db.reset(slug);
 		editorCode.set(initialCode);
 		window.dispatchEvent(new CustomEvent("editor:reset", { detail: { code: initialCode } }));
+	}
+
+	private format = async () => {
+		this.setFormatting(true);
+		try {
+			const response = await fetch("https://play.rust-lang.org/format", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ channel: "stable", edition: "2024", code: editorCode.get() }),
+			});
+			const result = await response.json() as { success: boolean; code: string };
+			if (result.success && result.code) {
+				pendingEditorCode.set(result.code);
+			}
+		} catch {
+			// silent fail
+		} finally {
+			this.setFormatting(false);
+		}
+	}
+
+	private setFormatting(formatting: boolean) {
+		this.toggleAttribute("data-formatting", formatting);
 	}
 
 	private setRunning(running: boolean) {
