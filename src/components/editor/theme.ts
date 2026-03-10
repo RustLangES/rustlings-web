@@ -43,6 +43,10 @@ export const gruvboxDarkTheme = EditorView.theme(
 			backgroundColor: selection,
 		},
 
+		"&.cm-focused .cm-activeLine .cm-selectionBackground": {
+			backgroundColor: "rgba(253, 216, 53, 0.22)",
+		},
+
 		".cm-panels": { backgroundColor: darkBackground, color: ivory },
 		".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
 		".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
