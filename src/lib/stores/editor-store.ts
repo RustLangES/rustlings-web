@@ -1,6 +1,7 @@
 import { atom } from "nanostores"
 
 export const editorCode = atom("")
+export const pendingEditorCode = atom<string | null>(null)
 
 class RustlingsDB {
 	private dbPromise: Promise<IDBDatabase> | null = null

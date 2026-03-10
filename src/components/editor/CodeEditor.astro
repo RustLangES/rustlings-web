@@ -7,94 +7,320 @@ interface Props {
 const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } = Astro.props
 ---
 
-<div
-  id="editor"
-  data-slug={slug}
-  data-initial-code={initialCode}
-  class="flex-1 min-w-0 min-h-0"
-  role="textbox"
-  aria-label="Editor de código"
-  aria-multiline="true"
->
+<div class="flex flex-col flex-1 min-w-0 min-h-0">
+  <div
+    id="editor"
+    data-slug={slug}
+    data-initial-code={initialCode}
+    class="flex-1 min-w-0 min-h-0"
+    role="textbox"
+    aria-label="Editor de código"
+    aria-multiline="true"
+  >
+  </div>
+
+  <div id="vim-mode-bar" class="hidden items-center gap-2 px-3 h-6 border-t border-stroke-color bg-light-bg text-xs font-mono font-bold shrink-0">
+    <span id="vim-mode-label" class="px-1.5 py-0.5 rounded text-[10px] tracking-widest">NORMAL</span>
+  </div>
 </div>
 
+<style>
+  /* Estilos para diagnósticos del linter */
+  :global(.cm-diagnostic) {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 4px solid;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 4px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  :global(.cm-diagnostic.cm-diagnostic-error) {
+    border-left-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    color: #fef2f2;
+  }
+
+  :global(.cm-diagnostic.cm-diagnostic-warning) {
+    border-left-color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    color: #fefbf4;
+  }
+
+  :global(.cm-diagnostic.cm-diagnostic-info) {
+    border-left-color: #3b82f6;
+    background: rgba(59, 130, 246, 0.1);
+    color: #eff6ff;
+  }
+
+  :global(.cm-diagnostic-action) {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  :global(.cm-diagnostic-action button) {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: inherit;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  :global(.cm-diagnostic-action button:hover) {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Estilos para el gutter del linter */
+  :global(.cm-lint-marker) {
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    margin: 0.1em 0.2em;
+    cursor: pointer;
+    position: relative;
+  }
+
+  :global(.cm-lint-marker-error) {
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+  }
+  
+  :global(.cm-lint-marker-warning) {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+  }
+
+  :global(.cm-lint-marker-info) {
+    background: #3b82f6;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
+  }
+
+  /* Animación sutil para los marcadores */
+  :global(.cm-lint-marker) {
+    animation: lint-pulse 2s infinite;
+  }
+
+  @keyframes lint-pulse {
+    0%, 100% { 
+      opacity: 0.8;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 1;
+      transform: scale(1.1);
+    }
+  }
+
+  /* Subrayado para código con errores */
+  :global(.cm-lintRange-error) {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(239, 68, 68, 0.3) 2px,
+      rgba(239, 68, 68, 0.3) 4px
+    );
+    border-radius: 2px;
+  }
+
+  :global(.cm-lintRange-warning) {
+    background-image: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 2px,
+      rgba(245, 158, 11, 0.3) 2px,
+      rgba(245, 158, 11, 0.3) 4px
+    );
+    border-radius: 2px;
+  }
+
+  :global(.cm-lintRange-info) {
+    background: rgba(59, 130, 246, 0.2);
+    border-radius: 2px;
+  }
+
+  /* Panel de linting */
+  :global(.cm-panel.cm-panel-lint) {
+    background: rgba(40, 40, 40, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #e5e7eb;
+  }
+
+  :global(.cm-panel-lint ul) {
+    max-height: 150px;
+    overflow-y: auto;
+  }
+
+  :global(.cm-panel-lint li) {
+    padding: 6px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+  }
+
+  :global(.cm-panel-lint li:hover) {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Mejoras de accesibilidad */
+  :global(.cm-lint-marker:focus) {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+  }
+</style>
+
 <script>
-  import { EditorView, keymap } from "@codemirror/view";
-  import { EditorState } from "@codemirror/state";
-  import { basicSetup } from "codemirror";
-  import { indentWithTab } from "@codemirror/commands";
-  import { gruvbox } from "~/components/editor/theme";
-  import { db, editorCode } from "~/lib/stores/editor-store";
-  import { rust } from "~/components/editor/config";
+  // Solo ejecutar en el cliente
+  if (typeof window !== "undefined") {
+    let editorView: any = null;
+    let saveTimeout = undefined;
 
-  let editorView: EditorView | null = null;
-  let saveTimeout: number | undefined;
+    async function initEditor() {
+      const editorElement = document.getElementById("editor");
+      if (!editorElement) return;
 
-  async function initEditor() {
-    const editorElement = document.getElementById("editor");
-    if (!editorElement) return;
+      // Importar dinámicamente los módulos necesarios
+      const [
+        { EditorView, keymap },
+        { EditorState },
+        { basicSetup },
+        { indentWithTab },
+        { gruvbox },
+        { db, editorCode, pendingEditorCode },
+        { rust }
+      ] = await Promise.all([
+        import("@codemirror/view"),
+        import("@codemirror/state"),
+        import("codemirror"),
+        import("@codemirror/commands"),
+        import("~/components/editor/theme"),
+        import("~/lib/stores/editor-store"),
+        import("~/components/editor/config")
+      ]);
 
-    if (editorView) {
-      editorView.destroy();
-      editorView = null;
+      const vimEnabled = !!JSON.parse(localStorage.getItem("preferences") ?? "{}").vimEditor;
+      const vimBar = document.getElementById("vim-mode-bar");
+      const vimLabel = document.getElementById("vim-mode-label");
+
+      const modeStyles: Record<string, { label: string; classes: string }> = {
+        normal:         { label: "NORMAL",  classes: "bg-blue-500/20 text-blue-400" },
+        insert:         { label: "INSERT",  classes: "bg-green-500/20 text-green-400" },
+        visual:         { label: "VISUAL",  classes: "bg-yellow/20 text-yellow" },
+        "visual-line":  { label: "V-LINE",  classes: "bg-yellow/20 text-yellow" },
+        "visual-block": { label: "V-BLOCK", classes: "bg-orange-500/20 text-orange-400" },
+        replace:        { label: "REPLACE", classes: "bg-red-500/20 text-red-400" },
+      };
+
+      function updateVimMode(mode: string, subMode?: string) {
+        const key = subMode === "linewise" ? "visual-line"
+                  : subMode === "blockwise" ? "visual-block"
+                  : mode;
+        const style = modeStyles[key] ?? modeStyles.normal;
+        if (vimLabel) {
+          vimLabel.textContent = style.label;
+          vimLabel.className = `px-1.5 py-0.5 rounded text-[10px] tracking-widest ${style.classes}`;
+        }
+      }
+
+      let vimExtension: any[] = [];
+      let getCM: ((view: any) => any) | null = null;
+      if (vimEnabled) {
+        const vimModule = await import("@replit/codemirror-vim");
+        const Vim = vimModule.Vim as any;
+        vimExtension = [vimModule.vim()];
+        getCM = vimModule.getCM;
+
+        // Arrow keys in visual mode — not mapped by default, falls through to CM6 and breaks selection
+        Vim.map("<Up>",    "k", "visual");
+        Vim.map("<Down>",  "j", "visual");
+        Vim.map("<Left>",  "h", "visual");
+        Vim.map("<Right>", "l", "visual");
+
+        vimBar?.classList.replace("hidden", "flex");
+        updateVimMode("normal");
+      }
+
+      if (editorView) {
+        editorView.destroy();
+        editorView = null;
+      }
+
+      const { slug, initialCode } = editorElement.dataset;
+      const initialDoc = (await db.getCode(slug)) ?? initialCode;
+
+      editorView = new EditorView({
+        state: EditorState.create({
+          doc: initialDoc,
+          extensions: [
+            basicSetup,
+            gruvbox,
+            ...vimExtension,
+            rust(),
+            keymap.of([indentWithTab]),
+            EditorView.updateListener.of((update) => {
+              if (update.docChanged) {
+                const value = update.state.doc.toString();
+                editorCode.set(value);
+                clearTimeout(saveTimeout);
+                saveTimeout = window.setTimeout(
+                  () => db.saveCode(slug, value),
+                  500,
+                );
+              }
+            }),
+          ],
+        }),
+        parent: editorElement,
+      });
+
+      editorView.contentDOM.setAttribute("aria-label", "Editor de código Rust");
+      editorView.contentDOM.setAttribute("role", "textbox");
+      editorCode.set(initialDoc);
+
+      if (vimEnabled && getCM) {
+        const cm = getCM(editorView);
+        cm?.on("vim-mode-change", ({ mode, subMode }: { mode: string; subMode?: string }) => {
+          updateVimMode(mode, subMode);
+        });
+      }
+
+      pendingEditorCode.subscribe((code) => {
+        if (code && editorView) {
+          const doc = editorView.state.doc.toString();
+          editorView.dispatch({ changes: { from: 0, to: doc.length, insert: code } });
+          pendingEditorCode.set(null);
+        }
+      });
+
+      window.addEventListener("editor:reset", handleReset);
     }
 
-    const { slug, initialCode } = editorElement.dataset as {
-      slug: string;
-      initialCode: string;
-    };
+    function handleReset(e: Event) {
+      const { code } = (e as CustomEvent).detail;
+      if (editorView) {
+        const doc = editorView.state.doc.toString();
+        editorView.dispatch({ changes: { from: 0, to: doc.length, insert: code } });
+      }
+    }
 
-    const initialDoc = (await db.getCode(slug)) ?? initialCode;
+    document.addEventListener("astro:page-load", initEditor);
 
-    editorView = new EditorView({
-      state: EditorState.create({
-        doc: initialDoc,
-        extensions: [
-          basicSetup,
-          gruvbox,
-          rust(),
-          keymap.of([indentWithTab]),
-          EditorView.updateListener.of((update) => {
-            if (update.docChanged) {
-              const value = update.state.doc.toString();
-              editorCode.set(value);
-              clearTimeout(saveTimeout);
-              saveTimeout = window.setTimeout(
-                () => db.saveCode(slug, value),
-                500,
-              );
-            }
-          }),
-        ],
-      }),
-      parent: editorElement,
+    document.addEventListener("astro:before-swap", () => {
+      clearTimeout(saveTimeout);
+      window.removeEventListener("editor:reset", handleReset);
+
+      if (editorView) {
+        editorView.destroy();
+        editorView = null;
+      }
     });
-
-    editorView.contentDOM.setAttribute("aria-label", "Editor de código Rust");
-    editorView.contentDOM.setAttribute("role", "textbox");
-    editorCode.set(initialDoc);
-
-    window.addEventListener("editor:reset", handleReset);
   }
-
-  function handleReset(e: Event) {
-    const { code } = (e as CustomEvent).detail;
-
-    if (editorView) {
-      const doc = editorView.state.doc.toString();
-      editorView.dispatch({ changes: { from: 0, to: doc.length, insert: code } });
-    }
-  }
-
-  document.addEventListener("astro:page-load", initEditor);
-
-  document.addEventListener("astro:before-swap", () => {
-    clearTimeout(saveTimeout);
-    window.removeEventListener("editor:reset", handleReset);
-
-    if (editorView) {
-      editorView.destroy();
-      editorView = null;
-    }
-  });
 </script>
