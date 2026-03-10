@@ -1,5 +1,4 @@
 ---
-import logoSvgUrl from "~/assets/Rust_Lang_ES_Logo_Blanco_color.svg?url"
 import { tracks } from "~/const/tracks"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
@@ -16,6 +15,7 @@ export function getStaticPaths() {
 		])
 }
 
+const logoSvgUrl = "/Rust_Lang_ES_Logo_Blanco_color.svg"
 const { track } = Astro.props
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
@@ -135,10 +135,7 @@ const t = useTranslations(lang)
           data-badge-certification={t("certificate.badge_certification")}
           data-track-title={t(track.title)}
           data-track-id={track.id}
-<<<<<<< Updated upstream
-=======
           data-lang={lang}
->>>>>>> Stashed changes
         ></canvas>
 
         <button
