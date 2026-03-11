@@ -2,6 +2,7 @@
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import JamGithub from "~icons/jam/github"
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 
 if (Astro.locals.user) {
 	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/aprender`)
@@ -19,8 +20,13 @@ const errorMessages: Record<string, string> = {
 ---
 
 <Layout title={t("login.title")}>
-  <main class="min-h-screen flex items-center justify-center px-4 bg-primary">
-    <div class="w-full max-w-md">
+  <main class="min-h-screen grid items-center justify-center px-4 bg-primary">
+    <a
+      href={`/${lang}/`}
+      class="absolute top-0 left-0 m-8 flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300">      <IconLeft font-size={20} />
+      {t("404.back_home")}
+    </a>
+    <div class="lg:w-lg w-max md:w-md">
       <!-- Logo / title -->
       <div class="text-center mb-8">
         <a href={`/${lang}/`} class="text-yellow font-extrabold text-3xl tracking-tight">
@@ -30,7 +36,7 @@ const errorMessages: Record<string, string> = {
       </div>
 
       <!-- Card -->
-      <div class="bg-editor-bg border border-stroke-color rounded-xl p-8 shadow-2xl">
+      <div class="bg-editor-bg border border-stroke-color rounded-xl p-8 shadow-2xl min-w-max">
         <!-- Error banner -->
         {error && (
           <div class="mb-6 px-4 py-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
@@ -143,6 +149,7 @@ const errorMessages: Record<string, string> = {
 -->
 
         <!-- GitHub OAuth -->
+         
         <a
           href={`/api/auth/github?lang=${lang}`}
           data-astro-reload
@@ -151,6 +158,7 @@ const errorMessages: Record<string, string> = {
           <JamGithub font-size={18} />
           {t("login.github_button")}
         </a>
+
       </div>
     </div>
   </main>
