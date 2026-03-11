@@ -289,8 +289,11 @@ export const en_keys = {
 
 	// 404 Page
 	"404.title": "404 — Page not found",
+	"404.title_description": "OOPS! We had a memory leak",
+	"404.c_reference": "Just kidding, we aren't C",
+	"404.problem": "But we did have a problem finding this page",
 	"404.image_alt": "404 - Page not found",
-	"404.back_home": "Home",
+	"404.back_home": "Back to home",
 
 	// Login Page
 	"login.title": "Sign in — RustLings",
