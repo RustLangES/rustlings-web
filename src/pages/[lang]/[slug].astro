@@ -15,16 +15,15 @@ import IconGripVertical from "~icons/tabler/grip-vertical"
 import IconTerminal from "~icons/tabler/terminal-2"
 
 const { lang, slug } = Astro.params
-
-if (!Astro.locals.user) {
-	return Astro.redirect(`/${lang}/login`)
-}
-
 const lessons = getLessonsByLang(lang ?? "es")
 const lessonIndex = lessons.findIndex((l) => l.meta.slug === slug)
 
 if (lessonIndex === -1) {
 	return Astro.redirect(`/${lang}/404`)
+}
+
+if (!Astro.locals.user) {
+	return Astro.redirect(`/${lang}/login`)
 }
 
 const lesson = lessons[lessonIndex]
