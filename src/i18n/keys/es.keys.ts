@@ -296,8 +296,11 @@ export const es_keys = {
 
 	// 404 Page
 	"404.title": "404 — Página no encontrada",
+	"404.title_description": "OOPS! Tuvimos un fallo de memoria",
+	"404.c_reference": "Es broma, no somos C",
+	"404.problem": "Pero sí tuvimos un problema en encontrar esta página",
 	"404.image_alt": "404 - Página no encontrada",
-	"404.back_home": "Inicio",
+	"404.back_home": "Regresar a inicio",
 
 	// Login Page
 	"login.title": "Iniciar sesión — RustLings",
