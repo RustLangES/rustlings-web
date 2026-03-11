@@ -1,0 +1,62 @@
+---
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import Layout from "~/layouts/Layout.astro"
+import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+
+export { getStaticPaths } from "./index.astro"
+
+export const prerender = true
+
+const lang = getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<Layout title={t("404.title")}>
+  <main class="relative flex-1 flex flex-col items-center justify-center px-4 overflow-hidden bg-primary">
+    
+    <div class="absolute top-1/4 -left-20 w-72 h-72 bg-yellow/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 -right-20 w-96 h-96 bg-secondary/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <div class="z-10 flex flex-col items-center text-center max-w-2xl gap-10">
+      
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-yellow/20 rounded-full blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+        <a href="https://rustlang-es.org/" target="_blank" rel="noopener noreferrer">
+        <img 
+          src="/Rust_Lang_ES_Logo_Blanco_color.svg" 
+          alt={t("404.image_alt")}
+          width="200"
+          class="relative hover:scale-105 transition-transform duration-500 ease-out"
+        ></a>
+        
+      </div>
+
+      <div class="space-y-4">
+        <h1 class="text-5xl md:text-7xl font-black text-secondary tracking-tighter italic">
+          404 <span class="text-yellow not-italic">_</span>
+        </h1>
+        
+        <h2 class="text-xl md:text-2xl font-medium text-secondary/80">
+          {t("404.title_description")}
+        </h2>
+        
+        <div class="flex flex-col gap-2 text-secondary/50 font-mono text-sm md:text-base italic">
+          <p>{t("404.c_reference")}</p>
+          <p class="text-yellow/60 border-t border-secondary/10 pt-4 mt-2">
+            // {t("404.problem")}
+          </p>
+        </div>
+      </div>
+
+      <a
+        href={`/${lang}/`}
+        class="group relative flex items-center gap-3 px-8 py-3 bg-secondary/5 border border-secondary/10 rounded-full text-secondary/80 font-semibold backdrop-blur-sm hover:border-yellow hover:text-yellow hover:bg-yellow/5 transition-all duration-500"
+      >
+        <IconLeft class="group-hover:-translate-x-1 transition-transform duration-300" font-size={24} />
+        {t("404.back_home")}
+      </a>
+    </div>
+
+    <div class="absolute inset-0 bg-[radial-gradient(#ffffff05_1px,transparent_1px)] [background-size:20px_20px] pointer-events-none"></div>
+  </main>
+</Layout>
