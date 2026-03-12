@@ -59,8 +59,3 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
-          secrets: |
-            VITE_CLARITY_PROJECT_ID
-            GH_CLIENT_ID
-            GH_CLIENT_SECRET
-            SESSION_SECRET
