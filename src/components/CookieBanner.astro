@@ -4,6 +4,7 @@ import { defaultLang, ui } from "~/i18n/ui"
 
 const lang = Astro.locals.lang ?? defaultLang
 
+// Hola Sergio
 type TranslationKey = keyof (typeof ui)[typeof defaultLang]
 const t = (key: TranslationKey) => ui[lang][key] ?? ui[defaultLang][key]
 const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
