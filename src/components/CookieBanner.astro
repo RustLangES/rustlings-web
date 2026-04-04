@@ -66,16 +66,19 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
 </div>
 
 <script>
-  import Clarity from "@microsoft/clarity"
-
   const overlay = document.getElementById("privacy-overlay")
   const banner = document.getElementById("privacy-banner")
   const projectId = banner?.dataset.clarityId ?? ""
 
-  function loadClarity() {
-    if (projectId) {
-      Clarity.init(projectId)
-      Clarity.consentV2({ ad_Storage: "granted", analytics_Storage: "granted" })
+  async function loadClarity() {
+    try {
+      if (projectId) {
+        const { default: Clarity } = await import("@microsoft/clarity")
+        Clarity.init(projectId)
+        Clarity.consentV2({ ad_Storage: "granted", analytics_Storage: "granted" })
+      }
+    } catch (e) {
+      console.warn("Clarity could not be loaded:", e)
     }
   }
 
@@ -89,7 +92,13 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
     overlay?.classList.add("hidden")
   }
 
-  const consent = localStorage.getItem("cookiesAccepted")
+  let consent = null
+  try {
+    consent = localStorage.getItem("cookiesAccepted")
+  } catch (e) {
+    console.warn("localStorage is not available:", e)
+  }
+
   const isPrivacyPage = window.location.pathname === "/privacidad"
 
   if (consent === "true") {
@@ -99,13 +108,21 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
   }
 
   document.getElementById("accept-cookies")?.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "true")
+    try {
+      localStorage.setItem("cookiesAccepted", "true")
+    } catch (e) {
+      console.warn("Could not save cookie preference:", e)
+    }
     loadClarity()
     hideOverlay()
   })
 
   document.getElementById("reject-cookies")?.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "false")
+    try {
+      localStorage.setItem("cookiesAccepted", "false")
+    } catch (e) {
+      console.warn("Could not save cookie preference:", e)
+    }
     hideOverlay()
   })
 </script>
