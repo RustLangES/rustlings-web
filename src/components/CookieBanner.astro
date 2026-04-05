@@ -39,7 +39,7 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
         <p class="text-xs text-secondary/50 leading-relaxed">
           {t("cookie.banner.accept")}
           <a
-            href="/privacidad"
+            href={`/${lang}/privacidad`}
             target="_blank"
             rel="noopener noreferrer"
             class="text-yellow hover:underline"
@@ -95,7 +95,7 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
     consent = localStorage.getItem("cookiesAccepted")
   } catch {}
 
-  const isPrivacyPage = window.location.pathname === "/privacidad"
+  const isPrivacyPage = window.location.pathname.endsWith("/privacidad")
 
   if (consent === "true") {
     loadClarity()
