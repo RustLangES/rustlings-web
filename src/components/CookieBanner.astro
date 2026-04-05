@@ -1,5 +1,4 @@
 ---
-
 import { defaultLang, ui } from "~/i18n/ui"
 
 const lang = Astro.locals.lang ?? defaultLang
@@ -33,7 +32,8 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
           {t("cookie.banner.purpose")}
         </p>
         <p class="text-sm text-secondary/70 leading-relaxed">
-          {t("cookie.banner.company.also")}<span class="text-secondary font-medium">{t("cookie.banner.company")}</span>
+          {t("cookie.banner.company.also")}
+          <span class="text-secondary font-medium">{t("cookie.banner.company")}</span>
           {t("cookie.banner.company.description")}
         </p>
         <p class="text-xs text-secondary/50 leading-relaxed">
@@ -66,17 +66,18 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
 </div>
 
 <script>
-  import Clarity from "@microsoft/clarity"
-
   const overlay = document.getElementById("privacy-overlay")
   const banner = document.getElementById("privacy-banner")
   const projectId = banner?.dataset.clarityId ?? ""
 
-  function loadClarity() {
-    if (projectId) {
-      Clarity.init(projectId)
-      Clarity.consentV2({ ad_Storage: "granted", analytics_Storage: "granted" })
-    }
+  async function loadClarity() {
+    try {
+      if (projectId) {
+        const { default: Clarity } = await import("@microsoft/clarity")
+        Clarity.init(projectId)
+        Clarity.consentV2({ ad_Storage: "granted", analytics_Storage: "granted" })
+      }
+    } catch {}
   }
 
   function showOverlay() {
@@ -89,7 +90,11 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
     overlay?.classList.add("hidden")
   }
 
-  const consent = localStorage.getItem("cookiesAccepted")
+  let consent = null
+  try {
+    consent = localStorage.getItem("cookiesAccepted")
+  } catch {}
+
   const isPrivacyPage = window.location.pathname === "/privacidad"
 
   if (consent === "true") {
@@ -99,13 +104,59 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
   }
 
   document.getElementById("accept-cookies")?.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "true")
+    try {
+      localStorage.setItem("cookiesAccepted", "true")
+    } catch {}
     loadClarity()
     hideOverlay()
   })
 
   document.getElementById("reject-cookies")?.addEventListener("click", () => {
-    localStorage.setItem("cookiesAccepted", "false")
+    try {
+      localStorage.setItem("cookiesAccepted", "false")
+    } catch {}
     hideOverlay()
+  })
+
+  function watchBannerIntegrity() {
+    const currentOverlay = document.getElementById("privacy-overlay")
+    const currentBanner = document.getElementById("privacy-banner")
+    if (!currentBanner || !currentOverlay) return
+
+    const isBroken = () => {
+      const style = getComputedStyle(currentBanner)
+      return (
+        style.display === "none" ||
+        style.visibility === "hidden" ||
+        currentBanner.offsetWidth === 0 ||
+        currentBanner.offsetHeight === 0
+      )
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (isBroken()) {
+          currentOverlay.remove()
+        }
+      })
+    })
+
+    const observer = new MutationObserver(() => {
+      if (isBroken()) {
+        observer.disconnect()
+        currentOverlay.remove()
+      }
+    })
+
+    observer.observe(currentBanner, {
+      attributes: true,
+      attributeFilter: ["style", "class", "hidden"],
+    })
+  }
+
+  watchBannerIntegrity()
+
+  document.addEventListener("astro:page-load", () => {
+    watchBannerIntegrity()
   })
 </script>
