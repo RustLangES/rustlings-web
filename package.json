@@ -27,7 +27,7 @@
 		"@microsoft/clarity": "^1.0.2",
 		"@replit/codemirror-vim": "^6.3.0",
 		"@tailwindcss/vite": "^4.1.16",
-		"astro": "^5.15.0",
+		"astro": "^5.18.1",
 		"codemirror": "^6.0.2",
 		"driver.js": "^1.4.0",
 		"nanostores": "^1.0.1",
