@@ -13,8 +13,8 @@
 		"prepare": "lefthook install"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "^12.6.12",
-		"@astrojs/mdx": "^4.3.8",
+		"@astrojs/cloudflare": "^14.0.1",
+		"@astrojs/mdx": "^7.0.0",
 		"@codemirror/autocomplete": "^6.19.1",
 		"@codemirror/lang-rust": "^6.0.2",
 		"@codemirror/language": "^6.11.3",
@@ -26,8 +26,8 @@
 		"@lezer/rust": "^1.0.2",
 		"@microsoft/clarity": "^1.0.2",
 		"@replit/codemirror-vim": "^6.3.0",
-		"@tailwindcss/vite": "^4.1.16",
-		"astro": "^5.15.0",
+		"@tailwindcss/vite": "^4.3.2",
+		"astro": "^7.0.3",
 		"codemirror": "^6.0.2",
 		"driver.js": "^1.4.0",
 		"nanostores": "^1.0.1",
