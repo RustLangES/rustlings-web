@@ -4,6 +4,16 @@ const esc = (s: string) =>
 const span = (className: string, text: string) => `<span class="${className}">${esc(text)}</span>`
 const bold = (html: string) => `<b>${html}</b>`
 
+// Terminal is always dark (--code-bg). Semantic colors use the dark-theme
+// values of --danger / --warning / --success / --lilac-ink so they read on #222.
+const C = {
+	danger: "text-code-danger",
+	warning: "text-code-warning",
+	success: "text-code-success",
+	accent: "text-code-accent",
+	link: "text-code-danger hover:text-code-ink underline",
+} as const
+
 const PATTERNS = {
 	errorCode: /^error\[E\d+\]:/,
 	errorGeneric: /^error:/,
@@ -29,7 +39,7 @@ export function getStderrHTML(text: string): string {
 	const blocks = splitIntoBlocks(text.split("\n"))
 	return blocks
 		.map((block) => block.map((line, i) => colorizeLine(line, block[i + 1] || "")).join("\n"))
-		.join('<hr class="border-t border-gray-700 my-2">')
+		.join('<hr class="border-t border-code-line my-2">')
 }
 
 function splitIntoBlocks(lines: string[]): string[][] {
@@ -89,48 +99,48 @@ function colorizeErrorCode(line: string): string {
 		.replace(
 			/error\[E(\d+)\]/,
 			bold(
-				`<a href="https://doc.rust-lang.org/stable/error_codes/E$1.html" target="_blank" rel="noopener" class="text-red-400 hover:text-red-300 underline">error[E$1]</a>`,
+				`<a href="https://doc.rust-lang.org/stable/error_codes/E$1.html" target="_blank" rel="noopener" class="${C.link}">error[E$1]</a>`,
 			),
 		)
-		.replace(/(error\[E\d+\]<\/a><\/b>)(: )(.+)$/, `$1${bold(`: ${span("text-red-400", "$3")}`)}`)
+		.replace(/(error\[E\d+\]<\/a><\/b>)(: )(.+)$/, `$1${bold(`: ${span(C.danger, "$3")}`)}`)
 }
 
 function colorizeErrorGeneric(line: string): string {
-	return esc(line).replace(/^(\s*)(error)(: .+)$/, `$1${bold(`${span("text-red-400", "$2")}$3`)}`)
+	return esc(line).replace(/^(\s*)(error)(: .+)$/, `$1${bold(`${span(C.danger, "$2")}$3`)}`)
 }
 
 function colorizeWarning(line: string): string {
-	return esc(line).replace(/^(\s*)(warning)(: .+)$/, `$1${bold(`${span("text-yellow-400", "$2")}$3`)}`)
+	return esc(line).replace(/^(\s*)(warning)(: .+)$/, `$1${bold(`${span(C.warning, "$2")}$3`)}`)
 }
 
 function colorizeDashLine(match: RegExpMatchArray): string {
 	const [, spaces, pipe, spacesAfter, dashes, spacesBeforeText, text] = match
 	let result = esc(spaces)
-	if (pipe) result += bold(span("text-blue-300", pipe))
-	result += esc(spacesAfter) + bold(span("text-blue-300", dashes + spacesBeforeText + text))
+	if (pipe) result += bold(span(C.accent, pipe))
+	result += esc(spacesAfter) + bold(span(C.accent, dashes + spacesBeforeText + text))
 	return result
 }
 
 function colorizeBuildStage(line: string): string {
-	return esc(line).replace(/(Compiling|Finished|Running)/, bold(span("text-green-400", "$1")))
+	return esc(line).replace(/(Compiling|Finished|Running)/, bold(span(C.success, "$1")))
 }
 
 function colorizeArrow(line: string): string {
-	return esc(line).replace(/(--&gt;)/g, bold(span("text-blue-300", "$1")))
+	return esc(line).replace(/(--&gt;)/g, bold(span(C.accent, "$1")))
 }
 
 function colorizePipeOnly(line: string): string {
-	return esc(line).replace(/(\|)/g, bold(span("text-blue-300", "$1")))
+	return esc(line).replace(/(\|)/g, bold(span(C.accent, "$1")))
 }
 
 function colorizeLineWithPlus(match: RegExpMatchArray): string {
 	const [, spaces, num, spacesAfter, plus, rest] = match
-	return `${esc(spaces)}${bold(span("text-blue-300", num))}${esc(spacesAfter)}${span("text-green-400", plus + rest)}`
+	return `${esc(spaces)}${bold(span(C.accent, num))}${esc(spacesAfter)}${span(C.success, plus + rest)}`
 }
 
 function colorizeLineWithPipe(match: RegExpMatchArray, line: string, nextLine: string): string {
 	const [, spaces, num, spacesAfter, pipe, code] = match
-	const prefix = `${esc(spaces)}${bold(span("text-blue-300", num + spacesAfter + pipe))}`
+	const prefix = `${esc(spaces)}${bold(span(C.accent, num + spacesAfter + pipe))}`
 
 	if (/^\s*\|\s*\+/.test(nextLine)) {
 		const charIndex = nextLine.indexOf("+") - line.indexOf("|") - 1
@@ -138,7 +148,7 @@ function colorizeLineWithPipe(match: RegExpMatchArray, line: string, nextLine: s
 			return (
 				prefix +
 				esc(code.substring(0, charIndex)) +
-				span("text-green-400", code[charIndex]) +
+				span(C.success, code[charIndex]) +
 				esc(code.substring(charIndex + 1))
 			)
 		}
@@ -152,27 +162,27 @@ function colorizeErrorMarkers(line: string): string {
 
 	const [, spaces, pipe, spacesAfter, carets, , message] = match
 	let result = esc(spaces)
-	if (pipe) result += bold(span("text-blue-300", pipe))
-	result += esc(spacesAfter) + bold(span("text-red-400", carets))
+	if (pipe) result += bold(span(C.accent, pipe))
+	result += esc(spacesAfter) + bold(span(C.danger, carets))
 	if (message) {
 		const messageStart = match[5].substring(0, match[5].indexOf(message))
-		result += esc(messageStart) + bold(span("text-red-400", message))
+		result += esc(messageStart) + bold(span(C.danger, message))
 	}
 	return result
 }
 
 function colorizePipeWithPlus(match: RegExpMatchArray): string {
 	const [, spaces, pipe, spacesAfter, plus] = match
-	return `${esc(spaces)}${bold(span("text-blue-300", pipe))}${esc(spacesAfter)}${span("text-green-400", plus)}`
+	return `${esc(spaces)}${bold(span(C.accent, pipe))}${esc(spacesAfter)}${span(C.success, plus)}`
 }
 
 function colorizeHelpOrNote(match: RegExpMatchArray): string {
 	const [, spaces, equals, , type, colon, rest] = match
-	return `${esc(spaces)}${bold(span("text-blue-300", equals))} ${bold(esc(type + colon))}${esc(rest)}`
+	return `${esc(spaces)}${bold(span(C.accent, equals))} ${bold(esc(type + colon))}${esc(rest)}`
 }
 
 function colorizeHelpOrNoteStart(match: RegExpMatchArray): string {
 	const [, spaces, type, colon, rest] = match
-	const color = type === "help" ? "text-green-400" : "text-purple-400"
+	const color = type === "help" ? C.success : C.accent
 	return `${esc(spaces)}${bold(span(color, type + colon))}${esc(rest)}`
 }

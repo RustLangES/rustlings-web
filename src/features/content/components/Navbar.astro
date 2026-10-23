@@ -1,6 +1,7 @@
 ---
 import Sidebar from "~/components/sidebar/Sidebar.astro"
 import ToggleSidebarButton from "~/components/sidebar/ToggleSidebarButton.astro"
+import ThemeToggle from "~/components/ThemeToggle.astro"
 import { type Content, getLessonsByLang } from "~/content-manager"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
@@ -51,80 +52,82 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
 }))
 ---
 
-<header class="p-2 w-full">
-  <nav
-    class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg"
-  >
-    <div class="flex items-center gap-4">
+<header class="w-full shrink-0 border-b border-line bg-canvas">
+  <nav class={`relative z-50 flex min-h-16 items-center justify-between gap-2 ${isLearnPage || isProfilePage ? "container-page" : "px-4"}`}>
+    <div class="flex items-center gap-2 md:gap-4">
+      <a href={`/${lang}/`} class="flex shrink-0 items-center rounded-control p-1" aria-label="Rustlings Web">
+        <img src="/Rust_Lang_ES_Logo_Negro_color.svg" alt="" width="52" height="32" class="h-8 w-auto dark:hidden" />
+        <img src="/Rust_Lang_ES_Logo_Blanco_color.svg" alt="" width="52" height="32" class="hidden h-8 w-auto dark:block" />
+      </a>
       {isLearnPage ? (
-        <a
-          href={`/${lang}/`}
-          class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-        >
-          <IconLeft font-size={20} />
-          {t("learn.back_home")}
+        <a href={`/${lang}/`} class="btn-ghost" aria-label={t("learn.back_home")}>
+          <IconLeft font-size={20} aria-hidden="true" />
+          <span class="hidden sm:inline">{t("learn.back_home")}</span>
         </a>
       ) : isProfilePage ? (
-        <a
-          href={`/${lang}/aprender`}
-          class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-        >
-          <IconLeft font-size={20} />
-          {t("profile.back_temario")}
+        <a href={`/${lang}/aprender`} class="btn-ghost" aria-label={t("profile.back_temario")}>
+          <IconLeft font-size={20} aria-hidden="true" />
+          <span class="hidden sm:inline">{t("profile.back_temario")}</span>
         </a>
       ) : (
         <ToggleSidebarButton sidebarId="content" label={t("sidebar.menu")} />
       )}
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1 md:gap-2">
       <!-- Language selector -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center">
         <a
           href={switchLang("es")}
-          class={`text-xs font-medium transition-all duration-300 ${
-            lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+          aria-current={lang === "es" ? "true" : undefined}
+          class={`inline-flex min-h-10 min-w-10 items-center justify-center rounded-control text-sm font-semibold transition-colors duration-150 ${
+            lang === "es" ? "text-ferris-ink" : "text-ink-muted hover:text-ferris-ink"
           }`}
         >
           ES
         </a>
-        <span class="text-secondary/20">|</span>
+        <span class="text-ink-subtle" aria-hidden="true">|</span>
         <a
           href={switchLang("en")}
-          class={`text-xs font-medium transition-all duration-300 ${
-            lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
+          aria-current={lang === "en" ? "true" : undefined}
+          class={`inline-flex min-h-10 min-w-10 items-center justify-center rounded-control text-sm font-semibold transition-colors duration-150 ${
+            lang === "en" ? "text-ferris-ink" : "text-ink-muted hover:text-ferris-ink"
           }`}
         >
           EN
         </a>
       </div>
 
+      <ThemeToggle label={t("nav.theme")} />
+
       <div id="nav-user-section" style={user ? "" : "display: none"} class="flex items-center gap-1">
         <a
           id="nav-profile-link"
           href={`/${lang}/perfil`}
-          class="flex items-center gap-1.5 px-2 py-1 text-xs text-secondary/60 rounded-md hover:text-yellow transition-colors"
+          class="btn-ghost"
         >
-          <IconUser font-size={18} />
+          <IconUser font-size={18} aria-hidden="true" />
           <span class="hidden sm:inline">{user?.username ?? user?.email ?? ""}</span>
         </a>
         <a
           href="/api/auth/logout"
           data-astro-reload
-          title="Cerrar sesión"
-          class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/40 rounded-md hover:text-red-400 transition-colors"
+          title={t("nav.logout")}
+          aria-label={t("nav.logout")}
+          class="inline-flex size-10 items-center justify-center rounded-control text-ink-muted transition-colors duration-150 hover:text-danger"
         >
-          <IconLogout font-size={14} />
+          <IconLogout font-size={18} aria-hidden="true" />
         </a>
       </div>
       <a
         id="nav-login-link"
         href={`/${lang}/login`}
         style={user ? "display: none" : ""}
-        class="flex items-center gap-1 px-2 py-1 text-xs text-secondary/50 rounded-md hover:text-yellow transition-colors"
-        title="Iniciar sesión"
+        class="inline-flex size-10 items-center justify-center rounded-control text-ink-muted transition-colors duration-150 hover:text-ferris-ink"
+        title={t("nav.login")}
+        aria-label={t("nav.login")}
       >
-        <IconUser font-size={18} />
+        <IconUser font-size={18} aria-hidden="true" />
       </a>
     </div>
   </nav>
@@ -170,11 +173,11 @@ const sidebarItems = [...groupMap.values()].map(({ parent, children }) => ({
 
     document.getElementById("debug-tour-btn")?.addEventListener("click", () => {
       const tracker = document.getElementById("lesson-tracker")
-      const trackTitle = tracker?.dataset.trackTitle ?? "Fundamentos de Rust"
+      const trackTitle = tracker?.dataset.trackTitle ?? ""
 
       toast.success(
-        "¡Lo lograste! 🦀", 
-        `Completaste ${trackTitle}. Encuentra tu certificado en tu perfil.`
+        tracker?.dataset.doneTitle ?? "",
+        (tracker?.dataset.doneDesc ?? "").replace("{trackTitle}", trackTitle),
       )
     })
   })

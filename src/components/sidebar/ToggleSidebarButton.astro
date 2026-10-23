@@ -14,10 +14,10 @@ const { sidebarId = "sidebar", label = "Menú" } = Astro.props
 	data-sidebar-toggle={sidebarId}
 	aria-label={`Abrir menú de ${label.toLowerCase()}`}
 	aria-expanded="false"
-	class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300 cursor-pointer"
+	class="btn-ghost"
 >
 	<IconMenu4 font-size={22} aria-hidden="true" />
-	<span>{label}</span>
+	<span class="hidden sm:inline">{label}</span>
 </button>
 
 <script define:vars={{ sidebarId }}>

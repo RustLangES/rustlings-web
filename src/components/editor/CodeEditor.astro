@@ -1,10 +1,13 @@
 ---
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
 interface Props {
 	slug: string
 	initialCode?: string
 }
 
 const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } = Astro.props
+const t = useTranslations(getLangFromUrl(Astro.url))
 ---
 
 <div class="flex flex-col flex-1 min-w-0 min-h-0">
@@ -14,69 +17,66 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
     data-initial-code={initialCode}
     class="flex-1 min-w-0 min-h-0"
     role="textbox"
-    aria-label="Editor de código"
+    aria-label={t("editor.aria_label")}
     aria-multiline="true"
   >
   </div>
 
-  <div id="vim-mode-bar" class="hidden items-center gap-2 px-3 h-6 border-t border-stroke-color bg-light-bg text-xs font-mono font-bold shrink-0">
-    <span id="vim-mode-label" class="px-1.5 py-0.5 rounded text-[10px] tracking-widest">NORMAL</span>
+  <div id="vim-mode-bar" class="hidden items-center gap-2 px-3 h-7 border-t border-code-line bg-code-raised text-code-ink text-xs font-mono font-bold shrink-0">
+    <span id="vim-mode-label" class="badge badge-neutral text-[10px] tracking-widest">NORMAL</span>
   </div>
 </div>
 
 <style>
-  /* Estilos para diagnósticos del linter */
+  /* Estilos para diagnósticos del linter (el editor es oscuro en ambos temas) */
   :global(.cm-diagnostic) {
     padding: 8px 12px;
-    border-radius: 6px;
+    border-radius: 8px;
     border-left: 4px solid;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--code-raised);
+    font-family: var(--font-sans);
     font-size: 13px;
     line-height: 1.4;
     margin: 4px 0;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   :global(.cm-diagnostic.cm-diagnostic-error) {
-    border-left-color: #ef4444;
-    background: rgba(239, 68, 68, 0.1);
-    color: #fef2f2;
+    border-left-color: var(--code-danger);
+    color: #f6f6f6;
   }
 
   :global(.cm-diagnostic.cm-diagnostic-warning) {
-    border-left-color: #f59e0b;
-    background: rgba(245, 158, 11, 0.1);
-    color: #fefbf4;
+    border-left-color: var(--code-warning);
+    color: #f6f6f6;
   }
 
   :global(.cm-diagnostic.cm-diagnostic-info) {
-    border-left-color: #3b82f6;
-    background: rgba(59, 130, 246, 0.1);
-    color: #eff6ff;
+    border-left-color: var(--code-accent);
+    color: #f6f6f6;
   }
 
   :global(.cm-diagnostic-action) {
     margin-top: 8px;
     padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid #454545;
   }
 
   :global(.cm-diagnostic-action button) {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--code-bg);
+    border: 1px solid #000000;
     color: inherit;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 6px;
     font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition:
+      background-color 150ms ease-out,
+      color 150ms ease-out;
   }
 
   :global(.cm-diagnostic-action button:hover) {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: #454545;
+    color: #ff8637;
   }
 
   /* Estilos para el gutter del linter */
@@ -84,75 +84,48 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
     width: 0.8em;
     height: 0.8em;
     border-radius: 50%;
+    border: 1px solid #000000;
     margin: 0.1em 0.2em;
     cursor: pointer;
     position: relative;
   }
 
   :global(.cm-lint-marker-error) {
-    background: #ef4444;
-    box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+    background: var(--code-danger);
   }
-  
+
   :global(.cm-lint-marker-warning) {
-    background: #f59e0b;
-    box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
+    background: var(--code-warning);
   }
 
   :global(.cm-lint-marker-info) {
-    background: #3b82f6;
-    box-shadow: 0 0 6px rgba(59, 130, 246, 0.5);
-  }
-
-  /* Animación sutil para los marcadores */
-  :global(.cm-lint-marker) {
-    animation: lint-pulse 2s infinite;
-  }
-
-  @keyframes lint-pulse {
-    0%, 100% { 
-      opacity: 0.8;
-      transform: scale(1);
-    }
-    50% { 
-      opacity: 1;
-      transform: scale(1.1);
-    }
+    background: var(--code-accent);
   }
 
   /* Subrayado para código con errores */
   :global(.cm-lintRange-error) {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(239, 68, 68, 0.3) 2px,
-      rgba(239, 68, 68, 0.3) 4px
-    );
-    border-radius: 2px;
+    background-image: none;
+    text-decoration: underline wavy var(--code-danger);
+    text-underline-offset: 3px;
   }
 
   :global(.cm-lintRange-warning) {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 2px,
-      rgba(245, 158, 11, 0.3) 2px,
-      rgba(245, 158, 11, 0.3) 4px
-    );
-    border-radius: 2px;
+    background-image: none;
+    text-decoration: underline wavy var(--code-warning);
+    text-underline-offset: 3px;
   }
 
   :global(.cm-lintRange-info) {
-    background: rgba(59, 130, 246, 0.2);
-    border-radius: 2px;
+    background: none;
+    text-decoration: underline dotted var(--code-accent);
+    text-underline-offset: 3px;
   }
 
   /* Panel de linting */
   :global(.cm-panel.cm-panel-lint) {
-    background: rgba(40, 40, 40, 0.95);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e5e7eb;
+    background: var(--code-bg);
+    border-top: 1px solid #454545;
+    color: #f6f6f6;
   }
 
   :global(.cm-panel-lint ul) {
@@ -162,17 +135,17 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
 
   :global(.cm-panel-lint li) {
     padding: 6px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #454545;
     cursor: pointer;
   }
 
   :global(.cm-panel-lint li:hover) {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--code-raised);
   }
 
   /* Mejoras de accesibilidad */
   :global(.cm-lint-marker:focus) {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #ff8637;
     outline-offset: 2px;
   }
 </style>
@@ -211,12 +184,12 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
       const vimLabel = document.getElementById("vim-mode-label");
 
       const modeStyles: Record<string, { label: string; classes: string }> = {
-        normal:         { label: "NORMAL",  classes: "bg-blue-500/20 text-blue-400" },
-        insert:         { label: "INSERT",  classes: "bg-green-500/20 text-green-400" },
-        visual:         { label: "VISUAL",  classes: "bg-yellow/20 text-yellow" },
-        "visual-line":  { label: "V-LINE",  classes: "bg-yellow/20 text-yellow" },
-        "visual-block": { label: "V-BLOCK", classes: "bg-orange-500/20 text-orange-400" },
-        replace:        { label: "REPLACE", classes: "bg-red-500/20 text-red-400" },
+        normal:         { label: "NORMAL",  classes: "badge-neutral" },
+        insert:         { label: "INSERT",  classes: "badge-success" },
+        visual:         { label: "VISUAL",  classes: "badge-ferris" },
+        "visual-line":  { label: "V-LINE",  classes: "badge-ferris" },
+        "visual-block": { label: "V-BLOCK", classes: "badge-lilac" },
+        replace:        { label: "REPLACE", classes: "badge-danger" },
       };
 
       function updateVimMode(mode: string, subMode?: string) {
@@ -226,7 +199,7 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
         const style = modeStyles[key] ?? modeStyles.normal;
         if (vimLabel) {
           vimLabel.textContent = style.label;
-          vimLabel.className = `px-1.5 py-0.5 rounded text-[10px] tracking-widest ${style.classes}`;
+          vimLabel.className = `badge text-[10px] tracking-widest ${style.classes}`;
         }
       }
 
@@ -281,7 +254,7 @@ const { slug, initialCode = 'fn main() {\n    println!("Hola, mundo!");\n}\n' } 
         parent: editorElement,
       });
 
-      editorView.contentDOM.setAttribute("aria-label", "Editor de código Rust");
+      editorView.contentDOM.setAttribute("aria-label", editorElement.getAttribute("aria-label") ?? "");
       editorView.contentDOM.setAttribute("role", "textbox");
       editorCode.set(initialDoc);
 

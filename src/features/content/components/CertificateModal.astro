@@ -10,28 +10,30 @@ const { trackId, trackTitle, trackSlugs } = Astro.props
 
 <div
   id="certificate-modal"
-  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/80 backdrop-blur-sm"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40"
   data-track-id={trackId}
   data-track-title={trackTitle}
   data-track-slugs={JSON.stringify(trackSlugs)}
 >
-  <div class="relative flex flex-col items-center gap-5 p-6 max-w-3xl w-full mx-4">
+  <div class="card relative mx-4 flex w-full max-w-3xl flex-col items-center gap-6 p-4 md:p-6">
     <canvas
       id="certificate-canvas"
       width="900"
       height="600"
-      class="w-full rounded-xl shadow-2xl border border-stroke-color"
+      class="w-full rounded-xl border border-line"
     ></canvas>
     <div class="flex gap-3">
       <button
         id="download-certificate"
-        class="flex items-center gap-2 rounded-lg bg-yellow px-6 py-2.5 font-semibold text-black transition hover:opacity-80 cursor-pointer"
+        type="button"
+        class="btn btn-primary"
       >
         Descargar PNG
       </button>
       <button
         id="close-certificate"
-        class="rounded-lg border border-neutral-600 px-6 py-2.5 text-neutral-300 transition hover:bg-neutral-700 cursor-pointer"
+        type="button"
+        class="btn btn-secondary"
       >
         Cerrar
       </button>
@@ -47,32 +49,29 @@ const { trackId, trackTitle, trackSlugs } = Astro.props
     const W = canvas.width
     const H = canvas.height
 
-    const YELLOW = "#ffd776"
-    const YELLOW_DIM = "#ffd77640"
-    const YELLOW_MID = "#ffd77699"
-    const BG = "#191918"
-    const BG2 = "#272726"
-    const STROKE = "#4f4e48"
+    // Design system: code-bg + Ferris orange (dark palette)
+    const ACCENT = "#ff8637"
+    const ACCENT_DIM = "#ff863740"
+    const ACCENT_MID = "#ff863799"
+    const BG = "#222222"
+    const STROKE = "#888888"
 
-    // Background gradient
-    const grad = ctx.createLinearGradient(0, 0, W, H)
-    grad.addColorStop(0, BG)
-    grad.addColorStop(1, BG2)
-    ctx.fillStyle = grad
+    // Background (flat)
+    ctx.fillStyle = BG
     ctx.fillRect(0, 0, W, H)
 
     // Outer border
-    ctx.strokeStyle = YELLOW
+    ctx.strokeStyle = ACCENT
     ctx.lineWidth = 2
     ctx.strokeRect(18, 18, W - 36, H - 36)
 
     // Inner border
-    ctx.strokeStyle = YELLOW_DIM
+    ctx.strokeStyle = ACCENT_DIM
     ctx.lineWidth = 1
     ctx.strokeRect(28, 28, W - 56, H - 56)
 
     // Corner dots
-    ctx.fillStyle = YELLOW
+    ctx.fillStyle = ACCENT
     const corners: [number, number][] = [
       [48, 48],
       [W - 48, 48],
@@ -86,7 +85,7 @@ const { trackId, trackTitle, trackSlugs } = Astro.props
     }
 
     // Top decorative line
-    ctx.strokeStyle = YELLOW_MID
+    ctx.strokeStyle = ACCENT_MID
     ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(W / 2 - 140, 88)
@@ -95,23 +94,23 @@ const { trackId, trackTitle, trackSlugs } = Astro.props
 
     // Logo - Rustlings
     ctx.textAlign = "center"
-    ctx.fillStyle = YELLOW
-    ctx.font = "700 22px 'Poppins', sans-serif"
+    ctx.fillStyle = ACCENT
+    ctx.font = "700 22px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText("RustLang en Español", W / 2, 76)
 
     // "CERTIFICADO DE FINALIZACIÓN"
-    ctx.fillStyle = "#fcfcfc"
-    ctx.font = "700 36px 'Poppins', sans-serif"
+    ctx.fillStyle = "#f6f6f6"
+    ctx.font = "700 36px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText("CERTIFICADO DE FINALIZACIÓN", W / 2, 175)
 
     // Subtitle
-    ctx.fillStyle = "#a0a09a"
-    ctx.font = "400 16px 'Poppins', sans-serif"
+    ctx.fillStyle = "#b0b0b0"
+    ctx.font = "400 16px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText("Este certificado acredita que completaste exitosamente el curso:", W / 2, 225)
 
     // Separator
     const sepY = 248
-    ctx.strokeStyle = YELLOW_DIM
+    ctx.strokeStyle = ACCENT_DIM
     ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(W / 2 - 200, sepY)
@@ -119,18 +118,18 @@ const { trackId, trackTitle, trackSlugs } = Astro.props
     ctx.stroke()
 
     // Track title
-    ctx.fillStyle = YELLOW
-    ctx.font = "700 52px 'Poppins', sans-serif"
+    ctx.fillStyle = ACCENT
+    ctx.font = "700 52px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText(trackTitle, W / 2, 330)
 
     // Platform
-    ctx.fillStyle = "#e0e0d8"
-    ctx.font = "400 18px 'Poppins', sans-serif"
+    ctx.fillStyle = "#f6f6f6"
+    ctx.font = "400 18px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText("en Rustlings Web", W / 2, 370)
 
     // Bottom separator
     const botSepY = 430
-    ctx.strokeStyle = YELLOW_DIM
+    ctx.strokeStyle = ACCENT_DIM
     ctx.lineWidth = 1
     ctx.beginPath()
     ctx.moveTo(W / 2 - 280, botSepY)
@@ -143,13 +142,13 @@ const { trackId, trackTitle, trackSlugs } = Astro.props
       month: "long",
       day: "numeric",
     })
-    ctx.fillStyle = "#70706a"
-    ctx.font = "400 14px 'Poppins', sans-serif"
+    ctx.fillStyle = "#888888"
+    ctx.font = "400 14px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText(date, W / 2, 460)
 
     // URL
     ctx.fillStyle = STROKE
-    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.font = "400 13px 'Inter Variable', 'Inter', sans-serif"
     ctx.fillText("rustlings.dev", W / 2, 490)
   }
 

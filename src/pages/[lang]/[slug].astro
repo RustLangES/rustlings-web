@@ -5,6 +5,7 @@ import { tracks } from "~/const/tracks"
 import { getLessonsByLang } from "~/content-manager"
 import NavButtons from "~/features/content/components/NavButtons.astro"
 import Navbar from "~/features/content/components/Navbar.astro"
+import { useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconBook from "~icons/tabler/book"
 import IconChevronDown from "~icons/tabler/chevron-down"
@@ -30,6 +31,10 @@ const lesson = lessons[lessonIndex]
 const previousLesson = lessons[lessonIndex - 1]
 const nextLesson = lessons[lessonIndex + 1]
 const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
+const t = useTranslations((lang ?? "es") as "es" | "en")
+type LessonKey = Parameters<typeof t>[0]
+const lessonTitle = (meta: { slug: string }) => t(`lesson.${meta.slug}` as LessonKey)
+const navLesson = (l?: (typeof lessons)[number]) => (l ? { slug: l.meta.slug, title: lessonTitle(l.meta) } : undefined)
 ---
 
 <style>
@@ -126,30 +131,30 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
   }
 </style>
 
-<Layout>
+<Layout title={`${lessonTitle(lesson.meta)} — Rustlings`}>
   <Navbar lang={lang} />
   <main
-    class="flex flex-col lg:flex-row lg:gap-0 px-2 pb-2 flex-1 min-h-0 overflow-hidden"
+    class="flex flex-col lg:flex-row lg:gap-0 px-4 pt-2 pb-3 lg:pt-2 flex-1 min-h-0 overflow-hidden"
     data-container
     data-tab="content"
   >
     <!-- Content Panel -->
     <aside
-      class="relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-md overflow-hidden"
+      class="relative flex flex-col min-h-[250px] bg-surface border border-line rounded-xl shadow-hard-sm overflow-hidden"
       style={lesson.data.editor === false
         ? "flex: 1 1 0%; min-width: 50px;"
         : "flex: 1 1 0%; min-width: 50px;"}
       data-panel="left"
     >
       <div
-        class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg"
+        class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-surface"
         aria-hidden="true"
       >
-        <IconBook class="text-yellow" font-size={22} />
+        <IconBook class="text-ferris-ink" font-size={22} />
         <span
-          class="text-xs text-neutral-300 font-semibold tracking-widest uppercase"
+          class="text-xs text-ink-muted font-semibold tracking-widest uppercase"
           style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;"
-          >Contenido</span
+          >{t("lesson_ui.content")}</span
         >
       </div>
 
@@ -161,31 +166,31 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
           <div class="p-2 overflow-y-auto lg:h-full" data-scroll-area>
             <article
               id="content-markdown"
-              class="prose prose-invert mb-1 max-w-none prose-headings:mt-0 prose-headings:mb-2"
+              class="prose mb-1 max-w-none prose-headings:mt-0 prose-headings:mb-2 [--tw-prose-body:var(--ink-muted)] [--tw-prose-headings:var(--ink)] [--tw-prose-lead:var(--ink-muted)] [--tw-prose-links:var(--ferris-ink)] [--tw-prose-bold:var(--ink)] [--tw-prose-counters:var(--ink-muted)] [--tw-prose-bullets:var(--ink-subtle)] [--tw-prose-hr:var(--line-soft)] [--tw-prose-quotes:var(--ink)] [--tw-prose-quote-borders:var(--ferris)] [--tw-prose-captions:var(--ink-subtle)] [--tw-prose-kbd:var(--ink)] [--tw-prose-code:var(--ferris-ink)] [--tw-prose-pre-code:var(--code-ink)] [--tw-prose-pre-bg:var(--code-bg)] [--tw-prose-th-borders:var(--line)] [--tw-prose-td-borders:var(--line-soft)]"
             >
               <lesson.Content />
             </article>
           </div>
           <div
             data-scroll-indicator
-            class="pointer-events-none absolute bottom-0 left-0 right-0 flex flex-col items-center justify-end pb-3 pt-16 bg-linear-to-t from-light-bg to-transparent opacity-0 transition-opacity duration-500"
+            class="pointer-events-none absolute bottom-3 left-0 right-0 flex justify-center opacity-0 transition-opacity duration-200"
             aria-hidden="true"
           >
-            <div class="flex items-center gap-1 text-xs text-secondary/60 tracking-wide drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">
+            <div class="badge badge-neutral shadow-hard-sm">
               <IconChevronDown font-size={12} />
-              <span>Hay más contenido abajo</span>
+              <span>{t("lesson_ui.more_below")}</span>
             </div>
           </div>
         </div>
-        <div class="hidden lg:block border-t border-gray-700 shrink-0">
-          <NavButtons lang={lang} previous={previousLesson?.meta} next={nextLesson?.meta} />
+        <div class="hidden lg:block border-t border-line-soft shrink-0">
+          <NavButtons lang={lang} previous={navLesson(previousLesson)} next={navLesson(nextLesson)} />
         </div>
       </div>
     </aside>
 
     <!-- Vertical Resizer -->
     <div
-      class={`hidden lg:flex items-center justify-center h-full ${lesson.data.editor === false ? "cursor-not-allowed w-4" : "w-3 hover:w-4 transition-[width] duration-150 cursor-col-resize select-none"}`}
+      class={`hidden lg:flex items-center justify-center h-full ${lesson.data.editor === false ? "cursor-not-allowed w-6 text-ink-subtle" : "w-6 cursor-col-resize select-none text-ink-subtle hover:text-ferris-ink transition-colors duration-150"}`}
       data-direction="vertical"
       role="separator"
       aria-orientation="vertical"
@@ -195,7 +200,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 
     <!-- Editor Panel -->
     <section
-      class={`relative flex flex-col min-h-[250px] bg-light-bg border border-stroke-color rounded-md overflow-hidden ${lesson.data.editor === false ? "collapsed max-lg:hidden" : ""}`}
+      class={`relative flex flex-col min-h-[250px] bg-code-bg text-code-ink border border-line rounded-xl shadow-hard-sm overflow-hidden ${lesson.data.editor === false ? "collapsed max-lg:hidden" : ""}`}
       style={lesson.data.editor === false
         ? "flex: 0 0 50px; min-width: 50px;"
         : "flex: 1 1 0%; min-width: 50px;"}
@@ -203,14 +208,14 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       data-initial-collapsed={lesson.data.editor === false ? "" : undefined}
     >
       <div
-        class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-light-bg"
+        class="absolute inset-0 hidden in-[.collapsed]:flex! flex-col items-center justify-start pt-4 gap-2 bg-code-bg"
         aria-hidden="true"
       >
-        <IconCode class="text-green-500" font-size={22} />
+        <IconCode class="text-ferris" font-size={22} />
         <span
-          class="text-xs text-neutral-300 font-semibold tracking-widest uppercase"
+          class="text-xs text-code-muted font-semibold tracking-widest uppercase"
           style="writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.12em;"
-          >Editor</span
+          >{t("lesson_ui.editor")}</span
         >
       </div>
 
@@ -219,7 +224,7 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
         data-panel-content
       >
         <div
-          class="flex flex-col flex-1 min-h-[100px] max-lg:h-[280px] overflow-hidden mt-2 pt-2"
+          class="flex flex-col flex-1 min-h-[100px] max-lg:h-[280px] overflow-hidden pt-2"
           data-editor-wrapper
         >
           <CodeEditor slug={lesson.meta.slug} initialCode={lesson.data.code} />
@@ -227,12 +232,12 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
 
         <!-- Horizontal Resizer -->
         <div
-          class="h-2 shrink-0 flex justify-center items-center cursor-row-resize bg-[#181817]"
+          class="h-2 shrink-0 flex justify-center items-center cursor-row-resize bg-code-raised hover:bg-code-line transition-colors duration-150"
           data-direction="horizontal"
           role="separator"
           aria-orientation="horizontal"
         >
-          <div class="h-0.5 w-4 bg-neutral-500/40 rounded-md"></div>
+          <div class="h-0.5 w-6 bg-code-muted rounded-full"></div>
         </div>
 
         <div class="h-64 shrink-0 overflow-auto" data-terminal>
@@ -245,36 +250,36 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
   <!-- Mobile Bottom Navigation -->
   <nav
     id="mobile-bottom-nav"
-    class="lg:hidden shrink-0 flex items-center mx-2 mb-2 border border-stroke-color bg-light-bg rounded-md overflow-hidden"
+    class="lg:hidden shrink-0 flex items-center mx-4 mb-3 border border-line bg-surface rounded-xl shadow-hard-sm overflow-hidden"
   >
     <a
       href={previousLesson ? `/${lang}/${previousLesson.meta.slug}` : undefined}
       aria-disabled={!previousLesson}
-      class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors ${!previousLesson ? "text-secondary/20 pointer-events-none" : "text-secondary/40 cursor-pointer hover:text-secondary"}`}
+      class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors duration-150 ${!previousLesson ? "text-ink-subtle opacity-50 pointer-events-none" : "text-ink-muted cursor-pointer hover:text-ferris-ink"}`}
     >
       <IconChevronLeft font-size={20} />
-      <span class="text-[10px] font-medium">Anterior</span>
+      <span class="text-[10px] font-medium">{t("lesson_ui.previous")}</span>
     </a>
-    <button id="tab-content" class="flex-1 flex flex-col items-center gap-1 py-2.5 text-yellow transition-colors cursor-pointer touch-manipulation">
+    <button id="tab-content" class="flex-1 flex flex-col items-center gap-1 py-2.5 text-ferris-ink transition-colors duration-150 cursor-pointer touch-manipulation">
       <IconBook font-size={20} />
-      <span class="text-[10px] font-medium">Contenido</span>
+      <span class="text-[10px] font-medium">{t("lesson_ui.content")}</span>
     </button>
-    <button id="tab-editor" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors cursor-pointer touch-manipulation ${lesson.data.editor === false ? "text-secondary/20 opacity-30" : "text-secondary/40"}`}>
+    <button id="tab-editor" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors duration-150 cursor-pointer disabled:cursor-not-allowed touch-manipulation ${lesson.data.editor === false ? "text-ink-subtle opacity-50" : "text-ink-muted"}`}>
       <IconCode font-size={20} />
-      <span class="text-[10px] font-medium">Código</span>
+      <span class="text-[10px] font-medium">{t("lesson_ui.code")}</span>
     </button>
-    <button id="tab-terminal" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors cursor-pointer touch-manipulation ${lesson.data.editor === false ? "text-secondary/20 opacity-30" : "text-secondary/40"}`}>
+    <button id="tab-terminal" disabled={lesson.data.editor === false} class={`flex-1 flex flex-col items-center gap-1 py-2.5 transition-colors duration-150 cursor-pointer disabled:cursor-not-allowed touch-manipulation ${lesson.data.editor === false ? "text-ink-subtle opacity-50" : "text-ink-muted"}`}>
       <IconTerminal font-size={20} />
-      <span class="text-[10px] font-medium">Terminal</span>
+      <span class="text-[10px] font-medium">{t("lesson_ui.terminal")}</span>
     </button>
     <a
       id="mobile-next-btn"
       href={nextLesson ? `/${lang}/${nextLesson.meta.slug}` : undefined}
       aria-disabled={!nextLesson || lesson.data.editor !== false}
-      class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors aria-disabled:text-secondary/20 aria-disabled:opacity-50 ${nextLesson ? "text-secondary/40 cursor-pointer hover:text-secondary" : ""}`}
+      class={`flex-1 flex flex-col items-center gap-1 py-2.5 touch-manipulation transition-colors duration-150 aria-disabled:text-ink-subtle aria-disabled:opacity-50 ${nextLesson ? "text-ink-muted cursor-pointer hover:text-ferris-ink" : ""}`}
     >
       <IconChevronRight font-size={20} />
-      <span class="text-[10px] font-medium">Siguiente</span>
+      <span class="text-[10px] font-medium">{t("lesson_ui.next")}</span>
     </a>
   </nav>
 </Layout>
@@ -283,7 +288,9 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
   <div
     id="lesson-tracker"
     data-track-id={currentTrack.id}
-    data-track-title={currentTrack.title}
+    data-track-title={t(currentTrack.title as Parameters<typeof t>[0])}
+    data-done-title={t("toast.track_done_title")}
+    data-done-desc={t("toast.track_done_desc")}
     data-track-slugs={JSON.stringify(currentTrack.slugs)}
     data-slug={lesson.meta.slug}
     hidden
@@ -489,9 +496,9 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
     function setActive(btn: HTMLButtonElement) {
       allBtns.forEach((b) => {
         if (!b) return
-        b.classList.toggle("text-yellow", b === btn)
-        b.classList.remove("text-secondary/40")
-        if (b !== btn && !b.disabled) b.classList.add("text-secondary/40")
+        b.classList.toggle("text-ferris-ink", b === btn)
+        b.classList.remove("text-ink-muted")
+        if (b !== btn && !b.disabled) b.classList.add("text-ink-muted")
       })
     }
 
@@ -534,8 +541,8 @@ const currentTrack = tracks.find((t) => t.slugs.includes(lesson.meta.slug))
       localStorage.setItem(tourKey, "1")
 
       toast.success(
-        "¡Lo lograste! 🦀", 
-        `Completaste ${trackTitle}. Encuentra tu certificado en tu perfil.`
+        tracker?.dataset.doneTitle ?? "",
+        (tracker?.dataset.doneDesc ?? "").replace("{trackTitle}", trackTitle),
       )
     })
   })
