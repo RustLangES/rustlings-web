@@ -1,0 +1,40 @@
+---
+import Section from "~/components/sections/Section.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import IconArrowRight from "~icons/tabler/arrow-right"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+---
+
+<!-- Closing peak: one decision, restated (Figma "Retos diarios" band + panel) -->
+<Section id="start" className="w-full border-t border-line bg-band py-12 md:py-20">
+  <div class="container-page">
+    <div class="grid items-center gap-8 rounded-[var(--radius-card)] border border-line bg-surface p-6 shadow-hard md:grid-cols-[auto_1fr] md:gap-12 md:rounded-[var(--radius-panel)] md:p-12">
+      <img
+        src="/images/webp/ferris.webp"
+        alt=""
+        width={160}
+        height={160}
+        loading="lazy"
+        class="mx-auto size-28 md:size-40"
+      />
+      <div class="text-center md:text-left">
+        <h2 class="type-h2 mb-3">{t("cta.title")}</h2>
+        <p class="mb-8 max-w-[52ch] text-ink-muted md:text-lg">{t("cta.subtitle")}</p>
+        <div class="flex justify-center md:justify-start">
+          <a href={`/${lang}/aprender`} class="btn btn-primary group w-full sm:w-auto">
+            <span data-auth="guest">{t("hero.start_free")}</span>
+            <span data-auth="user" hidden>{t("hero.continue")}</span>
+            <IconArrowRight font-size={18} aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-0.5" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Section>

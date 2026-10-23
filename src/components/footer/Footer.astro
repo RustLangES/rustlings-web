@@ -22,33 +22,42 @@ const socialLinks = [
 ]
 ---
 
-<footer
-	class="flex flex-col md:flex-row gap-6 p-6 md:p-4 justify-between items-center w-full bg-editor-bg/95 backdrop-blur-md border-t border-stroke-color shadow-inner"
->
-	<a href="#hero" class="flex items-center gap-3">
-		<img src="/logo.webp" alt={t("footer.logo_alt")} class="h-12 w-12"/>
-		<span class="text-secondary font-bold text-2xl tracking-wide">Rustlings</span>
-	</a>
+<footer class="w-full shrink-0 border-t border-line">
+	<div
+		class="h-20 border-b border-line bg-white bg-[length:auto_100%] bg-repeat-x dark:hidden"
+		style="background-image: url('/images/brand/ferris-pattern.png')"
+		aria-hidden="true"
+	></div>
+	<div class="bg-band text-on-band">
+		<div class="container-page flex flex-col items-center gap-6 py-6 md:flex-row md:justify-between">
+			<a href={`/${lang}/`} class="flex items-center gap-3 rounded-xl">
+				<img src="/logo.webp" alt={t("footer.logo_alt")} class="size-10" width={40} height={40} />
+				<span class="flex flex-col leading-tight">
+					<span class="font-display text-base font-extrabold">Rustlings</span>
+					<span class="text-xs">{t("footer.community")}</span>
+				</span>
+			</a>
 
-	<div class="flex flex-col items-center gap-1 text-center text-sm text-secondary/70 px-4">
-		<span>&copy; {new Date().getFullYear()} Rustlings Web. {t("footer.copyright")}</span>
-		<a href={`/${lang}/privacidad`} class="text-xs text-secondary/50 hover:text-yellow transition-colors">
-			{t("footer.privacy_policy")}
-		</a>
+			<div class="flex flex-col items-center gap-1 text-center text-xs">
+				<span>&copy; {new Date().getFullYear()} Rustlings Web. {t("footer.copyright")}</span>
+				<a href={`/${lang}/privacidad`} class="font-semibold underline underline-offset-2 hover:no-underline">
+					{t("footer.privacy_policy")}
+				</a>
+			</div>
+
+			<nav class="flex items-center gap-3" aria-label={t("footer.social_nav")}>
+				{socialLinks.map((link) => (
+					<a
+						href={link.href}
+						target="_blank"
+						rel="noopener noreferrer"
+						aria-label={link.label}
+						class="flex size-11 items-center justify-center rounded-full border border-black bg-[#fafafa] text-black shadow-[2px_2px_0_0_#000] transition-transform duration-150 hover:-translate-x-px hover:-translate-y-px active:translate-x-0.5 active:translate-y-0.5 active:shadow-none"
+					>
+						<link.icon font-size={22} />
+					</a>
+				))}
+			</nav>
+		</div>
 	</div>
-
-	<nav class="flex items-center gap-6" aria-label={t("footer.social_nav")}>
-	{
-		socialLinks.map(link => (
-        <a
-          href={link.href}
-          target="_blank"
-          aria-label={link.label}
-          class="text-secondary hover:text-yellow transition-transform duration-200 hover:scale-110"
-        >
-          <link.icon font-size={28} />
-        </a>
-      ))
-    }
-	</nav>
 </footer>

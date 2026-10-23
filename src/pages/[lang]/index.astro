@@ -1,12 +1,14 @@
 ---
 import Footer from "~/components/footer/Footer.astro"
+import SiteHeader from "~/components/SiteHeader.astro"
 import { supportedLangs } from "~/content-manager"
 import Community from "~/features/home/components/Community.astro"
 import FAQ from "~/features/home/components/FAQ.astro"
 import Features from "~/features/home/components/Features.astro"
+import FinalCTA from "~/features/home/components/FinalCTA.astro"
 import Hero from "~/features/home/components/Hero.astro"
 import HowItWorks from "~/features/home/components/HowItWorks.astro"
-import Playground from "~/features/home/components/Playground.astro"
+import LearningPath from "~/features/home/components/LearningPath.astro"
 import Layout from "~/layouts/Layout.astro"
 
 export const prerender = true
@@ -21,12 +23,16 @@ export function getStaticPaths() {
 const { lang } = Astro.props
 ---
 
-<Layout>
+<Layout displayFont>
+  <SiteHeader lang={lang} />
+  <main id="main" class="flex flex-col">
   <Hero lang={lang} />
-  <Features lang={lang} />
   <HowItWorks lang={lang} />
-  <Playground lang={lang} />
+  <LearningPath lang={lang} />
+  <Features lang={lang} />
   <Community lang={lang} />
   <FAQ lang={lang} />
+  <FinalCTA lang={lang} />
+  </main>
   <Footer lang={lang} />
 </Layout>
