@@ -10,14 +10,14 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
 
 <div
   id="privacy-overlay"
-  class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm items-center justify-center p-4"
+  class="hidden fixed inset-0 z-50 bg-black/50 items-center justify-center p-4"
 >
   <div
     id="privacy-banner"
     data-clarity-id={projectId}
-    class="w-full max-w-2xl max-h-[90vh] bg-editor-bg border border-stroke-color rounded-xl shadow-2xl overflow-hidden grid grid-cols-1 md:grid-cols-2"
+    class="card shadow-hard w-full max-w-2xl max-h-[90vh] overflow-hidden grid grid-cols-1 md:grid-cols-2"
   >
-    <div class="relative aspect-4/3 md:aspect-auto">
+    <div class="relative aspect-4/3 md:aspect-auto border-b md:border-b-0 md:border-r border-line">
       <img
         src="/images/webp/ferris_cooking.jpg"
         alt={t("cookie.banner.img.alt")}
@@ -27,36 +27,37 @@ const projectId = import.meta.env.VITE_CLARITY_PROJECT_ID
 
     <div class="flex flex-col justify-center gap-5 p-6 overflow-y-auto">
       <div class="flex flex-col gap-3">
-        <h2 class="text-secondary font-semibold text-lg">{t("cookie.banner.title")}</h2>
-        <p class="text-sm text-secondary/70 leading-relaxed">
+        <h2 class="type-h4 text-ink">{t("cookie.banner.title")}</h2>
+        <p class="text-sm text-ink-muted leading-relaxed">
           {t("cookie.banner.purpose")}
         </p>
-        <p class="text-sm text-secondary/70 leading-relaxed">
+        <p class="text-sm text-ink-muted leading-relaxed">
           {t("cookie.banner.company.also")}
-          <span class="text-secondary font-medium">{t("cookie.banner.company")}</span>
-          {t("cookie.banner.company.description")}
+          <span class="text-ink font-medium">{t("cookie.banner.company")}</span>{t("cookie.banner.company.description")}
         </p>
-        <p class="text-xs text-secondary/50 leading-relaxed">
+        <p class="text-xs text-ink-subtle leading-relaxed">
           {t("cookie.banner.accept")}
           <a
             href="/privacidad"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-yellow hover:underline"
+            class="text-ferris-ink underline underline-offset-2 hover:no-underline"
           >{t("policy.privacy")}</a>.
         </p>
       </div>
 
-      <div class="flex gap-3">
+      <div class="flex flex-wrap gap-3">
         <button
           id="reject-cookies"
-          class="flex-1 px-4 py-2 text-sm text-secondary/60 border border-stroke-color rounded-lg hover:bg-stroke-color/20 transition-colors cursor-pointer"
+          type="button"
+          class="btn btn-secondary btn-sm flex-1 px-4"
         >
           {t("text.denied")}
         </button>
         <button
           id="accept-cookies"
-          class="flex-1 px-4 py-2 text-sm bg-yellow text-primary font-semibold rounded-lg hover:opacity-90 transition-opacity cursor-pointer"
+          type="button"
+          class="btn btn-primary btn-sm flex-1 px-4"
         >
           {t("text.accept")}
         </button>

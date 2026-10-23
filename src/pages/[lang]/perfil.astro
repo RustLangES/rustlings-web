@@ -7,13 +7,9 @@ import { getUserProgress } from "~/lib/progress-db"
 import IconCertificate from "~icons/tabler/certificate"
 import IconDownload from "~icons/tabler/download"
 import IconEdit from "~icons/tabler/edit"
-import IconInfoCircle from "~icons/tabler/info-circle"
 import IconLink from "~icons/tabler/link"
+import IconLock from "~icons/tabler/lock"
 import IconX from "~icons/tabler/x"
-
-export function getStaticPaths() {
-	return [{ params: { lang: "es" } }, { params: { lang: "en" } }]
-}
 
 if (!Astro.locals.user) {
 	return Astro.redirect(`/${getLangFromUrl(Astro.url)}/login`)
@@ -42,201 +38,218 @@ const nameLocked = !!fullNameRow?.full_name_locked
 const certificates = certsResult.results
 
 const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
+const lessonsDone = Object.values(progress).reduce((sum, slugs) => sum + slugs.length, 0)
+const displayName = fullName || user.username || user.email
+const initial = displayName.trim().charAt(0).toUpperCase() || "?"
+const pendingTracks = tracks.filter((tr) => !tr.disabled && !certificates.find((c) => c.course_id === tr.id))
+const formatDate = (iso: string) =>
+	new Date(iso).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric",
+	})
+
+// Read mode looks like text (not a broken field); edit mode restores the full .input affordance
+const fieldClass =
+	"input disabled:cursor-default disabled:border-line-soft disabled:bg-transparent disabled:text-ink disabled:opacity-100"
 ---
 
-<Layout title={t("profile.title")}>
+<Layout title={t("profile.title")} noindex>
   <Navbar lang={lang} />
 
-  <main class="flex-1 flex flex-col items-center px-4 py-10 gap-8">
-    <div class="w-full max-w-xl flex flex-col gap-6">
-
-      <!-- User info card -->
-      <section class="bg-light-bg border border-stroke-color rounded-2xl p-6 flex flex-col gap-5">
-        <div class="flex items-start justify-between">
-          <div class="flex flex-col gap-0.5">
-            <h1 class="text-lg font-bold text-secondary">{t("profile.my_profile")}</h1>
-            <p class="text-xs text-secondary/40">{user.email}</p>
+  <main class="flex flex-1 flex-col">
+    <!-- Identity + what you've achieved -->
+    <section class="border-b border-line bg-hero text-on-hero">
+      <div class="container-page flex flex-col gap-6 py-10 md:flex-row md:items-center md:justify-between md:py-12">
+        <div class="flex min-w-0 items-center gap-4 md:gap-5">
+          <span class="flex size-16 shrink-0 items-center justify-center rounded-full border border-line bg-lilac text-2xl font-extrabold text-black shadow-hard-sm md:size-20 md:text-3xl" aria-hidden="true">
+            {initial}
+          </span>
+          <div class="min-w-0">
+            <p class="type-overline mb-1 text-hero-accent">{t("profile.my_profile")}</p>
+            <h1 class="type-h2 truncate">{displayName}</h1>
+            <p class="truncate text-sm text-on-hero-muted">
+              {user.username && <span>@{user.username} · </span>}{user.email}
+            </p>
           </div>
-          <button
-            id="edit-profile"
-            type="button"
-            class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
-          >
-            <IconEdit font-size={14} class="edit-icon" />
-            <IconX font-size={14} class="cancel-icon hidden" />
-            <span class="edit-label">{t("profile.edit_button")}</span>
-          </button>
         </div>
-
-        <div class="flex flex-col gap-4">
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-secondary/60 font-medium" for="username">{t("profile.username_label")}</label>
-            <input
-              id="username"
-              type="text"
-              value={user.username ?? ""}
-              maxlength="30"
-              disabled
-              class="bg-primary border border-stroke-color/50 rounded-lg px-4 py-2.5 text-sm transition-colors disabled:cursor-not-allowed disabled:text-secondary/40 enabled:text-secondary enabled:cursor-text enabled:border-stroke-color focus:outline-none focus:border-yellow/50"
-            />
+        <dl class="flex gap-6 md:gap-8">
+          <div class="flex flex-col-reverse">
+            <dt class="text-xs text-on-hero-muted">{t("profile.lessons_done")}</dt>
+            <dd class="text-[28px] leading-tight font-extrabold tabular-nums">{lessonsDone}</dd>
           </div>
+          <div class="flex flex-col-reverse border-l border-current/25 pl-6 md:pl-8">
+            <dt class="text-xs text-on-hero-muted">{t("profile.certs_count")}</dt>
+            <dd class="text-[28px] leading-tight font-extrabold tabular-nums">{certificates.length}</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
 
-          <div class="flex flex-col gap-1.5">
-            <div class="flex items-center gap-2">
-              <label class="text-xs text-secondary/60 font-medium" for="full-name">{t("profile.full_name_label")}</label>
-              <div class="relative group">
-                <IconInfoCircle font-size={14} class="text-secondary/40 hover:text-secondary/60 transition-colors cursor-help" />
-                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-primary border border-stroke-color rounded-lg shadow-lg text-xs text-secondary/80 opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200 z-10 w-72">
-                  <div class="text-center">
-                    {t("profile.full_name_tooltip")}
-                  </div>
-                  <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-stroke-color"></div>
+    <div class="container-page grid-page gap-y-8 py-10 md:py-12 lg:items-start">
+      <!-- Achievements first -->
+      <section class="col-span-4 flex flex-col gap-4 md:col-span-12 lg:col-span-8" aria-labelledby="certs-title">
+        <h2 id="certs-title" class="type-h4 flex items-center gap-2">
+          <IconCertificate font-size={22} class="text-ferris-ink" aria-hidden="true" />
+          {certificates.length > 0 ? t("profile.certificates_title") : t("profile.tracks_title")}
+        </h2>
+
+        {certificates.length === 0 && pendingTracks.length === 0 && (
+          <div class="rounded-[var(--radius-card)] border border-dashed border-ink-subtle p-6 text-center">
+            <p class="font-medium">{t("profile.no_certificates")}</p>
+            <p class="mt-1 text-sm text-ink-muted">{t("profile.no_certificates_desc")}</p>
+          </div>
+        )}
+
+        {certificates.map((cert) => {
+          const track = trackMap[cert.course_id]
+          const title = track ? t(track.title) : cert.course_id
+          return (
+            <article class="card overflow-hidden">
+              <!-- Paper preview (decorative; the real artwork lives on the certificate page) -->
+              <div class="flex h-28 border-b border-line bg-[#fafafa] text-[#222222] select-none" aria-hidden="true">
+                <div class="w-14 shrink-0 border-r-4 border-[#ff6e1f] bg-[#fff2e5] bg-[length:auto_56px]" style="background-image: url('/images/brand/ferris-pattern.png')"></div>
+                <div class="flex flex-1 flex-col justify-center px-5">
+                  <p class="text-lg leading-none font-extrabold tracking-tight">CERTIFICADO</p>
+                  <p class="mt-1 mb-2 text-[10px] font-semibold tracking-wider text-[#c73407] uppercase">{title}</p>
+                  <p class="w-fit bg-[linear-gradient(transparent_55%,#ffd2a8_55%)] font-extrabold">{cert.name_used}</p>
                 </div>
               </div>
-            </div>
-            <input
-              id="full-name"
-              type="text"
-              value={fullName}
-              maxlength="80"
-              placeholder={t("profile.full_name_placeholder")}
-              disabled
-              class="bg-primary border border-stroke-color/50 rounded-lg px-4 py-2.5 text-sm text-secondary/40 cursor-not-allowed transition-colors disabled:cursor-not-allowed disabled:text-secondary/40 enabled:text-secondary enabled:cursor-text enabled:border-stroke-color focus:outline-none focus:border-yellow/50"
-              data-locked={nameLocked ? "true" : undefined}
-            />
+              <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center">
+                <div class="min-w-0 flex-1">
+                  <p class="truncate font-semibold">{title}</p>
+                  <p class="mt-0.5 text-sm text-ink-muted">{t("profile.certificate_issued")} {formatDate(cert.issued_at)}</p>
+                </div>
+                <div class="flex shrink-0 items-center gap-2">
+                  <button
+                    type="button"
+                    data-copy-link={`/${lang}/verificar/${cert.id}`}
+                    class="btn btn-secondary btn-sm px-3"
+                    title={t("profile.certificate_copy_tooltip")}
+                    aria-label={t("profile.certificate_copy_tooltip")}
+                  >
+                    <IconLink font-size={16} aria-hidden="true" />
+                    <span class="copy-label">{t("profile.certificate_copy")}</span>
+                  </button>
+                  <a href={`/${lang}/certificado/${cert.course_id}`} class="btn btn-primary btn-sm px-4">
+                    <IconDownload font-size={16} aria-hidden="true" />
+                    {t("profile.certificate_download")}
+                  </a>
+                </div>
+              </div>
+            </article>
+          )
+        })}
+
+        {pendingTracks.length > 0 && certificates.length > 0 && (
+          <h2 class="type-overline mt-4 text-ink-muted">{t("profile.tracks_title")}</h2>
+        )}
+
+        {pendingTracks.map((track) => {
+          const completed = (progress[track.id] ?? []).length
+          const total = track.lessons
+          const pct = total > 0 ? Math.round((completed / total) * 100) : 0
+          const isComplete = pct === 100
+          return (
+            <article class="flex flex-wrap items-center gap-4 rounded-xl border border-line bg-lilac-tint p-5 shadow-hard-sm dark:bg-surface">
+              <span class={`flex size-10 shrink-0 items-center justify-center rounded-xl border border-line ${isComplete ? "bg-ferris text-black" : "bg-surface text-ink-muted"}`} aria-hidden="true">
+                <IconCertificate font-size={20} />
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-semibold">{t(track.title)}</p>
+                <div class="mt-2 flex items-center gap-3">
+                  <div class="h-2.5 max-w-40 flex-1 overflow-hidden rounded-full border border-line bg-sunken" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={pct} aria-label={t(track.title)}>
+                    <div class="h-full bg-ferris" style={`width:${pct}%`}></div>
+                  </div>
+                  <span class="text-xs font-medium text-ink-muted tabular-nums">{pct}% {t("profile.progress_completed")}</span>
+                </div>
+              </div>
+              {isComplete ? (
+                <a href={`/${lang}/certificado/${track.id}`} class="btn btn-primary btn-sm shrink-0 px-4">
+                  <IconCertificate font-size={16} aria-hidden="true" />
+                  {t("profile.certificate_view")}
+                </a>
+              ) : (
+                <a href={`/${lang}/aprender`} class={`badge shrink-0 ${pct > 0 ? "badge-warning" : "badge-neutral"}`}>
+                  {pct > 0 ? t("profile.progress_in_progress") : t("learn.not_started")}
+                </a>
+              )}
+            </article>
+          )
+        })}
+      </section>
+
+      <!-- Account + preferences -->
+      <aside class="col-span-4 grid content-start items-start gap-6 md:col-span-12 md:grid-cols-2 lg:col-span-4 lg:grid-cols-1">
+        <section class="card p-5 md:p-6" aria-labelledby="account-title">
+          <div class="mb-5 flex items-center justify-between gap-4">
+            <h2 id="account-title" class="type-overline text-ink-muted">{t("profile.account")}</h2>
+            <button id="edit-profile" type="button" class="btn btn-secondary btn-sm shrink-0 px-4">
+              <IconEdit font-size={16} class="edit-icon" aria-hidden="true" />
+              <IconX font-size={16} class="cancel-icon hidden" aria-hidden="true" />
+              <span class="edit-label">{t("profile.edit_button")}</span>
+            </button>
           </div>
 
-          <div id="profile-error" class="hidden text-red-400 text-sm"></div>
-          <div id="profile-success" class="hidden text-green-400 text-sm">{t("profile.success_message")}</div>
+          <div class="flex flex-col gap-4">
+            <div>
+              <label class="field-label" for="username">{t("profile.username_label")}</label>
+              <input id="username" type="text" value={user.username ?? ""} maxlength="30" disabled class={fieldClass} />
+            </div>
 
-          <button
-            id="save-profile"
-            type="button"
-            class="hidden self-start px-5 py-2 bg-yellow text-primary text-sm font-bold rounded-lg hover:opacity-90 transition-opacity"
-          >
-            {t("profile.save_button")}
-          </button>
-        </div>
+            <div>
+              <label class="field-label" for="full-name">{t("profile.full_name_label")}</label>
+              <input
+                id="full-name"
+                type="text"
+                value={fullName}
+                maxlength="80"
+                placeholder={t("profile.full_name_placeholder")}
+                disabled
+                class={fieldClass}
+                aria-describedby="full-name-hint"
+                data-locked={nameLocked ? "true" : undefined}
+              />
+              <p id="full-name-hint" class="mt-1.5 flex items-start gap-1.5 text-xs text-ink-muted">
+                {nameLocked && <IconLock font-size={14} aria-hidden="true" class="mt-px shrink-0" />}
+                <span>{nameLocked ? t("profile.locked_tooltip") : t("profile.full_name_tooltip")}</span>
+              </p>
+            </div>
 
-        <div class="border-t border-stroke-color pt-5 flex flex-col gap-4">
-          <h2 class="text-xs font-semibold text-secondary/40 uppercase tracking-wider">{t("profile.editor_section")}</h2>
+            <div id="profile-error" role="alert" class="hidden text-sm font-medium text-danger"></div>
+            <div id="profile-success" role="status" class="hidden text-sm font-medium text-success">{t("profile.success_message")}</div>
 
-          <div class="flex items-center justify-between">
+            <button id="save-profile" type="button" class="hidden btn btn-primary btn-sm self-start">
+              {t("profile.save_button")}
+            </button>
+          </div>
+        </section>
+
+        <section class="card p-5 md:p-6" aria-labelledby="editor-title">
+          <h2 id="editor-title" class="type-overline mb-4 text-ink-muted">{t("profile.editor_section")}</h2>
+          <div class="flex items-center justify-between gap-4">
             <div class="flex flex-col gap-0.5">
-              <span class="text-sm font-medium text-secondary">{t("profile.vim_mode_label")}</span>
-              <span class="text-xs text-secondary/40">{t("profile.vim_mode_desc")}</span>
+              <span id="vim-label" class="text-sm font-medium">{t("profile.vim_mode_label")}</span>
+              <span class="text-xs text-ink-muted">{t("profile.vim_mode_desc")}</span>
             </div>
             <button
               id="vim-toggle"
               type="button"
               role="switch"
               aria-checked="false"
-              class="group relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow/50 focus:ring-offset-2 focus:ring-offset-light-bg bg-stroke-color aria-checked:bg-yellow"
+              aria-labelledby="vim-label"
+              class="group inline-flex h-10 w-14 shrink-0 cursor-pointer items-center justify-center rounded-full"
             >
-              <span
-                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out translate-x-0.5 group-aria-checked:translate-x-5.5"
-                aria-hidden="true"
-              ></span>
+              <span class="relative inline-flex h-7 w-12 items-center rounded-full border border-line bg-neutral-bg transition-colors duration-150 group-aria-checked:bg-ferris">
+                <span
+                  class="pointer-events-none inline-block size-5 translate-x-[3px] rounded-full border border-line bg-surface transition-transform duration-150 ease-out group-aria-checked:translate-x-[23px]"
+                  aria-hidden="true"
+                ></span>
+              </span>
             </button>
           </div>
-        </div>
-      </section>
-
-      <!-- Certificates section -->
-      <section class="flex flex-col gap-4">
-        <h2 class="text-base font-bold text-secondary flex items-center gap-2">
-          <IconCertificate font-size={18} class="text-yellow" />
-          {t("profile.certificates_title")}
-        </h2>
-
-        {certificates.length === 0 ? (
-          <div class="bg-light-bg border border-stroke-color rounded-2xl p-6 text-center">
-            <p class="text-secondary/40 text-sm">{t("profile.no_certificates")}</p>
-            <p class="text-secondary/30 text-xs mt-1">{t("profile.no_certificates_desc")}</p>
-          </div>
-        ) : (
-          <div class="flex flex-col gap-3">
-            {certificates.map((cert) => {
-              const track = trackMap[cert.course_id]
-              const issuedDate = new Date(cert.issued_at).toLocaleDateString(lang === "es" ? "es-MX" : "en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })
-              return (
-                <div class="bg-light-bg border border-stroke-color rounded-2xl p-5 flex items-center gap-4">
-                  <div class="shrink-0 w-10 h-10 flex items-center justify-center rounded-xl bg-yellow/10 border border-yellow/20">
-                    <IconCertificate font-size={20} class="text-yellow" />
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-sm font-semibold text-secondary truncate">
-                      {track ? t(track.title) : cert.course_id}
-                    </p>
-                    <p class="text-xs text-secondary/40 mt-0.5">
-                      {t("profile.certificate_issued")} {issuedDate} · {t("profile.certificate_name")} <span class="text-secondary/60">{cert.name_used}</span>
-                    </p>
-                  </div>
-                  <div class="shrink-0 flex items-center gap-2">
-                    <button
-                      data-copy-link={`/${lang}/verificar/${cert.id}`}
-                      class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
-                      title={t("profile.certificate_copy_tooltip")}
-                    >
-                      <IconLink font-size={14} />
-                      <span class="copy-label">{t("profile.certificate_copy")}</span>
-                    </button>
-                    <a
-                      href={`/${lang}/certificado/${cert.course_id}`}
-                      class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-secondary/60 border border-stroke-color rounded-lg hover:border-yellow hover:text-yellow transition-all"
-                    >
-                      <IconDownload font-size={14} />
-                      {t("profile.certificate_download")}
-                    </a>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        <!-- Courses in progress without certificates -->
-        {tracks.filter(t => !t.disabled && !certificates.find(c => c.course_id === t.id)).map(track => {
-          const completed = (progress[track.id] ?? []).length
-          const total = track.lessons
-          const pct = total > 0 ? Math.round((completed / total) * 100) : 0
-          const isComplete = pct === 100
-          return (
-            <div class={`bg-light-bg/50 border border-stroke-color/50 rounded-2xl p-5 flex items-center gap-4 ${isComplete ? "" : "opacity-60"}`}>
-              <div class={`shrink-0 w-10 h-10 flex items-center justify-center rounded-xl ${isComplete ? "bg-yellow/10 border border-yellow/20" : "bg-stroke-color/30"}`}>
-                <IconCertificate font-size={20} class={isComplete ? "text-yellow" : "text-secondary/30"} />
-              </div>
-              <div class="flex-1 min-w-0">
-                <p class={`text-sm font-semibold truncate ${isComplete ? "text-secondary" : "text-secondary/60"}`}>{t(track.title)}</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <div class="flex-1 h-1 bg-stroke-color/30 rounded-full overflow-hidden max-w-32">
-                    <div class={`h-full rounded-full ${isComplete ? "bg-yellow" : "bg-yellow/40"}`} style={`width:${pct}%`}></div>
-                  </div>
-                  <span class={`text-xs ${isComplete ? "text-yellow" : "text-secondary/30"}`}>{pct}% {t("profile.progress_completed")}</span>
-                </div>
-              </div>
-              {isComplete ? (
-                <a
-                  href={`/${lang}/certificado/${track.id}`}
-                  class="shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-black bg-yellow rounded-lg hover:opacity-80 transition-all"
-                >
-                  <IconCertificate font-size={14} />
-                  {t("profile.certificate_view")}
-                </a>
-              ) : (
-                <span class="shrink-0 text-xs text-secondary/30 px-3 py-1.5 border border-stroke-color/30 rounded-lg">
-                  {t("profile.progress_in_progress")}
-                </span>
-              )}
-            </div>
-          )
-        })}
-      </section>
-
+        </section>
+      </aside>
     </div>
   </main>
 </Layout>
@@ -379,10 +392,10 @@ const trackMap = Object.fromEntries(tracks.map((t) => [t.id, t]))
         const label = btn.querySelector(".copy-label")!
         const original = label.textContent
         label.textContent = copiedLabel!
-        btn.classList.add("border-yellow", "text-yellow")
+        btn.classList.add("border-ferris-ink", "text-ferris-ink")
         setTimeout(() => {
           label.textContent = original
-          btn.classList.remove("border-yellow", "text-yellow")
+          btn.classList.remove("border-ferris-ink", "text-ferris-ink")
         }, 2000)
       })
     })

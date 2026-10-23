@@ -1,169 +1,289 @@
 ---
 import { tracks } from "~/const/tracks"
+import { getLessonsByLang } from "~/content-manager"
 import Navbar from "~/features/content/components/Navbar.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
+import IconArrowRight from "~icons/tabler/arrow-right"
+import IconCertificate from "~icons/tabler/certificate"
+import IconCheck from "~icons/tabler/check"
+import IconRotate from "~icons/tabler/rotate"
 
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
+
+type Key = Parameters<typeof t>[0]
+
+// Group lessons into modules (1, 2, … 12) so each track can show where the learner is
+const lessons = getLessonsByLang(lang)
+function modulesFor(slugs: string[]) {
+	const byMajor = new Map<number, { title: string; slugs: string[] }>()
+	for (const lesson of lessons) {
+		const { major, minor, slug } = lesson.meta
+		if (!slugs.includes(slug)) continue
+		const entry = byMajor.get(major) ?? { title: "", slugs: [] }
+		if (minor === 0) entry.title = t(`lesson.${slug}` as Key)
+		entry.slugs.push(slug)
+		byMajor.set(major, entry)
+	}
+	return [...byMajor.entries()].sort(([a], [b]) => a - b).map(([major, m]) => ({ major, ...m }))
+}
+
+const activeTracks = tracks.filter((track) => !track.disabled)
+const upcomingTracks = tracks.filter((track) => track.disabled)
+
+// Localized lesson titles for the "Next up" hint (the server stores Spanish titles)
+const lessonTitles = Object.fromEntries(lessons.map((l) => [l.meta.slug, t(`lesson.${l.meta.slug}` as Key)]))
+
+const labels = {
+	completed: t("learn.completed"),
+	inProgress: t("learn.in_progress"),
+	notStarted: t("learn.not_started"),
+	start: t("track.start"),
+	continue: t("track.continue"),
+	certificate: t("track.certificate"),
+	nextUp: t("learn.next_up"),
+	of: t("learn.progress_of"),
+	lessons: t("learn.lessons"),
+	moduleDone: t("learn.module_done"),
+	moduleCurrent: t("learn.module_current"),
+	titles: lessonTitles,
+}
 ---
 
-<Layout
-  title={t("learn.page_title")}
-  description={t("learn.page_description")}
->
+<Layout title={t("learn.page_title")} description={t("learn.page_description")} displayFont>
   <Navbar lang={lang} />
 
-  <main class="flex-1 flex flex-col px-4 sm:px-6 py-8 md:py-12">
-    <div class="flex flex-col items-center text-center mb-8 md:mb-12">
-      <h1 class="text-3xl md:text-4xl font-bold text-secondary">{t("learn.main_title")}</h1>
-      <p class="text-secondary/50 text-base md:text-lg max-w-md">{t("learn.subtitle")}</p>
-    </div>
-
-    <div class="mx-auto w-full max-w-2xl flex flex-col gap-4">
-        {tracks.map(track => (
-          track.disabled ? (
-            <div class="flex flex-col sm:flex-row gap-4 sm:gap-5 items-start bg-light-bg/40 border border-stroke-color/40 rounded-2xl p-4 sm:p-5 cursor-not-allowed opacity-60 select-none">
-              <div class="shrink-0 w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-xl bg-editor-bg border border-stroke-color/40">
-                <img src="/logo.webp" alt="Rustlings" class="w-8 h-8 sm:w-10 sm:h-10 grayscale" />
-              </div>
-              
-              <div class="flex flex-col gap-2.5 flex-1 min-w-0">
-                <div class="flex flex-col gap-1.5">
-                  <span class="text-secondary/50 font-bold text-lg sm:text-xl leading-tight">{t(track.title)}</span>
-                  <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-xs uppercase tracking-wider font-semibold bg-stroke-color/30 text-secondary/40 border border-stroke-color/30 px-2 py-0.5 rounded-md">
-                      {t(track.badge)}
-                    </span>
-                    <span class="text-xs uppercase tracking-wider font-semibold bg-editor-bg text-secondary/50 border border-stroke-color/40 px-2 py-0.5 rounded-md">
-                      {t("learn.coming_soon")}
-                    </span>
-                  </div>
-                </div>
-
-                <p class="text-secondary/40 text-sm md:text-base leading-relaxed">{t(track.description)}</p>
-                <span class="text-secondary/30 text-sm font-medium">{track.lessons} {t("learn.lessons")}</span>
-              </div>
-            </div>
-          ) : (
-            <div
-              data-track-id={track.id}
-              data-track-total={track.lessons}
-              data-track-title={t(track.title)}
-              data-track-href={`/${lang}${track.href}`}
-              data-track-lang={lang}
-              data-track-slugs={JSON.stringify(track.slugs)}
-              class="group flex flex-col sm:flex-row gap-4 sm:gap-5 items-start bg-light-bg border border-stroke-color rounded-2xl p-4 sm:p-5 hover:border-yellow hover:shadow-lg hover:shadow-yellow/5 transition-all duration-300 cursor-pointer"
-            >
-              <div class="shrink-0 w-14 h-14 sm:w-16 sm:h-16 flex items-center justify-center rounded-xl bg-editor-bg border border-stroke-color">
-                <img src="/logo.webp" alt="Rustlings" class="w-8 h-8 sm:w-10 sm:h-10" />
-              </div>
-
-              <div class="flex flex-col gap-2.5 flex-1 min-w-0">
-                <div class="flex flex-col gap-1.5">
-                  <span class="text-secondary font-bold text-lg sm:text-xl group-hover:text-yellow transition-colors leading-tight">
-                    {t(track.title)}
-                  </span>
-                  <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-xs uppercase tracking-wider font-semibold bg-yellow/10 text-yellow border border-yellow/20 px-2 py-0.5 rounded-md whitespace-nowrap">
-                      {t(track.badge)}
-                    </span>
-                  </div>
-                </div>
-
-                <p class="text-secondary/60 text-sm md:text-base leading-relaxed">{t(track.description)}</p>
-
-                <!-- Progress bar (hidden until JS populates it) -->
-                <div data-progress-container class="hidden flex-col gap-1.5 mt-1">
-                  <div class="flex justify-between items-center">
-                    <span data-progress-label class="text-sm font-medium text-secondary/50"></span>
-                    <span data-progress-pct class="text-sm text-yellow font-bold"></span>
-                  </div>
-                  <div class="w-full h-1.5 bg-stroke-color/30 rounded-full overflow-hidden">
-                    <div data-progress-bar class="h-full bg-yellow rounded-full transition-all duration-500" style="width:0%"></div>
-                  </div>
-                </div>
-
-                <div class="flex flex-col gap-1 mt-0.5">
-                  <span data-lessons-label class="text-secondary/40 text-sm font-medium">{track.lessons} {t("learn.lessons")}</span>
-                  <span data-resume-label class="hidden text-sm text-yellow/80 font-medium"></span>
-                </div>
-              </div>
-
-            </div>
-          )
-        ))}
+  <main class="flex flex-1 flex-col">
+    <section class="border-b border-line bg-hero text-on-hero">
+      <div class="container-page py-10 md:py-12">
+        <p class="type-overline mb-3 text-hero-accent">{t("learn.eyebrow")}</p>
+        <h1 class="type-hero mb-3">{t("learn.main_title")}</h1>
+        <p class="type-subtitle max-w-[46ch] text-on-hero-muted">{t("learn.subtitle")}</p>
       </div>
+    </section>
+
+    <div class="container-page flex flex-col gap-12 py-10 md:py-14">
+      {activeTracks.map((track) => {
+        const modules = modulesFor(track.slugs)
+        const firstHref = `/${lang}${track.href}`
+        return (
+          <article
+            class="card overflow-hidden"
+            data-track-id={track.id}
+            data-track-total={track.lessons}
+            data-track-lang={lang}
+            data-track-first={firstHref}
+            data-track-slugs={JSON.stringify(track.slugs)}
+          >
+            <!-- Summary + the one decision on this page -->
+            <div class="grid gap-6 border-b border-line bg-lilac-tint p-5 md:grid-cols-[1fr_auto] md:items-end md:gap-10 md:p-8 dark:bg-surface">
+              <div class="flex min-w-0 gap-4 md:gap-5">
+                <span class="flex size-14 shrink-0 items-center justify-center rounded-xl border border-line bg-surface shadow-hard-sm md:size-16 dark:bg-canvas">
+                  <img src="/logo.webp" alt="" class="size-9 md:size-10" width={40} height={40} />
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="mb-2 flex flex-wrap items-center gap-2">
+                    <span class="badge badge-ferris">{t(track.badge)}</span>
+                    <span data-status-badge class="badge badge-neutral">{labels.notStarted}</span>
+                  </div>
+                  <h2 class="type-h3 mb-1.5">{t(track.title)}</h2>
+                  <p class="mb-5 max-w-[60ch] text-ink-muted">{t(track.description)}</p>
+
+                  <div class="max-w-md">
+                    <div class="mb-1.5 flex items-baseline justify-between gap-4 text-sm">
+                      <span data-progress-label class="font-medium text-ink-muted tabular-nums">{track.lessons} {labels.lessons}</span>
+                      <span data-progress-pct class="font-bold tabular-nums">0%</span>
+                    </div>
+                    <div
+                      class="h-3 w-full overflow-hidden rounded-full border border-line bg-sunken"
+                      role="progressbar"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      aria-valuenow="0"
+                      aria-label={t(track.title)}
+                      data-progress-track
+                    >
+                      <div data-progress-bar class="h-full w-0 bg-ferris"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-3 md:min-w-56 md:items-stretch">
+                <p data-completed-msg hidden class="flex items-start gap-2 text-sm font-medium text-success">
+                  <IconCertificate font-size={18} aria-hidden="true" class="mt-0.5 shrink-0" />
+                  {t("learn.completed_msg")}
+                </p>
+                <a data-cta-primary href={firstHref} class="btn btn-primary group">
+                  <span data-cta-label>{labels.start}</span>
+                  <IconArrowRight font-size={18} aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-0.5" />
+                </a>
+                <a data-cta-review hidden href={firstHref} class="btn btn-secondary">
+                  <IconRotate font-size={18} aria-hidden="true" />
+                  {t("learn.review")}
+                </a>
+                <p data-next-up hidden class="truncate text-sm text-ink-muted"></p>
+              </div>
+            </div>
+
+            <!-- Where am I: module path (Figma "Cards Roadmap") -->
+            <div class="p-5 md:p-8">
+              <h3 class="type-overline mb-4 text-ink-muted">{t("learn.modules")}</h3>
+              <ol class="grid grid-cols-1 gap-2 sm:grid-cols-2 md:gap-6 md:gap-y-4 lg:grid-cols-3">
+                {modules.map((m) => (
+                  <li
+                    data-module
+                    data-slugs={JSON.stringify(m.slugs)}
+                    class="flex items-center gap-3 rounded-xl border border-line-soft px-3 py-2.5 transition-colors duration-150"
+                  >
+                    <span data-module-dot class="flex size-8 shrink-0 items-center justify-center rounded-full border border-line bg-surface text-xs font-bold tabular-nums">
+                      <span data-module-num>{String(m.major).padStart(2, "0")}</span>
+                      <IconCheck data-module-check font-size={16} aria-hidden="true" class="hidden" />
+                    </span>
+                    <span class="min-w-0 flex-1">
+                      <span class="block truncate text-sm font-semibold leading-tight">{m.title}</span>
+                      <span data-module-count class="block text-xs text-ink-muted tabular-nums">0/{m.slugs.length}</span>
+                    </span>
+                    <span data-module-state class="sr-only"></span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </article>
+        )
+      })}
+
+      {upcomingTracks.length > 0 && (
+        <section>
+          <h2 class="type-overline mb-4 text-ink-muted">{t("learn.coming_soon")}</h2>
+          <div class="flex flex-col gap-4">
+            {upcomingTracks.map((track) => (
+              <div class="flex gap-4 rounded-[var(--radius-card)] border border-dashed border-ink-subtle p-5 md:gap-5 md:p-6" aria-disabled="true">
+                <span class="flex size-14 shrink-0 items-center justify-center rounded-xl border border-line-soft bg-surface md:size-16">
+                  <img src="/logo.webp" alt="" class="size-9 opacity-60 grayscale md:size-10" width={40} height={40} />
+                </span>
+                <div class="min-w-0 flex-1">
+                  <div class="mb-2 flex flex-wrap items-center gap-2">
+                    <span class="badge badge-neutral">{t(track.badge)}</span>
+                    <span class="badge badge-lilac">{t("learn.coming_soon")}</span>
+                  </div>
+                  <h3 class="type-h4 mb-1 text-ink-muted">{t(track.title)}</h3>
+                  <p class="max-w-[60ch] text-sm text-ink-muted">{t(track.description)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
-
   </main>
-
 </Layout>
+
+<script define:vars={{ labels }}>
+  window.learnLabels = labels
+</script>
 
 <script>
   import { db } from "~/lib/stores/editor-store"
   import { getTrackProgress } from "~/lib/progress"
-  import { useTranslations, getLangFromUrl } from "~/i18n/utils"
+
+  type Labels = Record<string, string> & { titles: Record<string, string> }
+  const STATUS_CLASSES = ["badge-neutral", "badge-warning", "badge-success"]
 
   document.addEventListener("astro:page-load", async () => {
-    // Get translations for JavaScript usage
-    const currentLang = getLangFromUrl(new URL(window.location.href))
-    const t = useTranslations(currentLang)
+    const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
+    if (cards.length === 0) return
+    const l = (window as unknown as { learnLabels: Labels }).learnLabels
 
     // Sync server progress + last lesson positions (no-op if not logged in)
     await db.syncFromServer()
 
-    const cards = document.querySelectorAll<HTMLElement>("[data-track-id]")
-
     for (const card of cards) {
-      const trackId = card.dataset.trackId!
+      const trackId = card.dataset.trackId ?? ""
       const total = Number(card.dataset.trackTotal)
       const lang = card.dataset.trackLang ?? "es"
+      const firstHref = card.dataset.trackFirst ?? `/${lang}/`
       const slugs: string[] = JSON.parse(card.dataset.trackSlugs ?? "[]")
 
-      // Use server-synced IndexedDB completions as source of truth
-      const completions = slugs.length > 0
-        ? await Promise.all(slugs.map((s) => db.isCompleted(s)))
-        : []
-      const completedCount = completions.filter(Boolean).length
+      // Server-synced IndexedDB completions are the source of truth; visits are the fallback
+      const done = new Set<string>()
+      await Promise.all(slugs.map(async (s) => { if (await db.isCompleted(s)) done.add(s) }))
+      const count = done.size > 0 ? done.size : getTrackProgress(trackId).length
+      const pct = total > 0 ? Math.min(100, Math.round((count / total) * 100)) : 0
+      const state = count >= total && total > 0 ? "completed" : count > 0 ? "inProgress" : "notStarted"
 
-      // Fall back to visited count if no completions yet
-      const visited = getTrackProgress(trackId)
-      const displayCount = completedCount > 0 ? completedCount : visited.length
-
-      if (displayCount > 0) {
-        const pct = Math.round((displayCount / total) * 100)
-        const container = card.querySelector<HTMLElement>("[data-progress-container]")
-        const label = card.querySelector<HTMLElement>("[data-progress-label]")
-        const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
-        const bar = card.querySelector<HTMLElement>("[data-progress-bar]")
-        const lessonsLabel = card.querySelector<HTMLElement>("[data-lessons-label]")
-
-        if (container && label && pctEl && bar) {
-          label.textContent = `${displayCount} ${t("learn.progress_of")} ${total} ${t("learn.lessons")}`
-          pctEl.textContent = `${pct}%`
-          bar.style.width = `${pct}%`
-          container.classList.remove("hidden")
-          container.classList.add("flex")
-          if (lessonsLabel) lessonsLabel.classList.add("hidden")
-        }
+      // Summary
+      const badge = card.querySelector<HTMLElement>("[data-status-badge]")
+      if (badge) {
+        badge.classList.remove(...STATUS_CLASSES)
+        badge.classList.add(state === "completed" ? "badge-success" : state === "inProgress" ? "badge-warning" : "badge-neutral")
+        badge.textContent = l[state]
       }
+      const label = card.querySelector<HTMLElement>("[data-progress-label]")
+      if (label && count > 0) label.textContent = `${count} ${l.of} ${total} ${l.lessons}`
+      const pctEl = card.querySelector<HTMLElement>("[data-progress-pct]")
+      if (pctEl) pctEl.textContent = `${pct}%`
+      card.querySelector<HTMLElement>("[data-progress-track]")?.setAttribute("aria-valuenow", String(pct))
+      const bar = card.querySelector<HTMLElement>("[data-progress-bar]")
+      if (bar) bar.style.width = `${pct}%`
 
-      // If server has a last lesson, update navigation target and show resume label
+      // Primary action follows the learner's state
+      const primary = card.querySelector<HTMLAnchorElement>("[data-cta-primary]")
+      const primaryLabel = card.querySelector<HTMLElement>("[data-cta-label]")
+      const review = card.querySelector<HTMLAnchorElement>("[data-cta-review]")
+      const nextUp = card.querySelector<HTMLElement>("[data-next-up]")
+      const completedMsg = card.querySelector<HTMLElement>("[data-completed-msg]")
       const lastLesson = db.lastLesson[trackId]
-      if (lastLesson) {
-        card.dataset.trackHref = `/${lang}/${lastLesson.slug}`
-        const resumeLabel = card.querySelector<HTMLElement>("[data-resume-label]")
-        if (resumeLabel) {
-          resumeLabel.textContent = `${t("learn.continue_label")} ${lastLesson.title}`
-          resumeLabel.classList.remove("hidden")
+      const firstPending = slugs.find((s) => !done.has(s))
+
+      if (primary && primaryLabel) {
+        if (state === "completed") {
+          primary.href = `/${lang}/certificado/${trackId}`
+          primaryLabel.textContent = l.certificate
+          if (review) review.hidden = false
+          if (completedMsg) completedMsg.hidden = false
+        } else if (state === "inProgress") {
+          const target = lastLesson?.slug ?? firstPending
+          primary.href = target ? `/${lang}/${target}` : firstHref
+          primaryLabel.textContent = l.continue
+          if (nextUp && lastLesson) {
+            nextUp.textContent = `${l.nextUp} ${l.titles[lastLesson.slug] ?? lastLesson.title}`
+            nextUp.hidden = false
+          }
         }
       }
 
-      // Card click → navigate
-      card.addEventListener("click", () => {
-        window.location.href = card.dataset.trackHref!
-      })
+      // Module path: done → check, first unfinished → "you are here"
+      let currentMarked = state === "notStarted"
+      for (const item of card.querySelectorAll<HTMLElement>("[data-module]")) {
+        const moduleSlugs: string[] = JSON.parse(item.dataset.slugs ?? "[]")
+        const moduleDone = moduleSlugs.filter((s) => done.has(s)).length
+        const isDone = moduleDone === moduleSlugs.length
+        const isCurrent = !isDone && !currentMarked
+        if (isCurrent) currentMarked = true
+
+        const dot = item.querySelector<HTMLElement>("[data-module-dot]")
+        dot?.classList.toggle("bg-success-bg", isDone)
+        dot?.classList.toggle("text-success", isDone)
+        dot?.classList.toggle("bg-ferris", isCurrent)
+        dot?.classList.toggle("text-black", isCurrent)
+        dot?.classList.toggle("bg-surface", !isDone && !isCurrent)
+        item.querySelector("[data-module-num]")?.classList.toggle("hidden", isDone)
+        item.querySelector("[data-module-check]")?.classList.toggle("hidden", !isDone)
+
+        item.classList.toggle("border-line", isCurrent)
+        item.classList.toggle("border-line-soft", !isCurrent)
+        item.classList.toggle("bg-ferris-tint", isCurrent)
+        item.classList.toggle("shadow-hard-sm", isCurrent)
+
+        const countEl = item.querySelector<HTMLElement>("[data-module-count]")
+        if (countEl) countEl.textContent = isCurrent ? `${moduleDone}/${moduleSlugs.length} · ${l.moduleCurrent}` : `${moduleDone}/${moduleSlugs.length}`
+        const stateEl = item.querySelector<HTMLElement>("[data-module-state]")
+        if (stateEl) stateEl.textContent = isDone ? l.moduleDone : isCurrent ? l.moduleCurrent : ""
+        if (isCurrent) item.setAttribute("aria-current", "step")
+        else item.removeAttribute("aria-current")
+      }
     }
   })
 </script>
