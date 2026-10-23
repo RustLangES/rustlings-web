@@ -9,6 +9,8 @@ import Icons from "unplugin-icons/vite"
 
 // https://astro.build/config
 export default defineConfig({
+	// Public origin for canonical URLs and Open Graph images (override per environment with SITE_URL)
+	site: process.env.SITE_URL ?? "https://rustlings.rustlang-es.org",
 	output: "server",
 	adapter: cloudflare({ imageService: "passthrough" }),
 	i18n: {
@@ -29,12 +31,14 @@ export default defineConfig({
 
 	markdown: {
 		rehypePlugins: [rehypeGithubAlerts],
+		// Colors come from --astro-code-* tokens in global.css (brand code palette, AA comments)
+		shikiConfig: { theme: "css-variables" },
 	},
 
 	integrations: [
 		mdx({
 			syntaxHighlight: "shiki",
-			shikiConfig: { theme: "dracula" },
+			shikiConfig: { theme: "css-variables" },
 			remarkRehype: { footnoteLabel: "Footnotes" },
 			gfm: true,
 		}),

@@ -6,8 +6,6 @@ const Toast = Swal.mixin({
 	showConfirmButton: false,
 	timer: 4000,
 	timerProgressBar: true,
-	background: "#111827",
-	color: "#e2e8f0",
 	customClass: {
 		popup: "swal-toast-popup",
 		timerProgressBar: "swal-toast-progress",

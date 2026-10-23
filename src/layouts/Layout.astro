@@ -2,16 +2,40 @@
 import { ClientRouter } from "astro:transitions"
 import "~/styles/global.css"
 import "sweetalert2/dist/sweetalert2.min.css"
-import "driver.js/dist/driver.css"
 import CookieBanner from "~/components/CookieBanner.astro"
-import { getLangFromUrl } from "~/i18n/utils"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+
+interface Props {
+	title?: string
+	description?: string
+	/** Path under /public for the 1200×630 share image */
+	image?: string
+	imageAlt?: string
+	type?: "website" | "article" | "profile"
+	/** Keep personal pages (profile, certificates) out of search results; share previews still work */
+	noindex?: boolean
+	/** Preload Akira Expanded — only on pages that render a hero title or the wordmark above the fold */
+	displayFont?: boolean
+}
+
+const urlLang = getLangFromUrl(Astro.url)
+const lang = Astro.locals.lang ?? urlLang
+const t = useTranslations(urlLang)
 
 const {
-	title = "RustLings Web",
-	description = "Aprende Rust mediante ejercicios interactivos y desafíos. ¡Todo explicado aquí!",
+	title = t("meta.default_title"),
+	description = t("meta.default_description"),
+	image = "/images/og/og-default.png",
+	imageAlt = t("meta.og_image_alt"),
+	type = "website",
+	noindex = false,
+	displayFont = false,
 } = Astro.props
 
-const lang = Astro.locals.lang ?? getLangFromUrl(Astro.url)
+const origin = Astro.site ?? Astro.url.origin
+const canonical = new URL(Astro.url.pathname, origin).href
+const imageUrl = new URL(image, origin).href
+const ogLocale = urlLang === "en" ? "en_US" : "es_ES"
 ---
 
 <!doctype html>
@@ -19,13 +43,54 @@ const lang = Astro.locals.lang ?? getLangFromUrl(Astro.url)
   <head>
     <meta charset="UTF-8" />
     <title>{title}</title>
-    <link rel="icon" type="image/webp" href="/images/webp/favicon.webp" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:site_name" content="Rustlings" />
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@rust_lang_es" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={imageAlt} />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {displayFont && <link rel="preload" href="/fonts/akira-expanded-bold.woff2" as="font" type="font/woff2" crossorigin />}
+    {displayFont && <link rel="preload" href="/fonts/akira-expanded-superbold.woff2" as="font" type="font/woff2" crossorigin />}
+    <meta name="theme-color" content="#fafafa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1117" media="(prefers-color-scheme: dark)" />
+    <script is:inline>
+      ;(() => {
+        const apply = (doc) => {
+          let theme = null
+          try {
+            theme = localStorage.getItem("theme")
+          } catch {}
+          if (theme !== "light" && theme !== "dark") {
+            theme = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+          }
+          doc.documentElement.dataset.theme = theme
+        }
+        apply(document)
+        document.addEventListener("astro:before-swap", (e) => apply(e.newDocument))
+      })()
+    </script>
     <ClientRouter />
   </head>
   <body
-    class="h-screen flex flex-col bg-primary text-secondary font-family-poppins"
+    class="h-screen flex flex-col bg-canvas text-ink font-sans"
   >
     <slot />
     <CookieBanner />
