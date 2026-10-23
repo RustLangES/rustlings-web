@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+import IconCheck from "~icons/tabler/check"
 import IconX from "~icons/tabler/x"
 
 export interface SidebarItem {
@@ -40,7 +41,7 @@ const backLabel = backLabelProp ?? t("sidebar.back")
 
 <div
 	data-sidebar-overlay={id}
-	class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 invisible transition-all duration-300 z-100"
+	class="fixed inset-0 z-100 invisible bg-black/40 opacity-0 transition-[opacity,visibility] duration-200"
 	role="presentation"
 	aria-hidden="true"
 ></div>
@@ -50,75 +51,79 @@ const backLabel = backLabelProp ?? t("sidebar.back")
 	aria-label={title}
 	inert
 	class:list={[
-		"fixed inset-y-0 w-80 flex flex-col bg-dark-fg/80 border-stroke-color transition-transform duration-500 ease-out z-101",
+		"fixed inset-y-0 z-101 flex w-80 max-w-[85vw] flex-col border-line bg-canvas transition-transform duration-200 ease-out-quint",
 		{
 			"right-0 border-l translate-x-full": position === "right",
 			"left-0 border-r -translate-x-full": position === "left"
 		}
 	]}
 >
-	<header class="relative flex flex-col gap-5 pt-6 px-6 pb-5 border-b border-stroke-color bg-linear-to-b from-yellow/5 to-transparent">
+	<header class="flex flex-col gap-4 border-b border-line px-4 pt-6 pb-4">
 		{logo && (
-			<a 
-				href="/" 
-				class="group flex justify-center items-center mx-auto p-3 rounded-xl bg-yellow/10 hover:bg-yellow/20 border border-yellow/20 hover:border-yellow/40 transition-all duration-300 hover:shadow-lg hover:shadow-yellow/20"
+			<a
+				href="/"
+				class="mx-auto flex items-center justify-center rounded-card border border-line bg-ferris-tint p-3 shadow-hard-sm transition-transform duration-150 hover:-translate-x-px hover:-translate-y-px"
 			>
 				<img
 					src={logo}
 					alt="Rustlings Web"
-					class="h-14 w-14 group-hover:scale-110 transition-transform duration-300"
+					class="h-14 w-14"
 				/>
 			</a>
 		)}
 
 		<div class="flex items-center justify-between">
-			<span class="text-sm font-medium text-secondary/60 uppercase tracking-wider pl-1">
+			<span class="type-overline text-ink-muted">
 				{title}
 			</span>
 			<button
 				type="button"
 				data-sidebar-close={id}
 				aria-label={t("sidebar.close_menu")}
-				class="p-1.5 rounded-lg text-secondary/70 hover:bg-red-500/20 hover:text-red-400 hover:border-red-500/30 border border-transparent transition-all duration-200 hover:scale-110"
+				class="btn-icon"
 			>
 				<IconX font-size={20} aria-hidden="true" />
 			</button>
 		</div>
 	</header>
 
-	<nav class="flex-1 px-4 pt-4 pb-4 overflow-y-auto" aria-label={`${t("sidebar.navigation_of")} ${title.toLowerCase()}`}>
+	<nav class="flex-1 overflow-y-auto p-4" aria-label={`${t("sidebar.navigation_of")} ${title.toLowerCase()}`}>
 		{backHref && (
 			<a
 				href={backHref}
-				class="flex items-center gap-2 px-3 py-2 mb-3 text-sm text-secondary/60 hover:text-yellow border border-stroke-color/40 hover:border-yellow/30 rounded-md transition-all duration-200"
+				class="btn btn-secondary btn-sm mb-4 w-full justify-start"
 			>
-			    <IconLeft font-size={20} />
+				<IconLeft font-size={20} aria-hidden="true" />
 				{backLabel}
 			</a>
 		)}
-		<ul class="space-y-1">
+		<ul class="overflow-hidden rounded-xl border border-line bg-surface shadow-hard-sm divide-y divide-line">
 			{items.map((item) => (
 				<li>
 					<a
 						href={item.href}
 						data-sidebar-link={id}
-						class="group flex items-center gap-3 px-3 py-2.5 rounded-md text-secondary hover:text-yellow hover:bg-yellow/10 hover:translate-x-1 transition-all duration-200 border border-transparent hover:border-yellow/20"
+						class="flex min-h-12 items-center gap-3 px-4 py-3 text-sm font-semibold text-ink transition-colors duration-150 hover:bg-surface-raised hover:text-ferris-ink aria-[current=page]:bg-ferris-tint aria-[current=page]:text-ferris-ink aria-[current=page]:shadow-[inset_4px_0_0_0_var(--ferris-ink)]"
 					>
 						{item.icon && <span class="text-lg" aria-hidden="true">{item.icon}</span>}
-						<span class="font-medium text-sm flex-1">{item.label}</span>
-						<span data-visited-check class="hidden"></span>
+						<span class="flex-1">{item.label}</span>
+						<span data-visited-check class="status-dot hidden bg-success-bg text-success" aria-hidden="true">
+							<IconCheck font-size={12} class="m-px block" />
+						</span>
 					</a>
 					{item.children && item.children.length > 0 && (
-						<ul class="mt-0.5 ml-3 pl-3 border-l border-stroke-color/40 space-y-0.5">
+						<ul class="border-t border-line-soft bg-canvas divide-y divide-line-soft">
 							{item.children.map((child) => (
 								<li>
 									<a
 										href={child.href}
 										data-sidebar-link={id}
-										class="group flex items-center gap-2 px-2 py-1.5 rounded-md text-secondary/70 hover:text-yellow hover:bg-yellow/10 hover:translate-x-1 transition-all duration-200 border border-transparent hover:border-yellow/20 text-xs"
+										class="flex min-h-10 items-center gap-2 py-2 pr-4 pl-10 text-sm text-ink-muted transition-colors duration-150 hover:bg-surface-raised hover:text-ferris-ink aria-[current=page]:bg-ferris-tint aria-[current=page]:font-semibold aria-[current=page]:text-ferris-ink aria-[current=page]:shadow-[inset_4px_0_0_0_var(--ferris-ink)]"
 									>
 										<span class="flex-1">{child.label}</span>
-										<span data-visited-check class="hidden"></span>
+										<span data-visited-check class="status-dot hidden bg-success-bg text-success" aria-hidden="true">
+											<IconCheck font-size={12} class="m-px block" />
+										</span>
 									</a>
 								</li>
 							))}
@@ -153,11 +158,18 @@ const backLabel = backLabelProp ?? t("sidebar.back")
 <script>
   import { db } from "~/lib/stores/editor-store"
 
+  // Locks depend on server progress: a learner on a new device (or landing straight on a
+  // lesson) has an empty local store until it is synced. Sync once per browser session.
+  let synced: Promise<void> | null = null
+
   async function updateLock() {
     const links = [
       ...document.querySelectorAll<HTMLAnchorElement>("[data-sidebar-link]"),
     ]
     if (!links.length) return
+
+    synced ??= db.syncFromServer()
+    await synced
 
     let locked = false
 
@@ -179,7 +191,7 @@ const backLabel = backLabelProp ?? t("sidebar.back")
   }
 
   function lockLink(link: HTMLAnchorElement) {
-    link.classList.add("opacity-40", "pointer-events-none")
+    link.classList.add("opacity-50", "pointer-events-none")
     if (!link.querySelector("[data-lock]")) {
       const tpl = document.getElementById("lock-icon-tpl") as HTMLTemplateElement | null
       if (tpl) {
@@ -190,7 +202,7 @@ const backLabel = backLabelProp ?? t("sidebar.back")
   }
 
   function unlockLink(link: HTMLAnchorElement) {
-    link.classList.remove("opacity-40", "pointer-events-none")
+    link.classList.remove("opacity-50", "pointer-events-none")
     link.querySelector("[data-lock]")?.remove()
   }
 
@@ -248,10 +260,8 @@ const backLabel = backLabelProp ?? t("sidebar.back")
 				const slug = href.split('/').pop() ?? ''
 				const isActive = href === current
 
-				link.classList.toggle('text-yellow', isActive)
-				link.classList.toggle('bg-yellow/10', isActive)
-				link.classList.toggle('border-yellow/20', isActive)
-				link.classList.toggle('border-transparent', !isActive)
+				if (isActive) link.setAttribute('aria-current', 'page')
+				else link.removeAttribute('aria-current')
 
 				const check = link.querySelector('[data-visited-check]')
 				if (!check) return

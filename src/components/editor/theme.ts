@@ -5,7 +5,8 @@ import type { Extension } from "@codemirror/state"
 import { EditorView } from "@codemirror/view"
 import { tags as t } from "@lezer/highlight"
 
-// Colores ajustados para cumplir WCAG AA (4.5:1 contrast ratio) contra #1d2021
+// Colores ajustados para cumplir WCAG AA (4.5:1 contrast ratio) contra --code-bg (#222222 claro / #0b0d12 oscuro)
+// Acentos (cursor, línea activa) en naranja Ferris (#ff8637)
 const chalky = "#fdd835",
 	coral = "#ff6b6b",
 	cyan = "#4dd0e1",
@@ -15,18 +16,20 @@ const chalky = "#fdd835",
 	malibu = "#64b5f6",
 	sage = "#aed581",
 	whiskey = "#ffb74d",
-	violet = "#f06292",
-	darkBackground = "#1d2021",
-	highlightBackground = "#1d2021",
-	tooltipBackground = "#3c3836",
-	selection = "#504945",
-	cursor = "#fdd835"
+	violet = "#f78fb0",
+	darkBackground = "var(--code-bg)",
+	highlightBackground = "var(--code-raised)",
+	tooltipBackground = "var(--code-raised)",
+	codeLine = "#454545",
+	selection = "#5d5d5d",
+	cursor = "#ff8637"
 
 export const gruvboxDarkTheme = EditorView.theme(
 	{
 		"&": {
 			height: "100%",
 			color: ivory,
+			backgroundColor: darkBackground,
 			fontSize: "16px",
 		},
 
@@ -44,12 +47,12 @@ export const gruvboxDarkTheme = EditorView.theme(
 		},
 
 		"&.cm-focused .cm-activeLine .cm-selectionBackground": {
-			backgroundColor: "rgba(253, 216, 53, 0.22)",
+			backgroundColor: "rgba(255, 134, 55, 0.22)",
 		},
 
 		".cm-panels": { backgroundColor: darkBackground, color: ivory },
-		".cm-panels.cm-panels-top": { borderBottom: "2px solid black" },
-		".cm-panels.cm-panels-bottom": { borderTop: "2px solid black" },
+		".cm-panels.cm-panels-top": { borderBottom: `1px solid ${codeLine}` },
+		".cm-panels.cm-panels-bottom": { borderTop: `1px solid ${codeLine}` },
 
 		".cm-searchMatch": {
 			backgroundColor: "#72a1ff59",
@@ -63,8 +66,8 @@ export const gruvboxDarkTheme = EditorView.theme(
 		".cm-selectionMatch": { backgroundColor: "#aafe661a" },
 
 		"&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
-			backgroundColor: "#bad0f847",
-			outline: "1px solid #515a6b",
+			backgroundColor: "rgba(255, 134, 55, 0.18)",
+			outline: `1px solid ${cursor}`,
 		},
 
 		".cm-gutters": {
@@ -84,8 +87,10 @@ export const gruvboxDarkTheme = EditorView.theme(
 		},
 
 		".cm-tooltip": {
-			border: "none",
+			border: "1px solid #000000",
+			borderRadius: "8px",
 			backgroundColor: tooltipBackground,
+			color: ivory,
 		},
 		".cm-tooltip .cm-tooltip-arrow:before": {
 			borderTopColor: "transparent",
@@ -97,7 +102,7 @@ export const gruvboxDarkTheme = EditorView.theme(
 		},
 		".cm-tooltip-autocomplete": {
 			"& > ul > li[aria-selected]": {
-				backgroundColor: highlightBackground,
+				backgroundColor: codeLine,
 				color: ivory,
 			},
 		},

@@ -1,4 +1,5 @@
 ---
+import { useTranslations } from "~/i18n/utils"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
 import IconRight from "~icons/tabler/arrow-big-right-lines-filled"
 
@@ -9,46 +10,46 @@ interface Props {
 }
 
 const { lang, previous, next } = Astro.props
+const t = useTranslations(lang as "es" | "en")
 const isNextDisabled = true
 
 const btnBaseClass =
-	"group flex h-14 items-center gap-2 rounded-md px-4 transition-all duration-200 hover:bg-dark-fg/40 aria-disabled:pointer-events-none aria-disabled:opacity-50"
-const nextBtnClass =
-	"group flex h-14 items-center gap-2 rounded-md px-4 transition-all duration-200 hover:bg-dark-fg/40 aria-disabled:opacity-50"
-const iconBaseClass = "block h-6 w-6 rounded-lg transition-all duration-200 transform group-hover:text-yellow"
+	"btn btn-secondary group min-w-0 max-w-[48%] justify-start gap-3 px-4 py-2 aria-disabled:pointer-events-none"
+const nextBtnClass = "btn btn-primary group min-w-0 max-w-[48%] justify-end gap-3 px-4 py-2"
+const iconBaseClass = "block shrink-0 transition-transform duration-150"
 ---
 
-<nav class="not-prose mt-auto flex w-full items-center justify-between pb-2" aria-label="Navegación de lecciones">
+<nav class="not-prose mt-auto flex w-full items-center justify-between gap-4 px-2 pt-4 pb-2" aria-label={t("lesson_ui.nav_aria")}>
   <a
     href={previous ? `/${lang}/${previous.slug}` : undefined}
-    aria-label={previous ? `Anterior: ${previous.title}` : undefined}
+    aria-label={previous ? `${t("lesson_ui.previous")}: ${previous.title}` : undefined}
     aria-disabled={!previous}
     class={btnBaseClass}
   >
-    <span class:list={[iconBaseClass, "group-hover:-translate-x-1"]}>
+    <span class:list={[iconBaseClass, "group-hover:-translate-x-0.5"]}>
       <IconLeft font-size={20} />
     </span>
-    <div class="flex flex-col text-left">
-      <span class:list={["text-md font-medium", previous ? "text-yellow" : "text-[#ccc]"]}>
-        Anterior
+    <div class="flex min-w-0 flex-col gap-1 text-left">
+      <span class="text-sm font-semibold">
+        {t("lesson_ui.previous")}
       </span>
-      <span class="text-xs text-[#ccc]">{previous?.title || "-"}</span>
+      <span class="truncate text-xs font-normal">{previous?.title || "-"}</span>
     </div>
   </a>
   <a
     id="next-lesson-btn"
     href={next ? `/${lang}/${next.slug}` : undefined}
-    aria-label={next ? `Siguiente: ${next.title}` : undefined}
+    aria-label={next ? `${t("lesson_ui.next")}: ${next.title}` : undefined}
     aria-disabled={isNextDisabled}
     class={nextBtnClass}
   >
-    <div class="flex flex-col text-right">
-      <span class:list={["text-md font-medium", next ? "text-yellow" : "text-[#ccc]"]}>
-        Siguiente
+    <div class="flex min-w-0 flex-col gap-1 text-right">
+      <span class="text-sm font-semibold">
+        {t("lesson_ui.next")}
       </span>
-      <span class="text-xs text-[#ccc]">{next?.title || "-"}</span>
+      <span class="truncate text-xs font-normal">{next?.title || "-"}</span>
     </div>
-    <span class:list={[iconBaseClass, "group-hover:translate-x-1"]}>
+    <span class:list={[iconBaseClass, "group-hover:translate-x-0.5"]}>
       <IconRight font-size={20} />
     </span>
   </a>
