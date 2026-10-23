@@ -3,10 +3,7 @@ import Section from "~/components/sections/Section.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import FaBrandsDiscord from "~icons/fa-brands/discord"
 import FaBrandsGithub from "~icons/fa-brands/github"
-import IconBook from "~icons/tabler/book"
 import IconExternalLink from "~icons/tabler/external-link"
-import IconInfinity from "~icons/tabler/infinity"
-import IconLockOpen from "~icons/tabler/lock-open"
 
 interface Props {
 	lang?: string
@@ -17,85 +14,45 @@ const lang = langProp ?? getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 ---
 
-<Section
-  id="community"
-  className="flex flex-col justify-center items-center w-full py-24 px-6 shrink-0"
->
-  <div class="max-w-6xl w-full">
+<Section id="community" className="w-full border-t border-line bg-lilac-tint py-16 md:py-24">
+  <div class="container-page">
+    <header class="mb-10 max-w-2xl md:mb-14">
+      <h2 class="type-h2 mb-3">{t("community.title")}</h2>
+      <p class="type-subtitle text-ink-muted">{t("community.subtitle")}</p>
+    </header>
 
-    <!-- Header -->
-    <div class="text-center mb-16">
-      <h2 class="text-4xl md:text-5xl font-extrabold mb-4">
-        {t("community.title")}
-      </h2>
-      <p class="text-secondary/50 text-lg max-w-xl mx-auto">
-        {t("community.subtitle")}
-      </p>
-    </div>
-
-    <!-- Cards grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-
-      <!-- Discord card -->
+    <div class="grid-page gap-y-6">
       <a
         href="https://discord.com/channels/778674594856960012/1292726289479893044"
         target="_blank"
         rel="noopener noreferrer"
-        class="md:col-span-2 relative overflow-hidden rounded-2xl border border-stroke-color bg-dark-fg p-8 flex flex-col gap-6 hover:border-[#5865F2]/50 hover:-translate-y-0.5 transition-all duration-200 group"
+        class="card card-interactive group relative col-span-4 flex flex-col gap-4 p-6 md:col-span-7 md:p-8 lg:col-span-8"
       >
-        <div class="absolute inset-0 bg-[#5865F2]/5 pointer-events-none group-hover:bg-[#5865F2]/10 transition-colors duration-200"></div>
-        <IconExternalLink font-size={16} class="absolute top-4 right-4 text-secondary/20 group-hover:text-[#5865F2]/60 transition-colors duration-200" />
-        <div class="relative">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-[#5865F2]/15 border border-[#5865F2]/30">
-              <FaBrandsDiscord font-size={20} class="text-[#5865F2]" />
-            </span>
-            <span class="font-bold text-lg">Discord</span>
-          </div>
-          <p class="text-secondary/60 text-sm leading-relaxed">
-            {t("community.discord_desc")}
-          </p>
+        <IconExternalLink font-size={18} aria-hidden="true" class="absolute top-6 right-6 text-ink-subtle transition-colors duration-150 group-hover:text-lilac-ink" />
+        <div class="flex items-center gap-3">
+          <span class="flex size-12 items-center justify-center rounded-xl border border-line bg-[#5865F2] text-white shadow-hard-sm" aria-hidden="true">
+            <FaBrandsDiscord font-size={22} />
+          </span>
+          <span class="type-h4">Discord</span>
         </div>
+        <p class="max-w-lg text-ink-muted">{t("community.discord_desc")}</p>
       </a>
 
-      <!-- GitHub card -->
       <a
         href="https://github.com/RustLangES/rustlings-web"
         target="_blank"
         rel="noopener noreferrer"
-        class="relative overflow-hidden rounded-2xl border border-stroke-color bg-dark-fg p-8 flex flex-col gap-4 hover:border-yellow/40 hover:-translate-y-0.5 transition-all duration-200 group"
+        class="card card-interactive group relative col-span-4 flex flex-col gap-4 p-6 md:col-span-5 md:p-8 lg:col-span-4"
       >
-        <div class="absolute inset-0 bg-yellow/3 pointer-events-none group-hover:bg-yellow/6 transition-colors duration-200"></div>
-        <IconExternalLink font-size={16} class="absolute top-4 right-4 text-secondary/20 group-hover:text-yellow/50 transition-colors duration-200" />
-        <div class="relative flex flex-col h-full">
-          <div class="flex items-center gap-3 mb-4">
-            <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-yellow/10 border border-yellow/25">
-              <FaBrandsGithub font-size={20} class="text-yellow" />
-            </span>
-            <span class="font-bold text-lg">GitHub</span>
-          </div>
-          <p class="text-secondary/60 text-sm leading-relaxed flex-1">
-            {t("community.github_desc")}
-          </p>
+        <IconExternalLink font-size={18} aria-hidden="true" class="absolute top-6 right-6 text-ink-subtle transition-colors duration-150 group-hover:text-lilac-ink" />
+        <div class="flex items-center gap-3">
+          <span class="flex size-12 items-center justify-center rounded-xl border border-line bg-ink text-canvas shadow-hard-sm" aria-hidden="true">
+            <FaBrandsGithub font-size={22} />
+          </span>
+          <span class="type-h4">GitHub</span>
         </div>
+        <p class="text-ink-muted">{t("community.github_desc")}</p>
       </a>
-    </div>
-
-    <!-- Stats row -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      {[
-        { value: "39", label: t("community.stats.lessons"), icon: IconBook },
-        { value: "100%", label: t("community.stats.open_source"), icon: IconLockOpen },
-        { label: t("community.stats.possibilities"), icon: IconInfinity },
-      ].map(({ value, label, icon: Icon }) => (
-        <div class="flex items-center gap-4 px-6 py-4 rounded-xl border border-stroke-color bg-dark-fg/50">
-          <Icon class="text-yellow" font-size={24} aria-hidden="true" />
-          <div>
-            <p class="text-2xl font-extrabold text-yellow leading-none">{value}</p>
-            <p class="text-secondary/50 text-xs mt-0.5">{label}</p>
-          </div>
-        </div>
-      ))}
     </div>
 
   </div>

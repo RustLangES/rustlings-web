@@ -1,0 +1,94 @@
+---
+import ThemeToggle from "~/components/ThemeToggle.astro"
+import { getLangFromUrl, useTranslations } from "~/i18n/utils"
+import IconUser from "~icons/tabler/user"
+
+interface Props {
+	lang?: string
+}
+
+const { lang: langProp } = Astro.props
+const user = Astro.locals.user
+const lang = langProp ?? getLangFromUrl(Astro.url)
+const t = useTranslations(lang)
+const switchLang = (targetLang: string) => Astro.url.pathname.replace(/^\/(es|en)/, `/${targetLang}`)
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-line bg-canvas">
+  <nav class="container-page flex h-16 items-center justify-between gap-4">
+    <a href={`/${lang}/`} class="flex items-center gap-2.5 rounded-xl" aria-label="Rustlings">
+      <img src="/logo.webp" alt="" class="size-9" width={36} height={36} />
+      <span class="font-display text-base font-extrabold max-[359px]:sr-only">Rustlings</span>
+    </a>
+
+    <div class="flex items-center gap-2 md:gap-3">
+      <div class="flex items-center rounded-full border border-line bg-surface p-0.5 text-xs font-semibold" role="group" aria-label={t("nav.language")}>
+        {["es", "en"].map((code) => (
+          <a
+            href={switchLang(code)}
+            hreflang={code}
+            aria-current={lang === code ? "true" : undefined}
+            class={`flex h-8 min-w-9 items-center justify-center rounded-full px-2 uppercase transition-colors duration-150 ${
+              lang === code ? "bg-ink text-canvas" : "text-ink-muted hover:text-ferris-ink"
+            }`}
+          >
+            {code}
+          </a>
+        ))}
+      </div>
+
+      <ThemeToggle label={t("nav.theme")} />
+
+      <a
+        id="header-profile-link"
+        href={`/${lang}/perfil`}
+        style={user ? "" : "display: none"}
+        class="btn-ghost"
+      >
+        <IconUser font-size={18} aria-hidden="true" />
+        <span id="header-username" class="hidden max-w-32 truncate sm:inline">{user?.username ?? user?.email ?? ""}</span>
+      </a>
+      <a
+        id="header-login-link"
+        href={`/${lang}/login`}
+        style={user ? "display: none" : ""}
+        class="btn-ghost"
+        aria-label={t("hero.login")}
+      >
+        <IconUser font-size={18} aria-hidden="true" class="sm:hidden" />
+        <span class="hidden sm:inline">{t("hero.login")}</span>
+      </a>
+
+      <a href={`/${lang}/aprender`} class="btn btn-primary btn-sm hidden md:inline-flex">
+        <span data-auth="guest" hidden={!!user}>{t("hero.start_free")}</span>
+        <span data-auth="user" hidden={!user}>{t("hero.continue")}</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<script>
+  import { initAuthStore } from "~/lib/stores/auth-store"
+  import { onDisplayNameChange, onLoginStateChange } from "~/lib/stores/user-utils"
+
+  document.addEventListener("astro:page-load", () => {
+    if (!document.getElementById("header-profile-link")) return
+    initAuthStore()
+
+    onLoginStateChange((loggedIn) => {
+      const profileLink = document.getElementById("header-profile-link")
+      const loginLink = document.getElementById("header-login-link")
+      if (profileLink) profileLink.style.display = loggedIn ? "" : "none"
+      if (loginLink) loginLink.style.display = loggedIn ? "none" : ""
+      // Swap guest/user copy anywhere on the page (header + hero CTAs)
+      document.querySelectorAll<HTMLElement>("[data-auth]").forEach((el) => {
+        el.hidden = (el.dataset.auth === "user") !== loggedIn
+      })
+    })
+
+    onDisplayNameChange((displayName) => {
+      const span = document.getElementById("header-username")
+      if (span && displayName) span.textContent = displayName
+    })
+  })
+</script>

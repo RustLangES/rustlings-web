@@ -1,185 +1,73 @@
 ---
 import Section from "~/components/sections/Section.astro"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
-import JamGithub from "~icons/jam/github"
+import IconArrowDown from "~icons/tabler/arrow-down"
 import IconArrowRight from "~icons/tabler/arrow-right"
-import IconBolt from "~icons/tabler/bolt"
-import IconBook from "~icons/tabler/book"
-import IconTrophy from "~icons/tabler/trophy"
-import IconUser from "~icons/tabler/user"
 
 interface Props {
 	lang?: string
 }
 
 const { lang: langProp } = Astro.props
-const user = Astro.locals.user
 const lang = langProp ?? getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
+
+const stats = [
+	{ value: "39", label: t("hero.stat_lessons") },
+	{ value: "12", label: t("hero.stat_modules") },
+	{ value: "0", label: t("hero.stat_installs") },
+	{ value: "100%", label: t("hero.stat_free") },
+]
 ---
 
-<Section
-  id="hero"
-  className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 overflow-hidden"
->
-  <!-- Dot grid background -->
-  <div class="dot-grid pointer-events-none absolute inset-0" aria-hidden="true"></div>
+<Section id="hero" className="relative w-full overflow-hidden border-b border-line bg-hero text-on-hero">
+  <div class="container-page grid-page items-center gap-y-10 pt-12 pb-14 md:pt-16 md:pb-20">
+    <div class="col-span-4 flex flex-col items-start md:col-span-12 lg:col-span-7">
+      <p class="type-overline mb-4 text-hero-accent">{t("hero.eyebrow")}</p>
 
-  <!-- Top radial glow -->
-  <div
-    class="pointer-events-none absolute inset-0"
-    style="background: radial-gradient(ellipse 60% 45% at 50% 0%, rgba(255,215,118,0.13) 0%, transparent 65%)"
-    aria-hidden="true"
-  ></div>
-  <!-- Bottom fade -->
-  <div
-    class="pointer-events-none absolute bottom-0 left-0 right-0 h-48"
-    style="background: linear-gradient(to bottom, transparent, var(--color-primary))"
-    aria-hidden="true"
-  ></div>
+      <h1 class="mb-5">
+        <span class="type-hero block">{t("hero.title_a")} <span class="marker font-extrabold">{t("hero.title_highlight")}</span>,</span>
+        <span class="mt-3 block max-w-[22ch] text-2xl leading-tight font-bold tracking-[-0.02em] sm:text-3xl lg:text-[34px]">{t("hero.title_b")}</span>
+      </h1>
 
-  <!-- Auth link -->
-  <div class="absolute top-6 right-6 flex items-center gap-4">
-    <!-- Language selector -->
-    <div class="flex items-center gap-2">
-      <a
-        href="/es/"
-        class={`text-xs font-medium transition-all duration-300 ${
-          lang === "es" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
-        }`}
-      >
-        ES
-      </a>
-      <span class="text-secondary/20">|</span>
-      <a
-        href="/en/"
-        class={`text-xs font-medium transition-all duration-300 ${
-          lang === "en" ? "text-yellow" : "text-secondary/35 hover:text-yellow"
-        }`}
-      >
-        EN
-      </a>
+      <p class="type-subtitle mb-8 max-w-[38ch] text-on-hero-muted">
+        {t("hero.subtitle")}
+      </p>
+
+      <div class="mb-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+        <a href={`/${lang}/aprender`} class="btn btn-primary group">
+          <span data-auth="guest">{t("hero.start_free")}</span>
+          <span data-auth="user" hidden>{t("hero.continue")}</span>
+          <IconArrowRight font-size={18} aria-hidden="true" class="transition-transform duration-150 group-hover:translate-x-0.5" />
+        </a>
+        <a href="#how-it-works" class="btn btn-secondary">
+          {t("hero.see_how")}
+          <IconArrowDown font-size={18} aria-hidden="true" />
+        </a>
+      </div>
+
+      <dl class="grid w-full max-w-xl grid-cols-2 gap-y-4 sm:grid-cols-4">
+        {stats.map(({ value, label }, i) => (
+          <div class={`flex flex-col-reverse pr-4 ${i > 0 ? "sm:border-l sm:border-current/25 sm:pl-4" : ""} ${i % 2 === 1 ? "border-l border-current/25 pl-4 sm:pl-4" : ""}`}>
+            <dt class="text-xs leading-snug text-on-hero-muted">{label}</dt>
+            <dd class="text-2xl leading-tight font-extrabold tabular-nums md:text-[28px]">{value}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
 
-    <!-- Auth link -->
-    <a
-      id="hero-profile-link"
-      href={`/${lang}/perfil`}
-      style={user ? "" : "display: none"}
-      class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-    >
-      <IconUser font-size={16} />
-      <span id="hero-username" class="hidden sm:inline">{user?.username ?? user?.email ?? ""}</span>
-    </a>
-    <a
-      id="hero-login-link"
-      href={`/${lang}/login`}
-      style={user ? "display: none" : ""}
-      class="flex items-center gap-2 text-secondary/35 hover:text-yellow transition-all duration-300 text-sm font-medium"
-      aria-label={t("hero.login")}
-    >
-      <IconUser font-size={16} />
-      <span class="hidden sm:inline">{t("hero.login")}</span>
-    </a>
-  </div>
-
-  <!-- Content wrapper -->
-  <div class="relative z-10 flex flex-col items-center max-w-4xl">
-
-    <!-- Open source badge -->
-    <div class="mb-8 flex items-center gap-2 px-4 py-1.5 rounded-full border border-yellow/20 bg-yellow/5 text-yellow text-xs font-semibold tracking-wide uppercase">
-      <span class="w-1.5 h-1.5 rounded-full bg-yellow animate-pulse"></span>
-      {t("hero.free_badge")}
-    </div>
-
-    <!-- Logo with glow -->
-    <img
-      class="w-32 md:w-40 logo mb-10"
-      src="/logo.webp"
-      alt="Rustlings logo"
-      width={160}
-      height={160}
-      fetchpriority="high"
-      loading="eager"
-    />
-
-    <!-- Headline -->
-    <h1 class="font-extrabold text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[1.05] tracking-tight mb-6">
-      Rust<span class="text-yellow">lings</span>
-    </h1>
-
-    <p class="text-secondary/50 text-base md:text-lg max-w-md mx-auto leading-relaxed mb-10">
-      {t("hero.subtitle")}
-    </p>
-
-    <!-- CTAs -->
-    <div class="flex flex-col sm:flex-row gap-3 items-center mb-16">
-      <a
-        href={`/${lang}/aprender`}
-        class="group flex items-center gap-2 px-8 py-3.5 rounded-xl bg-yellow text-primary font-bold text-sm hover:bg-yellow/90 hover:-translate-y-0.5 transition-all duration-200 shadow-lg shadow-yellow/20"
-      >
-        {t("hero.start_free")}
-        <IconArrowRight font-size={15} class="group-hover:translate-x-0.5 transition-transform duration-200" />
-      </a>
-      <a
-        href="https://github.com/RustLangES/rustlings-web"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-2 px-8 py-3.5 rounded-xl border border-stroke-color text-secondary/50 font-medium text-sm hover:border-yellow/40 hover:text-yellow hover:-translate-y-0.5 transition-all duration-200"
-      >
-        <JamGithub font-size={16} />
-        {t("hero.view_code")}
-      </a>
-    </div>
-
-    <!-- Feature pills -->
-    <div class="flex flex-wrap justify-center gap-2.5">
-      {[
-        { icon: IconBook, label: t("hero.lessons_count") },
-        { icon: IconBolt, label: t("hero.integrated_editor") },
-        { icon: IconTrophy, label: t("hero.certificates") },
-      ].map(({ icon: Icon, label }) => (
-        <div class="flex items-center gap-2 px-4 py-2 rounded-full bg-light-bg/80 border border-stroke-color/50 text-secondary/45 text-xs backdrop-blur-sm">
-          <Icon font-size={12} class="text-yellow shrink-0" />
-          {label}
-        </div>
-      ))}
+    <div class="relative col-span-4 md:col-span-8 md:col-start-3 lg:col-span-5 lg:col-start-auto">
+      <img
+        src="/images/brand/ferris-hero-900.webp"
+        srcset="/images/brand/ferris-hero-480.webp 480w, /images/brand/ferris-hero-900.webp 900w"
+        sizes="(min-width: 1024px) 412px, (min-width: 768px) 656px, calc(100vw - 32px)"
+        alt={t("hero.ferris_alt")}
+        width={900}
+        height={551}
+        class="h-auto w-full"
+        fetchpriority="high"
+        loading="eager"
+      />
     </div>
   </div>
 </Section>
-
-<script>
-  import { initAuthStore } from "~/lib/stores/auth-store"
-  import { onDisplayNameChange, onLoginStateChange } from "~/lib/stores/user-utils"
-
-  document.addEventListener("astro:page-load", () => {
-    initAuthStore()
-
-    onLoginStateChange((loggedIn) => {
-      const profileLink = document.getElementById("hero-profile-link")
-      const loginLink = document.getElementById("hero-login-link")
-      if (profileLink) profileLink.style.display = loggedIn ? "" : "none"
-      if (loginLink) loginLink.style.display = loggedIn ? "none" : ""
-    })
-
-    onDisplayNameChange((displayName) => {
-      const span = document.getElementById("hero-username")
-      if (span && displayName) span.textContent = displayName
-    })
-  })
-</script>
-
-<style>
-  .dot-grid {
-    background-image: radial-gradient(circle, rgba(255, 215, 118, 0.07) 1px, transparent 1px);
-    background-size: 32px 32px;
-    mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 20%, transparent 100%);
-  }
-
-  .gradient-text {
-    background: linear-gradient(135deg, var(--color-yellow) 20%, rgba(255, 215, 118, 0.35) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-</style>
