@@ -1,8 +1,11 @@
 ---
+import ThemeToggle from "~/components/ThemeToggle.astro"
 import { tracks } from "~/const/tracks"
 import { getLangFromUrl, useTranslations } from "~/i18n/utils"
 import Layout from "~/layouts/Layout.astro"
 import IconLeft from "~icons/tabler/arrow-big-left-lines-filled"
+import IconDownload from "~icons/tabler/download"
+import IconLink from "~icons/tabler/link"
 
 export const prerender = true
 
@@ -15,143 +18,194 @@ export function getStaticPaths() {
 		])
 }
 
-const logoSvgUrl = "/Rust_Lang_ES_Logo_Blanco_color.svg"
+const logoSvgUrl = "/Rust_Lang_ES_Logo_Negro_color.svg"
 const { track } = Astro.props
 const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 ---
 
-<Layout title={`${t("certificate.back_button")} — ${t(track.title)}`}>
-  <header class="p-2 w-full shrink-0">
-    <nav class="relative z-50 flex items-center justify-between px-3 py-1 border border-stroke-color backdrop-blur-md bg-bg-nav rounded-md shadow-lg">
-      <a
-        href={`/${lang}/aprender`}
-        class="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-secondary/60 border border-transparent rounded-lg hover:border-yellow hover:text-yellow transition-all duration-300"
-      >
-        <IconLeft font-size={20} />
-        {t("certificate.back_button")}
-      </a>
+<Layout title={`${t("certificate.back_button")} — ${t(track.title)}`} image="/images/og/og-certificate.png" noindex displayFont>
+  <header class="w-full shrink-0 border-b border-line bg-canvas">
+    <nav class="container-page flex h-16 items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <a href={`/${lang}/`} class="mr-2 rounded-xl" aria-label="RustLangES">
+          <img src="/Rust_Lang_ES_Logo_Negro_color.svg" alt="" class="h-8 w-auto dark:hidden" width={52} height={32} />
+          <img src="/Rust_Lang_ES_Logo_Blanco_color.svg" alt="" class="hidden h-8 w-auto dark:block" width={52} height={32} />
+        </a>
+        <a href={`/${lang}/aprender`} class="btn-ghost">
+          <IconLeft font-size={20} aria-hidden="true" />
+          {t("certificate.back_button")}
+        </a>
+      </div>
+      <ThemeToggle label={t("nav.theme")} />
     </nav>
   </header>
 
-  <main class="flex-1 flex flex-col items-center px-4 py-8">
-    <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-8 items-start">
-
-      <!-- LEFT: Congrats + Name + Share -->
-      <div class="w-full lg:w-72 shrink-0 flex flex-col gap-5">
-
-        <div>
-          <h1 class="text-2xl font-bold text-secondary">{t("certificate.your_certificate")}</h1>
-          <p class="text-secondary/40 text-sm mt-0.5" id="cert-subtitle">{t("certificate.loading")}</p>
-        </div>
-
-        <!-- Congratulations (always visible — this page is only for the owner) -->
-        <div class="rounded-2xl border border-yellow/20 bg-yellow/5 p-6 flex flex-col gap-3">
-          <p class="text-yellow font-extrabold text-base leading-tight">{t("certificate.congratulations")}</p>
-          <p class="text-secondary/70 text-xs leading-relaxed">
-            {t("certificate.success_message_1")}
-          </p>
-          <p class="text-secondary/70 text-xs leading-relaxed">
-            {t("certificate.success_message_2").replace("{trackTitle}", t(track.title))}
-          </p>
-          <p class="text-yellow/60 text-xs font-medium mt-1">
-            {t("certificate.intro_text")}
-          </p>
-        </div>
-
-        <!-- Name display for logged-in users -->
-        <div id="cert-name-display" class="hidden flex-col gap-1">
-          <p class="text-xs text-secondary/40 font-medium">{t("certificate.your_name")}</p>
-          <p class="text-base font-bold text-secondary" id="cert-name-text"></p>
-          <a href={`/${lang}/perfil`} class="inline-flex items-center gap-1 text-xs text-secondary/40 hover:text-yellow transition-colors mt-0.5">
-            {t("certificate.edit_profile")} <span class="text-[10px]">→</span>
-          </a>
-        </div>
-
-<!-- Share buttons (shown after cert is claimed) -->
-        <div id="share-buttons" class="hidden flex-col gap-3 pt-4 border-t border-stroke-color/30">
-          <p class="text-xs text-secondary/40">{t("certificate.share_title")}</p>
-          <div class="flex flex-col gap-2">
-            <a
-              id="linkedin-btn"
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-[#0A66C2] hover:text-[#0A66C2] transition-all"
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              {t("certificate.linkedin_add")}
-            </a>
-            <a
-              id="x-btn"
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold rounded-lg border border-stroke-color text-secondary/60 hover:border-white hover:text-white transition-all"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
-              </svg>
-              {t("certificate.twitter_post")}
-            </a>
-          </div>
-        </div>
-
+  <main class="flex flex-1 flex-col">
+    <!-- Peak moment: celebrate first -->
+    <section class="border-b border-line bg-hero text-on-hero">
+      <div class="container-page py-6 md:py-8">
+        <p class="type-overline mb-2 text-hero-accent">{t("certificate.your_certificate")}</p>
+        <h1 class="type-hero mb-2">{t("certificate.congratulations")}</h1>
+        <p class="max-w-[80ch] text-on-hero-muted">
+          {t("certificate.success_message_2").replace("{trackTitle}", t(track.title))}
+        </p>
       </div>
+    </section>
 
-      <!-- RIGHT: Toggle + Canvas + Download -->
-      <div class="flex-1 min-w-0 flex flex-col items-center gap-4 w-full">
-
-        <!-- Mode toggle -->
-        <div class="flex w-full rounded-xl border border-stroke-color overflow-hidden text-xs font-semibold">
-          <button id="toggle-cert" class="flex-1 py-2.5 transition-colors bg-yellow text-primary">
-            {t("certificate.toggle_cert")}
-          </button>
-          <button id="toggle-badge" class="flex-1 py-2.5 transition-colors text-secondary/50 hover:text-secondary/80">
-            {t("certificate.toggle_badge")}
-          </button>
+    <div class="container-page grid-page gap-y-8 py-6 md:py-8 lg:items-start">
+      <!-- Preview: the artwork sits on a neutral "desk" so its paper margin reads as a mat -->
+      <section class="col-span-4 flex min-w-0 flex-col gap-4 md:col-span-12 lg:col-span-8" aria-label={t("certificate.your_certificate")}>
+        <div class="flex items-center justify-between gap-4">
+          <div class="inline-flex rounded-full border border-line bg-surface p-1 text-sm font-semibold" role="group">
+            <button id="toggle-cert" type="button" aria-pressed="true" class="min-h-9 cursor-pointer rounded-full px-4 transition-colors duration-150 bg-ink text-canvas">
+              {t("certificate.toggle_cert")}
+            </button>
+            <button id="toggle-badge" type="button" aria-pressed="false" class="min-h-9 cursor-pointer rounded-full px-4 transition-colors duration-150 text-ink-muted hover:text-ferris-ink">
+              {t("certificate.toggle_badge")}
+            </button>
+          </div>
+          <p class="hidden text-sm text-ink-muted sm:block" id="cert-subtitle">{t("certificate.loading")}</p>
         </div>
 
-        <canvas
-          id="certificate-canvas"
-          width="900"
-          height="636"
-          class="w-full drop-shadow-2xl rounded-sm"
-          data-logo-url={logoSvgUrl}
-          data-brand-line1={t("certificate.brand_name_line1")}
-          data-brand-line2={t("certificate.brand_name_line2")}
-          data-awarded-in={t("certificate.awarded_in")}
-          data-cert-title={t("certificate.certificate_title")}
-          data-cert-subtitle={t("certificate.certificate_subtitle")}
-          data-cert-intro={t("certificate.certificate_intro")}
-          data-default-name={t("certificate.default_name")}
-          data-completion-text={t("certificate.completion_text")}
-          data-completion-suffix={t("certificate.course_completion_suffix")}
-          data-issue-date-label={t("certificate.issue_date_label")}
-          data-cert-id-label={t("certificate.certificate_id_label")}
-          data-website-url={t("certificate.website_url")}
-          data-badge-certification={t("certificate.badge_certification")}
-          data-track-title={t(track.title)}
-          data-track-id={track.id}
-          data-lang={lang}
-        ></canvas>
+        <div class="rounded-[var(--radius-card)] border border-line bg-section-alt p-3 sm:p-5 md:p-8">
+    <canvas
+      id="certificate-canvas"
+      width="900"
+      height="636"
+      class="w-full rounded-card"
+      data-logo-url={logoSvgUrl}
+      data-brand-line1={t("certificate.brand_name_line1")}
+      data-brand-line2={t("certificate.brand_name_line2")}
+      data-awarded-in={t("certificate.awarded_in")}
+      data-cert-title={t("certificate.certificate_title")}
+      data-cert-subtitle={t("certificate.certificate_subtitle")}
+      data-cert-intro={t("certificate.certificate_intro")}
+      data-default-name={t("certificate.default_name")}
+      data-completion-text={t("certificate.completion_text")}
+      data-completion-suffix={t("certificate.course_completion_suffix")}
+      data-issue-date-label={t("certificate.issue_date_label")}
+      data-cert-id-label={t("certificate.certificate_id_label")}
+      data-website-url={t("certificate.website_url")}
+      data-badge-certification={t("certificate.badge_certification")}
+      data-track-title={t(track.title)}
+      data-track-id={track.id}
+      data-lang={lang}
+      data-msg-profile-name={t("certificate.profile_name_subtitle")}
+      data-msg-no-name={t("certificate.no_name_configured")}
+      data-msg-configure-name={t("certificate.configure_name")}
+      data-msg-copied={t("profile.certificate_copied")}
+    ></canvas>
+        </div>
+      </section>
 
-        <button
-          id="download-btn"
-          class="flex items-center gap-2 rounded-lg bg-yellow px-8 py-3 font-semibold text-black hover:opacity-80 transition cursor-pointer"
-        >
+      <!-- Actions next to the object they act on -->
+      <aside class="col-span-4 flex flex-col gap-5 md:col-span-12 lg:sticky lg:top-6 lg:col-span-4">
+        <button id="download-btn" type="button" class="btn btn-primary w-full">
+          <IconDownload font-size={18} aria-hidden="true" />
           {t("certificate.download_pdf")}
         </button>
 
-      </div>
+        <div id="cert-name-display" class="card-flat hidden flex-col gap-1 p-4">
+          <p class="type-overline text-ink-muted">{t("certificate.your_name")}</p>
+          <p class="font-bold" id="cert-name-text"></p>
+          <a href={`/${lang}/perfil`} class="mt-1 inline-flex w-fit items-center gap-1 text-sm font-medium text-ferris-ink underline-offset-4 hover:underline">
+            {t("certificate.edit_profile")} <span aria-hidden="true">→</span>
+          </a>
+        </div>
 
+        <div id="share-buttons" class="hidden flex-col gap-3">
+          <p class="type-overline text-ink-muted">{t("certificate.share_title")}</p>
+          <a id="linkedin-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm w-full">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            {t("certificate.linkedin_add")}
+          </a>
+          <a id="x-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm w-full">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.736-8.849L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/>
+            </svg>
+            {t("certificate.twitter_post")}
+          </a>
+          <button id="copy-verify-btn" type="button" class="btn-ghost w-full justify-center text-sm">
+            <IconLink font-size={16} aria-hidden="true" />
+            <span id="copy-verify-label">{t("profile.certificate_copy_tooltip")}</span>
+          </button>
+        </div>
+
+        <figure class="border-t border-line-soft pt-5">
+          <blockquote class="text-sm leading-relaxed text-ink-muted">{t("certificate.success_message_1")}</blockquote>
+          <figcaption class="mt-3 text-sm font-semibold">{t("certificate.intro_text")}</figcaption>
+        </figure>
+      </aside>
     </div>
   </main>
 </Layout>
 
 <script>
+  // Certificate artwork is theme-independent: fixed light "paper" in RustLangES brand colors.
+  const PAPER = "#fafafa"
+  const SURFACE = "#ffffff"
+  const INK = "#222222"
+  const INK_MUTED = "#5d5d5d"
+  const INK_SUBTLE = "#888888"
+  const LINE = "#000000"
+  const LINE_SOFT = "#d9d9d9"
+  const FERRIS = "#ff6e1f"
+  const FERRIS_INK = "#c73407"
+  const FERRIS_TINT = "#fff2e5"
+  const FERRIS_CHIP = "#ffd2a8"
+  const LILAC = "#9a8afb"
+  const FONT = "'Inter Variable', 'Inter', sans-serif"
+  const FERRIS_HERO_URL = "/images/brand/ferris-hero.png"
+  const FERRIS_PATTERN_URL = "/images/brand/ferris-pattern.png"
+
+  function loadImage(src: string) {
+    return new Promise<HTMLImageElement | null>((resolve) => {
+      if (!src) return resolve(null)
+      const img = new Image()
+      img.onload = () => resolve(img)
+      img.onerror = () => resolve(null)
+      img.src = src
+    })
+  }
+
+  async function ensureFonts() {
+    try {
+      await Promise.all([400, 500, 600, 700, 800].map((w) => document.fonts.load(`${w} 16px ${FONT}`)))
+    } catch {
+      // fall back to whatever is available
+    }
+    await document.fonts.ready
+  }
+
+  function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+    ctx.beginPath()
+    ctx.roundRect(x, y, w, h, r)
+  }
+
+  // Outlined "sticker" box with a hard offset shadow (no blur)
+  function sticker(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number, fill: string, shadow = 4, lineWidth = 2) {
+    if (shadow > 0) {
+      roundRectPath(ctx, x + shadow, y + shadow, w, h, r)
+      ctx.fillStyle = LINE
+      ctx.fill()
+    }
+    roundRectPath(ctx, x, y, w, h, r)
+    ctx.fillStyle = fill
+    ctx.fill()
+    ctx.strokeStyle = LINE
+    ctx.lineWidth = lineWidth
+    ctx.stroke()
+  }
+
+  function fitFont(ctx: CanvasRenderingContext2D, text: string, weight: number, size: number, maxW: number) {
+    ctx.font = `${weight} ${size}px ${FONT}`
+    const w = ctx.measureText(text).width
+    if (w > maxW) ctx.font = `${weight} ${Math.floor(size * (maxW / w))}px ${FONT}`
+  }
+
   function hexPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, r: number) {
     ctx.beginPath()
     for (let i = 0; i < 6; i++) {
@@ -163,113 +217,112 @@ const t = useTranslations(lang)
     ctx.closePath()
   }
 
-  // Badge = hexagonal design
+  // Badge = hexagonal sticker
   async function drawBadge(canvas: HTMLCanvasElement, trackTitle: string, name: string, logoUrl = "", badgeCertification = "Certificación", defaultName = "Tu Nombre", websiteUrl = "rustlings.rustlang-es.org") {
+    await ensureFonts()
+    const logoImg = await loadImage(logoUrl)
+
     canvas.width = 600
     canvas.height = 600
     const ctx = canvas.getContext("2d")!
     const W = canvas.width, H = canvas.height
-    const cx = W / 2, cy = H / 2
-    const ORANGE = "#FF6E1F"
-    const LIGHT_GRAY = "#94a3b8"
-    const R = 272
-    const off = { icon: -148, title: -18, cert: 18, dots: 40, name: 82, date: 112, url: 170 }
+    const cx = W / 2 - 3, cy = H / 2 - 3
+    const R = 270
+    const off = { icon: -150, title: -14, cert: 28, dots: 62, name: 102, date: 130, url: 176 }
 
     ctx.clearRect(0, 0, W, H)
 
-    for (let i = 3; i >= 1; i--) {
-      hexPath(ctx, cx, cy, R + i * 6)
-      ctx.fillStyle = `rgba(255, 110, 31, ${0.06 * i})`
-      ctx.fill()
-    }
+    // Hard offset shadow
+    hexPath(ctx, cx + 6, cy + 6, R)
+    ctx.fillStyle = LINE
+    ctx.fill()
 
+    // Paper
     hexPath(ctx, cx, cy, R)
+    ctx.fillStyle = SURFACE
+    ctx.fill()
+
+    // Ferris-tint cap behind the logo
     ctx.save()
+    hexPath(ctx, cx, cy, R)
     ctx.clip()
-    const grad = ctx.createLinearGradient(cx, cy - R, cx, cy + R)
-    grad.addColorStop(0, "#1e1e2e")
-    grad.addColorStop(1, "#0d0d18")
-    ctx.fillStyle = grad
-    ctx.fillRect(0, 0, W, H)
+    ctx.fillStyle = FERRIS_TINT
+    ctx.fillRect(0, 0, W, cy + off.icon + 92)
+    ctx.fillStyle = FERRIS
+    ctx.fillRect(0, cy + off.icon + 92, W, 10)
+    ctx.strokeStyle = LINE
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(0, cy + off.icon + 92)
+    ctx.lineTo(W, cy + off.icon + 92)
+    ctx.moveTo(0, cy + off.icon + 102)
+    ctx.lineTo(W, cy + off.icon + 102)
+    ctx.stroke()
     ctx.restore()
 
+    // Outline
     hexPath(ctx, cx, cy, R)
-    ctx.strokeStyle = ORANGE
+    ctx.strokeStyle = LINE
     ctx.lineWidth = 3
-    ctx.stroke()
-
-    hexPath(ctx, cx, cy, R - 10)
-    ctx.strokeStyle = "rgba(255, 110, 31, 0.25)"
-    ctx.lineWidth = 1
     ctx.stroke()
 
     ctx.textAlign = "center"
 
     const iconY = cy + off.icon
-    const logoImg = new Image()
-    await new Promise<void>((resolve) => {
-      logoImg.onload = () => resolve()
-      logoImg.onerror = () => resolve()
-      logoImg.src = logoUrl
-    })
-    const logoW = 140
-    const logoH = Math.round(logoW * (500.97 / 814.04))
-    ctx.drawImage(logoImg, cx - logoW / 2, iconY - logoH / 2, logoW, logoH)
+    if (logoImg) {
+      const logoW = 120
+      const logoH = Math.round(logoW * (500.97 / 814.04))
+      ctx.drawImage(logoImg, cx - logoW / 2, iconY - logoH / 2 - 8, logoW, logoH)
+    }
 
-    ctx.fillStyle = ORANGE
-    ctx.font = "600 13px 'Poppins', sans-serif"
+    ctx.fillStyle = FERRIS_INK
+    ctx.font = `700 12px ${FONT}`
     ctx.letterSpacing = "2px"
-    ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 72)
+    ctx.fillText("RUSTLANG EN ESPAÑOL", cx, iconY + 68)
     ctx.letterSpacing = "0px"
 
-    ctx.strokeStyle = "rgba(255,110,31,0.35)"
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(cx - 90, iconY + 86)
-    ctx.lineTo(cx + 90, iconY + 86)
-    ctx.stroke()
-
-    ctx.fillStyle = "#ffffff"
-    ctx.font = "700 40px 'Poppins', sans-serif"
-    const maxW = R * 1.4
-    if (ctx.measureText(trackTitle).width > maxW) {
-      const scaled = Math.floor(40 * (maxW / ctx.measureText(trackTitle).width))
-      ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
-    }
+    // Track title
+    ctx.fillStyle = INK
+    fitFont(ctx, trackTitle, 800, 40, R * 1.4)
     ctx.fillText(trackTitle, cx, cy + off.title)
 
-    ctx.fillStyle = ORANGE
-    ctx.font = "600 17px 'Poppins', sans-serif"
-    ctx.fillText(badgeCertification, cx, cy + off.cert)
+    // Certification chip (lilac)
+    ctx.font = `600 16px ${FONT}`
+    const chipW = ctx.measureText(badgeCertification).width + 32
+    const chipH = 30
+    sticker(ctx, cx - chipW / 2, cy + off.cert - chipH / 2, chipW, chipH, chipH / 2, LILAC, 2, 1.5)
+    ctx.fillStyle = INK
+    ctx.textBaseline = "middle"
+    ctx.fillText(badgeCertification, cx, cy + off.cert + 1)
+    ctx.textBaseline = "alphabetic"
 
-    ctx.fillStyle = "rgba(255,110,31,0.4)"
+    // Dots
     for (let i = -1; i <= 1; i++) {
       ctx.beginPath()
-      ctx.arc(cx + i * 14, cy + off.dots, 2.5, 0, Math.PI * 2)
+      ctx.arc(cx + i * 16, cy + off.dots, 4, 0, Math.PI * 2)
+      ctx.fillStyle = i === 0 ? FERRIS : SURFACE
       ctx.fill()
+      ctx.strokeStyle = LINE
+      ctx.lineWidth = 1.5
+      ctx.stroke()
     }
 
     const displayName = name.trim() || defaultName
-    ctx.fillStyle = "#e2e8f0"
-    ctx.font = "700 26px 'Poppins', sans-serif"
-    const maxNameW = R * 1.5
-    if (ctx.measureText(displayName).width > maxNameW) {
-      const scaled = Math.floor(26 * (maxNameW / ctx.measureText(displayName).width))
-      ctx.font = `700 ${scaled}px 'Poppins', sans-serif`
-    }
+    ctx.fillStyle = INK
+    fitFont(ctx, displayName, 700, 26, R * 1.5)
     ctx.fillText(displayName, cx, cy + off.name)
 
     const date = new Date().toLocaleDateString("es-MX", { year: "numeric", month: "short", day: "numeric" })
-    ctx.fillStyle = LIGHT_GRAY
-    ctx.font = "400 13px 'Poppins', sans-serif"
+    ctx.fillStyle = INK_MUTED
+    ctx.font = `500 13px ${FONT}`
     ctx.fillText(date, cx, cy + off.date)
 
-    ctx.fillStyle = "rgba(148,163,184,0.5)"
-    ctx.font = "400 11px 'Poppins', sans-serif"
+    ctx.fillStyle = INK_SUBTLE
+    ctx.font = `500 11px ${FONT}`
     ctx.fillText(websiteUrl, cx, cy + off.url)
   }
 
-  // Certificate = formal horizontal landscape design
+  // Certificate = landscape neo-brutalist "sticker" sheet
   async function drawCertificate(
     canvas: HTMLCanvasElement,
     trackTitle: string,
@@ -292,149 +345,212 @@ const t = useTranslations(lang)
     issuedAt?: string,
     certId?: string,
   ) {
+    await ensureFonts()
+    const [logoImg, heroImg, patternImg] = await Promise.all([
+      loadImage(logoUrl),
+      loadImage(FERRIS_HERO_URL),
+      loadImage(FERRIS_PATTERN_URL),
+    ])
+
     canvas.width = 900
     canvas.height = 636
     const ctx = canvas.getContext("2d")!
     const W = 900, H = 636
-    const ORANGE = "#FF6E1F"
-    const DARK_NAVY = "#0d1628"
-    const SIDEBAR_W = 185
+
+    // Sheet bounds (leave room for the hard shadow)
+    const PAD = 16
+    const SHADOW = 6
+    const sheetX = PAD, sheetY = PAD
+    const sheetW = W - PAD * 2 - SHADOW, sheetH = H - PAD * 2 - SHADOW
+    const sheetR = 20
+    const SIDEBAR_W = 200
+    const sideRight = sheetX + SIDEBAR_W
+    const BAR_W = 10
 
     ctx.clearRect(0, 0, W, H)
 
-    // White/light background
-    ctx.fillStyle = "#f8fafc"
+    // Paper background
+    ctx.fillStyle = PAPER
     ctx.fillRect(0, 0, W, H)
 
-    // Left sidebar (dark navy)
-    ctx.fillStyle = DARK_NAVY
-    ctx.fillRect(0, 0, SIDEBAR_W, H)
+    // Sheet with hard offset shadow
+    roundRectPath(ctx, sheetX + SHADOW, sheetY + SHADOW, sheetW, sheetH, sheetR)
+    ctx.fillStyle = LINE
+    ctx.fill()
+    roundRectPath(ctx, sheetX, sheetY, sheetW, sheetH, sheetR)
+    ctx.fillStyle = SURFACE
+    ctx.fill()
 
-    // Orange accent stripe on right edge of sidebar
-    ctx.fillStyle = ORANGE
-    ctx.fillRect(SIDEBAR_W - 5, 0, 5, H)
+    // Sidebar: Ferris crab pattern
+    ctx.save()
+    roundRectPath(ctx, sheetX, sheetY, sheetW, sheetH, sheetR)
+    ctx.clip()
+    ctx.fillStyle = FERRIS_TINT
+    ctx.fillRect(sheetX, sheetY, SIDEBAR_W, sheetH)
+    if (patternImg) {
+      // Keep the pattern inside the sidebar column and quiet enough for the logo card
+      ctx.save()
+      ctx.beginPath()
+      ctx.rect(sheetX, sheetY, SIDEBAR_W, sheetH)
+      ctx.clip()
+      ctx.globalAlpha = 0.35
+      const pH = 240
+      const pW = Math.round(pH * (patternImg.width / patternImg.height))
+      for (let y = sheetY; y < sheetY + sheetH; y += pH) {
+        ctx.drawImage(patternImg, sheetX - 20, y, pW, pH)
+      }
+      ctx.restore()
+    }
+    // Ferris accent bar between sidebar and content
+    ctx.fillStyle = FERRIS
+    ctx.fillRect(sideRight, sheetY, BAR_W, sheetH)
+    ctx.restore()
 
-    // Logo in sidebar
-    const logoImg = new Image()
-    await new Promise<void>((resolve) => {
-      logoImg.onload = () => resolve()
-      logoImg.onerror = () => resolve()
-      logoImg.src = logoUrl
-    })
-    const logoW = 110
+    ctx.strokeStyle = LINE
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(sideRight, sheetY)
+    ctx.lineTo(sideRight, sheetY + sheetH)
+    ctx.moveTo(sideRight + BAR_W, sheetY)
+    ctx.lineTo(sideRight + BAR_W, sheetY + sheetH)
+    ctx.stroke()
+
+    // Sheet outline
+    roundRectPath(ctx, sheetX, sheetY, sheetW, sheetH, sheetR)
+    ctx.strokeStyle = LINE
+    ctx.lineWidth = 2
+    ctx.stroke()
+
+    // Logo sticker in sidebar
+    const logoW = 120
     const logoH = Math.round(logoW * (500.97 / 814.04))
-    ctx.drawImage(logoImg, (SIDEBAR_W - logoW) / 2, H / 2 - logoH / 2 - 16, logoW, logoH)
+    const tagW = 152, tagH = logoH + 76
+    const tagX = sheetX + (SIDEBAR_W - tagW) / 2 - 2
+    const tagY = sheetY + sheetH / 2 - tagH / 2
+    sticker(ctx, tagX, tagY, tagW, tagH, 16, SURFACE, 4, 2)
+    if (logoImg) ctx.drawImage(logoImg, tagX + (tagW - logoW) / 2, tagY + 18, logoW, logoH)
 
     ctx.textAlign = "center"
-    ctx.fillStyle = "rgba(255,255,255,0.4)"
-    ctx.font = "500 9px 'Poppins', sans-serif"
+    ctx.fillStyle = INK
+    ctx.font = `700 10px ${FONT}`
     ctx.letterSpacing = "1.5px"
-    ctx.fillText(translations.brandLine1, SIDEBAR_W / 2, H / 2 + logoH / 2 + 10)
-    ctx.fillText(translations.brandLine2, SIDEBAR_W / 2, H / 2 + logoH / 2 + 24)
+    ctx.fillText(translations.brandLine1, tagX + tagW / 2, tagY + logoH + 40)
+    ctx.fillStyle = FERRIS_INK
+    ctx.fillText(translations.brandLine2, tagX + tagW / 2, tagY + logoH + 56)
     ctx.letterSpacing = "0px"
 
-    const cX = SIDEBAR_W + 48
-    const cRight = W - 48
+    // Main content bounds
+    const cX = sideRight + BAR_W + 40
+    const cRight = sheetX + sheetW - 40
 
-    // Gold seal (top right)
-    const sX = cRight - 52
-    const sY = 68
-    const sR = 50
-    const goldGrad = ctx.createRadialGradient(sX - 12, sY - 12, 5, sX, sY, sR)
-    goldGrad.addColorStop(0, "#fef08a")
-    goldGrad.addColorStop(0.4, "#eab308")
-    goldGrad.addColorStop(1, "#92400e")
+    // Seal (top right): lilac ribbons + Ferris orange disc
+    const sX = cRight - 48
+    const sY = sheetY + 66
+    const sR = 46
+    ctx.lineWidth = 1.5
+    ctx.strokeStyle = LINE
+    ctx.fillStyle = LILAC
+    for (const dir of [-1, 1]) {
+      ctx.beginPath()
+      ctx.moveTo(sX + dir * 10, sY + sR - 8)
+      ctx.lineTo(sX + dir * 26, sY + sR + 30)
+      ctx.lineTo(sX + dir * 14, sY + sR + 22)
+      ctx.lineTo(sX + dir * 4, sY + sR + 32)
+      ctx.lineTo(sX + dir * 0, sY + sR - 8)
+      ctx.closePath()
+      ctx.fill()
+      ctx.stroke()
+    }
     ctx.beginPath()
-    ctx.arc(sX, sY, sR, 0, Math.PI * 2)
-    ctx.fillStyle = goldGrad
+    ctx.arc(sX + 4, sY + 4, sR, 0, Math.PI * 2)
+    ctx.fillStyle = LINE
     ctx.fill()
     ctx.beginPath()
-    ctx.arc(sX, sY, sR - 5, 0, Math.PI * 2)
-    ctx.strokeStyle = "rgba(255,255,255,0.4)"
-    ctx.lineWidth = 1.5
+    ctx.arc(sX, sY, sR, 0, Math.PI * 2)
+    ctx.fillStyle = FERRIS
+    ctx.fill()
+    ctx.lineWidth = 2
     ctx.stroke()
+    ctx.beginPath()
+    ctx.arc(sX, sY, sR - 7, 0, Math.PI * 2)
+    ctx.setLineDash([3, 3])
+    ctx.lineWidth = 1
+    ctx.stroke()
+    ctx.setLineDash([])
+
     ctx.textAlign = "center"
-    ctx.fillStyle = "#ffffff"
-    ctx.font = "bold 10px sans-serif"
-    ctx.fillText("★  ★  ★", sX, sY - 18)
-    ctx.font = "bold 20px 'Poppins', sans-serif"
-    ctx.fillText(String(new Date().getFullYear()), sX, sY + 6)
-    ctx.fillStyle = "rgba(255,255,255,0.85)"
-    ctx.font = "600 7px 'Poppins', sans-serif"
+    ctx.fillStyle = LINE
+    ctx.font = "bold 9px sans-serif"
+    ctx.fillText("★  ★  ★", sX, sY - 16)
+    ctx.font = `800 20px ${FONT}`
+    ctx.fillText(String(new Date().getFullYear()), sX, sY + 7)
+    ctx.font = `700 7px ${FONT}`
     ctx.letterSpacing = "0.5px"
-    ctx.fillText(translations.awardedIn, sX, sY + 19)
+    ctx.fillText(translations.awardedIn, sX, sY + 20)
     ctx.letterSpacing = "0px"
-    // Ribbons
-    ctx.fillStyle = "#1e3a8a"
-    ctx.beginPath()
-    ctx.moveTo(sX - 13, sY + sR); ctx.lineTo(sX - 21, sY + sR + 26); ctx.lineTo(sX - 5, sY + sR + 14)
-    ctx.closePath(); ctx.fill()
-    ctx.beginPath()
-    ctx.moveTo(sX + 13, sY + sR); ctx.lineTo(sX + 21, sY + sR + 26); ctx.lineTo(sX + 5, sY + sR + 14)
-    ctx.closePath(); ctx.fill()
 
     // Certificate title and subtitle
     ctx.textAlign = "left"
-    ctx.fillStyle = DARK_NAVY
-    ctx.font = "900 58px 'Poppins', sans-serif"
-    ctx.fillText(translations.certTitle, cX, 84)
+    ctx.fillStyle = INK
+    fitFont(ctx, translations.certTitle, 800, 54, sX - sR - 24 - cX)
+    ctx.fillText(translations.certTitle, cX, sheetY + 80)
 
-    ctx.fillStyle = ORANGE
-    ctx.font = "700 23px 'Poppins', sans-serif"
-    ctx.fillText(translations.certSubtitle, cX, 116)
+    ctx.fillStyle = FERRIS_INK
+    ctx.font = `700 22px ${FONT}`
+    ctx.fillText(translations.certSubtitle, cX, sheetY + 112)
 
     // Divider
-    ctx.strokeStyle = "rgba(0,0,0,0.08)"
+    ctx.strokeStyle = LINE
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(cX, 134)
-    ctx.lineTo(sX - sR - 16, 134)
+    ctx.moveTo(cX, sheetY + 132)
+    ctx.lineTo(sX - sR - 20, sheetY + 132)
     ctx.stroke()
 
     // Certificate intro text
-    ctx.fillStyle = "#64748b"
-    ctx.font = "400 13px 'Poppins', sans-serif"
-    ctx.fillText(translations.certIntro, cX, 172)
+    ctx.fillStyle = INK_MUTED
+    ctx.font = `400 14px ${FONT}`
+    ctx.fillText(translations.certIntro, cX, sheetY + 168)
 
-    // Recipient name (large italic)
+    // Recipient name with a highlighter stroke behind it
     const displayName = name.trim() || translations.defaultName
-    ctx.fillStyle = DARK_NAVY
-    ctx.font = "italic 700 46px 'Georgia', serif"
     const maxNameW = cRight - cX - 20
-    if (ctx.measureText(displayName).width > maxNameW) {
-      const scaled = Math.floor(46 * (maxNameW / ctx.measureText(displayName).width))
-      ctx.font = `italic 700 ${scaled}px 'Georgia', serif`
-    }
-    ctx.fillText(displayName, cX, 236)
-
-    // Underline name
-    ctx.strokeStyle = "rgba(0,0,0,0.1)"
-    ctx.lineWidth = 1
-    ctx.beginPath()
-    ctx.moveTo(cX, 252)
-    ctx.lineTo(cX + Math.min(ctx.measureText(displayName).width + 20, 340), 252)
-    ctx.stroke()
+    fitFont(ctx, displayName, 800, 44, maxNameW)
+    const nameY = sheetY + 228
+    const nameW = ctx.measureText(displayName).width
+    ctx.fillStyle = FERRIS_CHIP
+    ctx.fillRect(cX - 6, nameY - 16, nameW + 12, 22)
+    ctx.fillStyle = INK
+    ctx.fillText(displayName, cX, nameY)
 
     // Description
-    ctx.fillStyle = "#475569"
-    ctx.font = "400 13px 'Poppins', sans-serif"
-    ctx.fillText(translations.completionText, cX, 290)
-    ctx.fillStyle = DARK_NAVY
-    ctx.font = "600 13px 'Poppins', sans-serif"
+    ctx.fillStyle = INK_MUTED
+    ctx.font = `400 14px ${FONT}`
+    ctx.fillText(translations.completionText, cX, sheetY + 276)
+    ctx.fillStyle = INK
+    ctx.font = `600 14px ${FONT}`
     const courseLabel = `"${trackTitle}" ${translations.completionSuffix}`
     if (ctx.measureText(courseLabel).width > maxNameW) {
-      ctx.fillText(`"${trackTitle}"`, cX, 308)
-      ctx.fillText(translations.completionSuffix, cX, 324)
+      ctx.fillText(`"${trackTitle}"`, cX, sheetY + 296)
+      ctx.fillText(translations.completionSuffix, cX, sheetY + 314)
     } else {
-      ctx.fillText(courseLabel, cX, 308)
+      ctx.fillText(courseLabel, cX, sheetY + 296)
     }
 
-    // Bottom divider
-    ctx.strokeStyle = "rgba(0,0,0,0.08)"
+    // Ferris illustration (bottom right, above footer)
+    const footerY = sheetY + 470
+    if (heroImg) {
+      const heroW = 210
+      const heroH = Math.round(heroW * (heroImg.height / heroImg.width))
+      ctx.drawImage(heroImg, cRight - heroW + 8, footerY - heroH - 6, heroW, heroH)
+    }
+
+    // Footer divider
+    ctx.strokeStyle = LINE
     ctx.lineWidth = 1
     ctx.beginPath()
-    ctx.moveTo(cX, 488)
-    ctx.lineTo(cRight, 488)
+    ctx.moveTo(cX, footerY)
+    ctx.lineTo(cRight, footerY)
     ctx.stroke()
 
     // Date
@@ -442,33 +558,58 @@ const t = useTranslations(lang)
       ? new Date(issuedAt).toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" })
       : new Date().toLocaleDateString("es-MX", { year: "numeric", month: "2-digit", day: "2-digit" })
     ctx.textAlign = "left"
-    ctx.fillStyle = "#94a3b8"
-    ctx.font = "500 10px 'Poppins', sans-serif"
-    ctx.letterSpacing = "0.5px"
-    ctx.fillText(translations.issueDateLabel, cX, 514)
+    ctx.fillStyle = INK_SUBTLE
+    ctx.font = `600 10px ${FONT}`
+    ctx.letterSpacing = "0.8px"
+    ctx.fillText(translations.issueDateLabel, cX, footerY + 28)
     ctx.letterSpacing = "0px"
-    ctx.fillStyle = DARK_NAVY
-    ctx.font = "600 12px 'Poppins', sans-serif"
-    ctx.fillText(date, cX, 530)
+    ctx.fillStyle = INK
+    ctx.font = `600 13px ${FONT}`
+    ctx.fillText(date, cX, footerY + 46)
 
     // Cert ID
     if (certId) {
       ctx.textAlign = "right"
-      ctx.fillStyle = "#94a3b8"
-      ctx.font = "500 10px 'Poppins', sans-serif"
-      ctx.letterSpacing = "0.5px"
-      ctx.fillText(translations.certIdLabel, cRight, 514)
+      ctx.fillStyle = INK_SUBTLE
+      ctx.font = `600 10px ${FONT}`
+      ctx.letterSpacing = "0.8px"
+      ctx.fillText(translations.certIdLabel, cRight, footerY + 28)
       ctx.letterSpacing = "0px"
-      ctx.fillStyle = DARK_NAVY
-      ctx.font = "600 11px 'Poppins', sans-serif"
-      ctx.fillText(certId.slice(0, 22), cRight, 530)
+      ctx.fillStyle = INK
+      ctx.font = `600 12px ${FONT}`
+      ctx.fillText(certId.slice(0, 22), cRight, footerY + 46)
     }
 
     // URL
     ctx.textAlign = "center"
-    ctx.fillStyle = "#94a3b8"
-    ctx.font = "400 11px 'Poppins', sans-serif"
-    ctx.fillText(translations.websiteUrl, (cX + cRight) / 2, 568)
+    ctx.fillStyle = INK_MUTED
+    ctx.font = `500 12px ${FONT}`
+    ctx.fillText(translations.websiteUrl, (cX + cRight) / 2, footerY + 86)
+
+    // Thin rule under the URL keeps the footer anchored
+    ctx.strokeStyle = LINE_SOFT
+    ctx.beginPath()
+    ctx.moveTo((cX + cRight) / 2 - 40, footerY + 96)
+    ctx.lineTo((cX + cRight) / 2 + 40, footerY + 96)
+    ctx.stroke()
+  }
+
+  // Celebration for finishing the track: brand-colored confetti from both sides, once per visit.
+  // Lives on its own full-page canvas, so the certificate artwork is never touched.
+  async function celebrate() {
+    const { default: confetti } = await import("canvas-confetti")
+    const colors = ["#ff6e1f", "#ffb270", "#9a8afb", "#f4f3ff", "#222222"]
+    const base = { colors, disableForReducedMotion: true, zIndex: 60 }
+
+    confetti({ ...base, particleCount: 120, spread: 90, startVelocity: 45, origin: { x: 0.5, y: 0.35 } })
+
+    const end = Date.now() + 1600
+    const frame = () => {
+      confetti({ ...base, particleCount: 4, angle: 60, spread: 60, origin: { x: 0, y: 0.7 } })
+      confetti({ ...base, particleCount: 4, angle: 120, spread: 60, origin: { x: 1, y: 0.7 } })
+      if (Date.now() < end) requestAnimationFrame(frame)
+    }
+    requestAnimationFrame(frame)
   }
 
   document.addEventListener("astro:page-load", async () => {
@@ -539,6 +680,18 @@ const t = useTranslations(lang)
 
       shareDiv.classList.remove("hidden")
       shareDiv.classList.add("flex")
+
+      const copyBtn = document.getElementById("copy-verify-btn")
+      const copyLabel = document.getElementById("copy-verify-label")
+      if (copyBtn && copyLabel && !copyBtn.dataset.bound) {
+        copyBtn.dataset.bound = "true"
+        copyBtn.addEventListener("click", async () => {
+          await navigator.clipboard.writeText(certUrl)
+          const original = copyLabel.textContent
+          copyLabel.textContent = canvas.dataset.msgCopied ?? original
+          setTimeout(() => { copyLabel.textContent = original }, 2000)
+        })
+      }
     }
 
     // Toggle buttons
@@ -548,11 +701,16 @@ const t = useTranslations(lang)
     const setMode = (m: "cert" | "badge") => {
       mode = m
       const isC = m === "cert"
-      toggleCertBtn.className = `flex-1 py-2.5 transition-colors ${isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
-      toggleBadgeBtn.className = `flex-1 py-2.5 transition-colors ${!isC ? "bg-yellow text-primary" : "text-secondary/50 hover:text-secondary/80"}`
+      const base = "min-h-9 cursor-pointer rounded-full px-4 transition-colors duration-150"
+      const active = "bg-ink text-canvas"
+      const inactive = "text-ink-muted hover:text-ferris-ink"
+      toggleCertBtn.className = `${base} ${isC ? active : inactive}`
+      toggleBadgeBtn.className = `${base} ${!isC ? active : inactive}`
+      toggleCertBtn.setAttribute("aria-pressed", String(isC))
+      toggleBadgeBtn.setAttribute("aria-pressed", String(!isC))
       canvas.className = isC
-        ? "w-full drop-shadow-2xl rounded-sm"
-        : "drop-shadow-2xl rounded-sm w-[500px] max-w-full mx-auto"
+        ? "w-full rounded-card"
+        : "w-[500px] max-w-full mx-auto"
       redraw()
     }
     toggleCertBtn.addEventListener("click", () => setMode("cert"))
@@ -569,7 +727,7 @@ const t = useTranslations(lang)
           nameText.textContent = fullName
           nameDisplay.classList.remove("hidden")
           nameDisplay.classList.add("flex")
-          subtitle.textContent = "Tu nombre se toma de tu perfil"
+          subtitle.textContent = canvas.dataset.msgProfileName ?? ""
           redraw()
 
           fetch("/api/certificates/claim", {
@@ -580,14 +738,18 @@ const t = useTranslations(lang)
             .then((r) => r.json())
             // @ts-ignore
             .then(({ certId, issuedAt }: { certId?: string; issuedAt?: string }) => {
-              if (certId && issuedAt) showShareButtons(certId, issuedAt)
+              if (certId && issuedAt) {
+                showShareButtons(certId, issuedAt)
+                // Certificate confirmed for this learner → celebrate the completion
+                celebrate().catch(() => {})
+              }
             })
             .catch(() => {})
         } else {
           nameDisplay.classList.remove("hidden")
           nameDisplay.classList.add("flex")
-          nameText.textContent = "Sin nombre configurado"
-          subtitle.textContent = "Configura tu nombre en tu perfil"
+          nameText.textContent = canvas.dataset.msgNoName ?? ""
+          subtitle.textContent = canvas.dataset.msgConfigureName ?? ""
         }
       }
     } catch {
